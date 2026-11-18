@@ -451,6 +451,10 @@ textarea.lined:focus{border-color:var(--good)!important;box-shadow:0 0 0 3px col
 .sheet .step-h b{font-family:var(--f-body);font-weight:800;font-size:16px}
 .sheet .display,.sheet .sec-head h3,.sheet .quote,.sheet .q{font-family:var(--f-body)}
 .sheet .quote{font-size:16px;font-weight:600}
+.mw-side{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mw-custom{font-size:14px!important;padding:10px 12px!important;border-radius:12px!important}
+.why{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.why span{font-weight:700;font-size:14.5px}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -795,8 +799,11 @@ function dayBody(d, logs, full){
       <h2 class="j-h">${IC.heart}Bugün kendimi… hissettim</h2>
       <div class="feel-grid">
         <div class="moods">${[2,1,0,-1,-2].map(v=>`<button type="button" class="mood dm" data-dm="${v}" data-day="${d}" aria-pressed="${r.mood===v}" aria-label="${sgn(v)} ${ELBL[v]}"><span class="dot" style="${eBtnStyle(v)}">${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
-        <div class="mw-box">${mwBox(d)}</div>
+        <div class="mw-side"><div class="mw-box">${mwBox(d)}</div>
+          <input type="text" class="mw-custom" data-dk="moodCustom" data-day="${d}" value="${esc(r.moodCustom||'')}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" aria-label="Başka his kelimeleri" autocomplete="off"></div>
       </div>
+      <label class="why"><span>Neden böyle hissettim?</span>
+        <textarea class="lined" data-dk="why" data-day="${d}" rows="2" placeholder="Bugün beni en çok ne etkiledi? Kısaca yaz.">${esc(r.why||'')}</textarea></label>
       ${logs.length?`<p class="j-note">Bugünkü anlarının ortalaması ${sgnF(avg(logs.map(l=>l.energy)))}</p>`:''}
     </section>
 
@@ -876,7 +883,7 @@ function renderInsights(){
   const peopleHtml = people.length ? people.map(p=>`<div class="person"><span class="av ${ecls(Math.round(p.a))}">${esc(p.name.charAt(0).toLocaleUpperCase('tr-TR'))}</span><span class="nm">${esc(p.name)}<small>${envL(p.env)} · ${p.n} an</small></span><span class="epill ${ecls(p.a)}">${sgnF(p.a)}</span></div>`).join('')
     : '<p class="muted">"Kiminle?" alanını doldurduğunda kişiler burada listelenir.</p>';
 
-  const fc = {}; L.forEach(l=>(l.feel||[]).forEach(f=>{ fc[f]=(fc[f]||0)+1; })); Object.values(S.refl).forEach(r=>(r.moodWords||[]).forEach(f=>{ fc[f]=(fc[f]||0)+1; }));
+  const fc = {}; L.forEach(l=>(l.feel||[]).forEach(f=>{ fc[f]=(fc[f]||0)+1; })); Object.values(S.refl).forEach(r=>[...(r.moodWords||[]), ...String(r.moodCustom||'').split(',').map(x=>x.trim()).filter(Boolean)].forEach(f=>{ fc[f]=(fc[f]||0)+1; }));
   const ft = Object.entries(fc).sort((a,b)=>b[1]-a[1]).slice(0,16);
   const tc = TYPES.map(([id,l])=>{ const ls=L.filter(x=>x.type===id); return {l,n:ls.length,a:avg(ls.map(x=>x.energy))}; });
   const tmax = Math.max(1,...tc.map(t=>t.n));
@@ -1254,7 +1261,7 @@ document.addEventListener('click', e=>{
     'del-no': ()=>{ document.getElementById('delZone').innerHTML = '<button type="button" class="btn danger" data-act="del-ask">Sil</button>'; },
     'del-yes': ()=>{ const id = document.getElementById('logForm').dataset.id; S.logs = S.logs.filter(x=>x.id!==id); save(); closeSheet(); render(false); toast('Kayıt silindi'); },
     'complete-day': ()=>{ const n = Number(t.dataset.day), r = S.refl[n] || {};
-      const any = r.note || (r.moodWords&&r.moodWords.length) || r.mood!==undefined && r.mood!==null || Object.values(r.q||{}).some(Boolean) || S.logs.some(l=>l.day===n);
+      const any = r.note || r.why || r.moodCustom || (r.moodWords&&r.moodWords.length) || r.mood!==undefined && r.mood!==null || Object.values(r.q||{}).some(Boolean) || S.logs.some(l=>l.day===n);
       if(!any){ toast('Önce bir şey yaz ya da hissini seç'); return; }
       S.refl[n] = Object.assign({}, r, {done:true, ts:Date.now()}); save();
       if(t.closest('.sheet')) closeSheet(); render(false);
@@ -1286,7 +1293,7 @@ function autoGrow(el){ el.style.height='auto'; el.style.height=Math.max(el.scrol
 document.addEventListener('input', e=>{
   const dk = e.target.dataset && e.target.dataset.dk;
   if(dk){ const n = Number(e.target.dataset.day), r = S.refl[n] = S.refl[n] || {};
-    if(dk==='note') r.note = e.target.value; else { r.q = r.q || {}; r.q[dk] = e.target.value; }
+    if(dk==='note'||dk==='why'||dk==='moodCustom') r[dk] = e.target.value; else { r.q = r.q || {}; r.q[dk] = e.target.value; }
     clearTimeout(rt); rt = setTimeout(save, 300);
     if(e.target.classList.contains('lined')) autoGrow(e.target); }
   if(e.target.id==='f-text' || e.target.closest && e.target.closest('#logForm')){ const er=document.getElementById('f-err'); if(er) er.textContent=''; }
