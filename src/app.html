@@ -313,6 +313,17 @@ main.wide{max-width:760px}
 @keyframes bob{50%{transform:translateY(4px)}}
 .onb-bless{white-space:nowrap}
 @media (max-width:480px){.onb-bless{font-size:10.5px;letter-spacing:.13em;gap:8px}.onb-bless::before,.onb-bless::after{display:none}}
+.home{min-height:calc(100svh - var(--tabh) - 60px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));justify-content:center;gap:10px!important}
+@media (min-width:900px){.home{min-height:calc(100vh - 80px)}}
+.home-top{min-height:0!important}
+.home.go .about{opacity:0;transform:translateY(14px);animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+.home.go .home-top .about{animation-delay:1.4s}
+.home.go .home-intent{animation-delay:1.75s}
+.about{transition:box-shadow .2s,border-color .2s}
+.about:hover{border-color:var(--muted)}
+.about[open]{box-shadow:var(--shadow)}
+.about[open] > .about-b{animation:fade .35s ease}
+@media (prefers-reduced-motion:reduce){.home.go .about{opacity:1!important;transform:none!important}}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -1101,7 +1112,7 @@ function toast(msg){ const r = document.getElementById('toastRoot'); r.innerHTML
 
 /* ================= Karşılama ================= */
 const onbRoot = document.getElementById('onbRoot');
-const MOTTO = 'Her sabah yeni bir gün, her gün yeni bir an. | Kendime ve sevdiklerime doğru küçük bir yolculuk.';
+const MOTTO = 'Her sabah yeni bir gün, her gün yeni anlar. | Kendime ve sevdiklerime doğru küçük bir yolculuk.';
 function mottoHTML(){
   let i = 0;
   return MOTTO.split(' ').map(w => w==='|' ? '<span class="br"></span>' : `<span class="w" style="animation-delay:${(0.9 + (i++)*0.32).toFixed(2)}s">${w}</span>`).join(' ');
