@@ -442,7 +442,7 @@ const WEEKS = [
 const DAYS = [
  {w:1,t:'Kulak Açmak',theme:'Gün boyunca sana yöneltilen sözler çoğu zaman fark edilmeden içeri girer. Bugün hiçbir şeyi değiştirmeye çalışma; sadece duy. Kimin, ne zaman, hangi cümleyi kurduğunu fark etmek yolculuğun ilk adımı.',task:'Bugün sana söylenen en az üç cümleyi, yorum katmadan, olduğu gibi kaydet.',q:'Bugün sana söylenen ve hâlâ aklında dönen cümle hangisi? Neden o?'},
  {w:1,t:'Evin Sesi',theme:'Ailede söylenen sözler en eski sözlerdir. Çoğu yıllardır tekrar eder ve bir süre sonra iç sesimize dönüşür. Bugün evde ve ailende sana söylenenlere kulak ver.',task:'Ev ve aile ortamında sana söylenen cümleleri kaydet. Tekrar eden bir kalıp var mı, dikkat et.',q:'Ailende sana en sık tekrarlanan cümle ne? Bu cümle sana ne zamandan beri tanıdık?'},
- {w:1,t:'İş Yerinin Dili',theme:'İş ortamında sözler çoğu zaman bir görevin, bir hiyerarşinin ya da bir rekabetin içinden gelir. Aynı cümle bir toplantıda, koridorda ya da mesajda farklı ağırlık taşır.',task:'İş yerinde sana yöneltilen sözleri kaydet. Söyleyenin konumunu (yönetici, ekip arkadaşı, müşteri) not et.',q:'İş yerinde bugün hangi söz seni büyüttü, hangisi küçülttü?'},
+ {w:1,t:'İşin ve Okulun Dili',theme:'İş yerinde ve okulda sözler çoğu zaman bir görevin, bir hiyerarşinin ya da bir rekabetin içinden gelir. Aynı cümle bir toplantıda, sınıfta, koridorda ya da mesajda farklı ağırlık taşır.',task:'İş yerinde ya da okulda sana yöneltilen sözleri kaydet. Söyleyenin konumunu (yönetici, ekip arkadaşı, öğretmen, sınıf arkadaşı) not et.',q:'Bugün işte ya da okulda hangi söz seni büyüttü, hangisi küçülttü?'},
  {w:1,t:'Arkadaş Çemberi',theme:'Arkadaşlarımızı seçeriz ama aralarındaki sözlerin bizi nasıl etkilediğini her zaman seçemeyiz. Bazı sohbetlerden hafiflemiş, bazılarından yorulmuş çıkarız.',task:'Arkadaş ortamında duyduğun sözleri kaydet ve her birinin enerjini nasıl etkilediğini işaretle.',q:'Hangi arkadaşının sözleri seni hafifletiyor, hangisininki ağırlaştırıyor?'},
  {w:1,t:'Beden Biliyor',theme:'Zihin bir sözü yorumlamadan önce beden çoktan tepki verir: göğüste sıkışma, omuzlarda gerilme ya da içte bir genişleme. Beden, sözün enerjisini ilk ölçen yerdir.',task:'Her anda “Bana ne hissettirdi?” bölümünden kelimeleri seç. Gerekirse bedeninde hissettiğini de kendi kelimenle ekle.',q:'Bugün bedeninin bir sözü senden önce anladığı bir an oldu mu?'},
  {w:1,t:'Söz ve Ton',theme:'"Tabii ki yaparsın" cümlesi bir tonla destek, başka bir tonla alay olabilir. Ne söylendiği kadar nasıl söylendiği de mesajın parçasıdır: ses tonu, bakış, zamanlama.',task:'Bugünkü kayıtlarında sözün tonunu da not et. "Nasıl karşılık verdin" alanını kullanabilirsin.',q:'Kelimeleri olumlu ama tonu olumsuz olan bir söz duydun mu? Hangisine inandın?'},
@@ -462,7 +462,7 @@ const DAYS = [
  {w:3,t:'Mesafe ve Yakınlık',theme:'Her ilişki aynı yakınlığı gerektirmez. Bazılarıyla mesafeyi açmak, bazılarıyla kapatmak; ikisi de enerjine özen göstermenin yolları.',task:'Haritana bakarak bir ilişkide mesafeyi, bir ilişkide yakınlığı nasıl ayarlamak istediğini yaz.',q:'Hangi ilişkine biraz daha yaklaşmak, hangisinden biraz uzaklaşmak istiyorsun?'},
  {w:3,t:'Yeni Kulak',theme:'21 gün boyunca sözleri duydun, niyetleri gördün ve enerjini korumayı denedin. Kulağın artık farklı duyuyor. Bu bir bitiş değil, yeni bir dinleme biçiminin başlangıcı.',task:'Tüm yolculuğuna geri bak ve kendine kısa bir mektup yaz.',q:'21 gün önceki kendine ne söylemek isterdin?'}
 ];
-const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'arkadas',l:'Arkadaşlar'},{id:'is',l:'İş Yeri'},{id:'diger',l:'Diğerleri'}];
+const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'arkadas',l:'Arkadaşlar'},{id:'is',l:'İş Yeri'},{id:'okul',l:'Okul'},{id:'diger',l:'Diğerleri'}];
 const TYPES = [
  ['saygili','Yol gösterici eleştiri','Eleştiri'],['kirici','Kırıcı eleştiri','Eleştiri'],
  ['destekleyici','Destekleyici','Destek'],['igneleyici','İğneleyici','Destek'],['notr','Nötr','Nötr']];
@@ -567,7 +567,7 @@ function logCard(l, showDay){
   </article>`;
 }
 function emptyLogs(day){
-  return `<div class="empty"><p class="display">1. An seni bekliyor.</p><p>Bugün evde, işte ya da arkadaşlarınla yaşadığın ve sana bir şey hissettiren ilk anı yaz.</p><button class="btn primary" data-act="add" data-day="${day}">1. An’ı yaz</button></div>`;
+  return `<div class="empty"><p class="display">1. An seni bekliyor.</p><p>Bugün evde, işte, okulda ya da arkadaşlarınla yaşadığın ve sana bir şey hissettiren ilk anı yaz.</p><button class="btn primary" data-act="add" data-day="${day}">1. An’ı yaz</button></div>`;
 }
 
 /* ================= Bugün ================= */
@@ -1008,13 +1008,13 @@ function showOnboarding(){
     <aside class="onb-guide" aria-label="Uygulama hakkında">
       <p class="eyebrow">Başlamadan önce oku</p>
       <h2>Uygulama hakkında</h2>
-      ${acc(1,'Yankı 21 nedir?',`<p>Her söz içinde bir yankı bırakır.</p><p>21 gün boyunca evde, işte ve arkadaşlarınla duyduğun sözleri fark et, asıl amacını gör ve sende nasıl bir etki bıraktığını anla.</p>`, true)}
+      ${acc(1,'Yankı 21 nedir?',`<p>21 gün boyunca duyduğun sözleri fark et, asıl amacını gör ve sende nasıl bir etki bıraktığını anla.</p><p>Amaç, sözün asıl amacını görmek ve sende olumlu mu olumsuz mu bir etki bıraktığını fark etmektir.</p>`, true)}
       ${acc(2,'21 gün nasıl ilerler?',`<p>Her gün, gün içinde yaşadığın anları yazarsın. Her an, bir sözün sende bıraktığı <b>yankıyı</b> fark etmek için bir fırsattır.</p>
         <p>Her gün ve her anda şu üç adım sırayla tekrar eder:</p>
         <ol><li><b>Fark Et:</b> Yargılamadan ne olduğunu gözlemle. Ne söylendi, sende nasıl bir yankı bıraktı?</li><li><b>Anla:</b> Sözün arkasına bak. Karşındaki ne demek istemiş olabilir?</li><li><b>Dönüştür:</b> Bu farkındalıkla nasıl karşılık vermek istediğini seç.</li></ol>
         <p>Haftalar bu adımları derinleştirir: 1. hafta daha çok fark etmeye, 2. hafta anlamaya, 3. hafta dönüştürmeye odaklanır. Her gün ayrıca bir konu, bir görev ve akşam cevaplayacağın bir ayna sorusu açılır.</p>`)}
       ${acc(3,'Bir “An” nasıl yazılır?',`<p>Gün içinde seni etkileyen her söz bir andır: 1. An, 2. An, 3. An… Her an üç adımda yazılır:</p>
-        <p class="g-sub" style="margin-top:4px">Fark Et</p><ol><li>Nerede? <span class="muted">Ev & Aile, Arkadaşlar, İş Yeri, Diğerleri</span></li><li>Kiminle?</li><li>Ne oldu, ne söyledi? <span class="muted">Yargılamadan, olduğu gibi</span></li><li>Bana ne hissettirdi? <span class="muted">−2 ile +2 arası ve his kelimeleri</span></li></ol>
+        <p class="g-sub" style="margin-top:4px">Fark Et</p><ol><li>Nerede? <span class="muted">Ev & Aile, Arkadaşlar, İş Yeri, Okul, Diğerleri</span></li><li>Kiminle?</li><li>Ne oldu, ne söyledi? <span class="muted">Yargılamadan, olduğu gibi</span></li><li>Bana ne hissettirdi? <span class="muted">−2 ile +2 arası ve his kelimeleri</span></li></ol>
         <p class="g-sub">Anla</p><ol start="5"><li>Bu söz ne türdeydi?</li><li>Sence asıl amacı neydi?</li><li>Karşımdaki insan ne demek istemiş olabilir?</li></ol>
         <p class="g-sub">Dönüştür</p><ol start="8"><li>Nasıl karşılık verdim ya da vermek isterdim?</li></ol>`)}
       ${acc(4,'Sözleri nasıl değerlendiririm?',matrixHTML())}
