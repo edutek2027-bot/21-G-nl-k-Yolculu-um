@@ -803,8 +803,7 @@ function renderHome(){
   if(!S.start) return '';
   const editing = intentEdit || !hasIntent();
   return `${demoBanner()}<div class="home ${homeAnim?'go':'still'}">
-    <div class="home-top">${welcomeHTML()}
-      <button class="scroll-hint" data-act="to-intent">Başlangıç <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+    <div class="home-top">${welcomeHTML()}</div>
     <details class="onb-guide about home-intent" id="homeIntent"${intentEdit?' open':''}>
       <summary><span><span class="eyebrow">${hasIntent()?'Niyetin':'Başlamadan önce yaz'}</span><b>Başlangıç${S.name?' · '+esc(S.name):''}</b></span><span class="pl" aria-hidden="true"></span></summary>
       <div class="about-b" style="gap:12px">
