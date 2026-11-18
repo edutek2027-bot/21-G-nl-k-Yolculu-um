@@ -872,7 +872,7 @@ function eBtnStyle(v){
   return {
     '2':'background:var(--good);color:var(--accent-ink)',
     '1':'background:color-mix(in srgb, var(--good) 38%, var(--surface))',
-    '0':'background:var(--surface-2)',
+    '0':'background:#FFFFFF;color:#18202C;box-shadow:inset 0 0 0 1px var(--line)',
     '-1':'background:color-mix(in srgb, var(--bad) 38%, var(--surface))',
     '-2':'background:color-mix(in srgb, var(--bad) 82%, #000);color:var(--accent-ink)'
   }[String(v)];
@@ -1105,6 +1105,6 @@ if(!S.start) showOnboarding();
 route(); render(true);
 </script>
 
-<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
 </body>
 </html>
