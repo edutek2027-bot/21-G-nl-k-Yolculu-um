@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611181609">
+<meta name="build" content="202611181617">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -360,6 +360,39 @@ main.wide{max-width:760px}
 .empty.slim{padding:16px;flex-direction:row;justify-content:space-between;text-align:left;flex-wrap:wrap}
 .empty.slim p{margin:0;font-size:14px}
 .eb.dm[aria-pressed="true"]{transform:translateY(-3px);box-shadow:0 0 0 2px var(--ink)}
+.journal{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px 18px 18px 6px;padding:26px 22px 24px 34px;display:flex;flex-direction:column;gap:26px;box-shadow:0 1px 0 var(--line),0 14px 30px -18px rgb(24 32 44 / .25)}
+.journal::before{content:"";position:absolute;top:0;bottom:0;left:18px;width:1px;background:color-mix(in srgb,var(--bad) 40%,transparent)}
+.sheet .journal{border:0;box-shadow:none;padding:6px 4px 10px 22px;border-radius:0}
+.sheet .journal::before{left:6px}
+.j-head{display:flex;flex-direction:column;gap:4px}
+.j-date{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.j-title{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(40px,10vw,56px);line-height:1}
+.j-intent{margin:-14px 0 0;font-family:var(--f-display);font-style:italic;font-size:21px;line-height:1.35;color:var(--muted)}
+.j-sec{display:flex;flex-direction:column;gap:8px}
+.j-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.j-h{margin:0;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--good-ink)}
+.j-prompt{margin:0;font-family:var(--f-display);font-size:20px;line-height:1.3;color:var(--ink)}
+textarea.lined{width:100%;border:0;border-radius:0;background:transparent;resize:none;overflow:hidden;padding:0 2px;min-height:32px;
+  font-family:var(--f-body);font-size:16px;line-height:32px;color:var(--ink);
+  background-image:linear-gradient(to bottom,transparent 31px,var(--line) 31px);background-size:100% 32px;background-attachment:local}
+textarea.lined:focus{outline:none;background-image:linear-gradient(to bottom,transparent 31px,color-mix(in srgb,var(--good) 55%,transparent) 31px)}
+.j-q{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.j-tick{display:inline-flex;align-items:center;gap:8px;background:none;border:0;padding:4px 2px;font-size:13.5px;font-weight:600;color:var(--muted)}
+.j-tick .box{width:20px;height:20px;border:1.5px solid var(--muted);border-radius:6px;display:grid;place-items:center;transition:all .2s}
+.j-tick[aria-pressed="true"]{color:var(--good-ink)}
+.j-tick[aria-pressed="true"] .box{background:var(--good);border-color:var(--good)}
+.j-tick[aria-pressed="true"] .box::after{content:"";width:9px;height:5px;border:2px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.j-add{background:none;border:0;padding:4px 2px;color:var(--good-ink);font-weight:700;font-size:14px}
+.j-empty{margin:0;color:var(--muted);font-size:14.5px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.j-logs .log{box-shadow:none;border-radius:12px;background:var(--bg)}
+.j-note{margin:0;font-size:12.5px;color:var(--muted)}
+.moods{display:flex;justify-content:space-between;gap:4px;max-width:420px}
+.mood{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:4px 0;flex:1;min-width:0;color:var(--muted)}
+.mood .dot{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;transition:transform .15s,box-shadow .15s;font-variant-numeric:tabular-nums}
+.mood small{font-size:10.5px;font-weight:600;line-height:1.15;text-align:center;opacity:.75}
+.mood[aria-pressed="true"] .dot{transform:scale(1.14);box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
+.mood[aria-pressed="true"] small{color:var(--ink);opacity:1;font-weight:800}
+.j-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -534,27 +567,27 @@ const WEEKS = [
   {n:'Dönüştür', d:'Enerjini korumak', intro:'Fark ettiklerinle kendi alanını yeniden kuruyorsun.'}
 ];
 const DAYS = [
- {w:1,t:'Sadece dinle',focus:'Bugün sözleri değiştirmeye çalışma, sadece duy.',task:'Sana söylenen üç cümleyi olduğu gibi yaz.'},
- {w:1,t:'Evdeki sözler',focus:'Ailende sık duyduğun cümlelere kulak ver.',task:'Evde tekrar eden bir cümleyi yaz.'},
- {w:1,t:'İşte ve okulda',focus:'İşte ya da okulda sana söylenenleri fark et.',task:'Seni büyüten ve küçülten birer sözü yaz.'},
- {w:1,t:'Arkadaşlar',focus:'Hangi sohbet seni hafifletiyor, hangisi yoruyor?',task:'Bir arkadaşının sözünün sende bıraktığı etkiyi yaz.'},
- {w:1,t:'Beden ne diyor?',focus:'Bir söz önce bedende hissedilir.',task:'Bir söz duyduğunda bedeninde ne olduğunu yaz.'},
- {w:1,t:'Söz ve ton',focus:'Ne söylendiği kadar nasıl söylendiği de önemli.',task:'Tonu, kelimelerinden farklı olan bir sözü yaz.'},
- {w:1,t:'Haftaya bakış',focus:'İlk haftana Analiz ekranından göz at.',task:'Sana en iyi gelen ve en zorlayan ortamı yaz.'},
- {w:2,t:'Sözün niyeti',focus:'Her sözün bir amacı vardır.',task:'Bugünkü bir anın asıl amacını yaz.'},
- {w:2,t:'Eleştiri mi, endişe mi?',focus:'Eleştiri gibi duyulan bir sözün altında endişe olabilir.',task:'Bir eleştirinin altındaki duyguyu yaz.'},
- {w:2,t:'Övgünün altı',focus:'Her övgü beslemez, bazısı yük bırakır.',task:'Seni gerçekten besleyen bir övgüyü yaz.'},
- {w:2,t:'Şaka mı?',focus:'Bazı şakalar bir mesaj taşır.',task:'Güldüğün ama içine dokunan bir sözü yaz.'},
- {w:2,t:'Söylenmeyenler',focus:'Sessizlik de bir sözdür.',task:'Duymak isteyip duymadığın sözü yaz.'},
- {w:2,t:'Onun hikâyesi',focus:'Söz, söyleyenin kendi korkusunu da taşır.',task:'Bir sözün arkasındaki ihtiyacı yaz.'},
- {w:2,t:'Haftaya bakış',focus:'Niyet haritana Analiz ekranından göz at.',task:'En sık karşılaştığın niyeti yaz.'},
- {w:3,t:'Enerji haritası',focus:'Kimin yanında doluyorsun, kimin yanında yoruluyorsun?',task:'Seni besleyen ve yoran birer kişiyi yaz.'},
- {w:3,t:'Sınır cümlem',focus:'Sınır, kendi enerjini korumaktır.',task:'Kendine ait kısa bir sınır cümlesi yaz.'},
- {w:3,t:'Önce nefes',focus:'Söz ile cevabın arasına bir nefes koy.',task:'Nefes alıp cevap verdiğin bir anı yaz.'},
- {w:3,t:'İç sesim',focus:'Kendine söylediklerini de dinle.',task:'Kendine sık söylediğin bir cümleyi yaz.'},
- {w:3,t:'Güzel sözler',focus:'İyi gelen sözleri fark et ve çoğalt.',task:'Bugün birine iyi gelecek bir söz söyle ve yaz.'},
- {w:3,t:'Mesafe ve yakınlık',focus:'Her ilişki aynı yakınlığı istemez.',task:'Yaklaşmak ve uzaklaşmak istediğin ilişkiyi yaz.'},
- {w:3,t:'Yeni bir kulak',focus:'21 güne geri bak.',task:'21 gün önceki kendine kısa bir not yaz.'}
+ {w:1,t:'Duymak',focus:'Bugün sadece dinliyorum, yargılamadan.',task:'Bugün bana söylenen ve aklımda kalan cümle…'},
+ {w:1,t:'Evde',focus:'Bugün evdeki sözlere kulak veriyorum.',task:'Evde sık duyduğum bir cümle…'},
+ {w:1,t:'İşte, okulda',focus:'Bugün işte ya da okulda söylenenleri fark ediyorum.',task:'Beni büyüten ya da küçülten bir söz…'},
+ {w:1,t:'Arkadaşlarla',focus:'Bugün sohbetlerin bende bıraktığına bakıyorum.',task:'Bir sohbetten sonra kendimi şöyle hissettim…'},
+ {w:1,t:'Bedenim',focus:'Bugün sözlerin bedenimdeki izini fark ediyorum.',task:'Bir söz duyduğumda bedenimde…'},
+ {w:1,t:'Ses tonu',focus:'Bugün sözler kadar söyleniş biçimine de dikkat ediyorum.',task:'Kelimeleri başka, tonu başka olan bir söz…'},
+ {w:1,t:'Bir hafta',focus:'Bugün ilk haftama geri bakıyorum.',task:'Bu hafta en çok fark ettiğim…'},
+ {w:2,t:'Niyet',focus:'Bugün sözlerin arkasındaki amacı görmeye çalışıyorum.',task:'Bugün duyduğum bir sözün asıl amacı belki de…'},
+ {w:2,t:'Eleştiri ve endişe',focus:'Bugün eleştirinin altındaki duyguya bakıyorum.',task:'Eleştiri gibi duyduğum ama altında endişe olan bir söz…'},
+ {w:2,t:'Övgü',focus:'Bugün övgülerin bende bıraktığına bakıyorum.',task:'Beni gerçekten iyi hissettiren bir övgü…'},
+ {w:2,t:'Şaka',focus:'Bugün şakaların taşıdığı mesajı fark ediyorum.',task:'Güldüğüm ama içime dokunan bir söz…'},
+ {w:2,t:'Sessizlik',focus:'Bugün söylenmeyenleri de duyuyorum.',task:'Duymak isteyip duyamadığım söz…'},
+ {w:2,t:'Onun yerinden',focus:'Bugün söyleyenin yerinden bakmayı deniyorum.',task:'Bir sözün arkasındaki ihtiyaç belki de…'},
+ {w:2,t:'İki hafta',focus:'Bugün ikinci haftama geri bakıyorum.',task:'Sözlerin niyetini görmek bende şunu değiştirdi…'},
+ {w:3,t:'Beni besleyenler',focus:'Bugün kimin yanında dolduğumu fark ediyorum.',task:'Yanında kendimi iyi hissettiğim kişi ve nedeni…'},
+ {w:3,t:'Sınırım',focus:'Bugün kendi sınırımı sakin bir cümleyle çiziyorum.',task:'Benim sınır cümlem…'},
+ {w:3,t:'Bir nefes',focus:'Bugün cevap vermeden önce bir nefes alıyorum.',task:'Nefes alıp cevap verdiğimde…'},
+ {w:3,t:'İç sesim',focus:'Bugün kendime söylediklerimi dinliyorum.',task:'Kendime sık söylediğim cümle…'},
+ {w:3,t:'Güzel söz',focus:'Bugün iyi gelen bir sözü ben söylüyorum.',task:'Bugün birine şunu söyledim…'},
+ {w:3,t:'Yakınlık',focus:'Bugün ilişkilerimdeki mesafeye bakıyorum.',task:'Daha yakın olmak istediğim kişi…'},
+ {w:3,t:'Yeni bir kulak',focus:'Bugün 21 güne geri bakıyorum.',task:'21 gün önceki kendime…'}
 ];
 const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'arkadas',l:'Arkadaşlar'},{id:'is',l:'İş Yeri'},{id:'okul',l:'Okul'},{id:'diger',l:'Diğerleri'}];
 const TYPES = [
@@ -621,10 +654,11 @@ function route(){
   render(changed);
 }
 function render(anim){
+  setTimeout(()=>document.querySelectorAll('textarea.lined').forEach(autoGrow),0);
   homeAnim = !!anim; main.classList.toggle('wide', view==='anasayfa');
   main.innerHTML = VIEWS[view]();
   if(anim){ main.classList.remove('view-in'); void main.offsetWidth; main.classList.add('view-in'); window.scrollTo(0,0); }
-  document.getElementById('fab').hidden = !S.start || view==='ayarlar' || view==='rehber' || view==='anasayfa';
+  document.getElementById('fab').hidden = !S.start || view==='ayarlar' || view==='rehber' || view==='anasayfa' || view==='bugun';
 }
 window.addEventListener('hashchange', route);
 
@@ -666,49 +700,49 @@ function emptyLogs(day){
 }
 
 /* ================= Bugün ================= */
-const DQ = [['iyi','Bugün bana hangi cümle iyi geldi?'],['fark','Bugün neyi fark ettim?'],['ogren','Bugün ne öğrendim?'],['sukur','Bugün neye, kime şükrettim?']];
+const DQ = [['iyi','Bugün bana iyi gelen bir cümle…'],['fark','Bugün fark ettiğim…'],['ogren','Bugün öğrendiğim…'],['sukur','Bugün şükrettiğim, minnettar olduğum…']];
 function renderToday(){
   if(!S.start) return '';
-  const d = curDay(), D = DAYS[d-1], raw = rawDay();
+  const d = curDay(), raw = rawDay();
   const logs = S.logs.filter(l=>l.day===d).sort((a,b)=>a.ts-b.ts);
   return `${demoBanner()}
   ${raw>21?`<div class="banner"><span><b>21 günü tamamladın.</b> Tüm anların Analiz ekranında.</span><a class="btn small" href="#analiz">Analize git</a></div>`:''}
-  <header class="day-head">
-    <div class="orbit">${orbitSVG(d)}</div>
-    <div class="day-head-t"><p class="eyebrow">${fmtDate(new Date())}</p><h1 class="display">${D.t}</h1><p class="muted">${D.focus}</p></div>
-  </header>
-  ${dayBody(d, logs)}`;
+  ${dayBody(d, logs, true)}`;
 }
-function dayBody(d, logs){
+function dayBody(d, logs, full){
   const D = DAYS[d-1], r = S.refl[d] || {}, q = r.q || {};
-  const a = avg(logs.map(l=>l.energy));
-  return `
-  <section class="dcard">
-    <div class="dcard-h"><p class="label">Bugünün görevi</p>
-      <button class="chk" data-act="task-done" data-day="${d}" aria-pressed="${!!r.taskDone}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>${r.taskDone?'Yaptım':'Yaptım mı?'}</button></div>
-    <p class="dtask">${D.task}</p>
-    <textarea data-dk="note" data-day="${d}" rows="2" aria-label="Görev notun" placeholder="Buraya yaz…">${esc(r.note||'')}</textarea>
-  </section>
+  const line = (k, ph, rows) => `<textarea class="lined" data-dk="${k}" data-day="${d}" rows="${rows||1}" aria-label="${ph}" placeholder="">${esc(k==='note'?(r.note||''):(q[k]||(k==='fark'&&r.text)||''))}</textarea>`;
+  return `<article class="journal">
+    ${full?`<header class="j-head"><p class="j-date">Gün ${d} · ${fmtDate(new Date(),{day:'numeric',month:'long',weekday:'long'})}</p>
+      <h1 class="j-title">${D.t}</h1></header>`:''}
+    <p class="j-intent">${D.focus}</p>
 
-  <section class="dsec">
-    <div class="sec-head"><h3>Bugünün anları</h3>${logs.length?`<button class="link" data-act="add" data-day="${d}">+ An ekle</button>`:''}</div>
-    ${logs.length ? `<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>` : emptyLogs(d)}
-  </section>
+    <section class="j-sec">
+      <div class="j-row"><h2 class="j-h">Bugün dene</h2>
+        <button class="j-tick" data-act="task-done" data-day="${d}" aria-pressed="${!!r.taskDone}"><span class="box" aria-hidden="true"></span>${r.taskDone?'Yaptım':'Yaptım'}</button></div>
+      <p class="j-prompt">${D.task}</p>
+      ${line('note', D.task, 2)}
+    </section>
 
-  <section class="dcard">
-    <p class="label">Bugün genel olarak nasıl hissettim?</p>
-    <div class="escale">${[2,1,0,-1,-2].map(v=>`<button type="button" class="eb dm" data-dm="${v}" data-day="${d}" aria-pressed="${r.mood===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}"><span>${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
-    ${logs.length?`<p class="muted" style="font-size:12.5px">Anlarının ortalaması: <b>${sgnF(a)}</b> · ${logs.length} an</p>`:''}
-  </section>
+    <section class="j-sec">
+      <div class="j-row"><h2 class="j-h">Bugünün anları</h2><button class="j-add" data-act="add" data-day="${d}">+ An ekle</button></div>
+      ${logs.length ? `<div class="logs j-logs">${logs.map(l=>logCard(l)).join('')}</div>` : `<p class="j-empty">Seni etkileyen bir söz duyduğunda buraya ekle.</p>`}
+    </section>
 
-  ${d===21 && hasIntent() ? intentCard(true) : ''}
-  <section class="dcard">
-    <p class="label">Günün soruları</p>
-    <div class="dqs">${DQ.map(([k,l])=>`<label class="dq"><span>${l}</span><textarea data-dk="${k}" data-day="${d}" rows="1" placeholder="Kısaca yaz…">${esc(q[k]||(k==='fark'&&r.text)||'')}</textarea></label>`).join('')}</div>
-  </section>
+    <section class="j-sec">
+      <h2 class="j-h">Bugün kendimi…</h2>
+      <div class="moods">${[2,1,0,-1,-2].map(v=>`<button type="button" class="mood dm" data-dm="${v}" data-day="${d}" aria-pressed="${r.mood===v}" aria-label="${sgn(v)} ${ELBL[v]}"><span class="dot" style="${eBtnStyle(v)}">${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
+      ${logs.length?`<p class="j-note">Anlarının ortalaması ${sgnF(avg(logs.map(l=>l.energy)))}</p>`:''}
+    </section>
 
-  <div class="dfoot">${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Gün tamamlandı</span>`:'<span class="muted" style="font-size:12.5px">Yazdıkların otomatik kaydedilir.</span>'}
-    ${r.done?'':`<button class="btn primary" data-act="complete-day" data-day="${d}">Günü tamamla</button>`}</div>`;
+    ${d===21 && hasIntent() ? intentCard(true) : ''}
+    <section class="j-sec">
+      <h2 class="j-h">Akşam</h2>
+      ${DQ.map(([k,l])=>`<div class="j-q"><p class="j-prompt">${l}</p>${line(k,l,1)}</div>`).join('')}
+    </section>
+
+    <footer class="j-foot">${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Bu sayfa tamamlandı</span>`:`<span class="j-note">Yazdıkların kendiliğinden kaydedilir.</span><button class="btn primary" data-act="complete-day" data-day="${d}">Günü tamamla</button>`}</footer>
+  </article>`;
 }
 
 /* ================= Yolculuk ================= */
@@ -735,7 +769,7 @@ function openDay(n){
   const logs = S.logs.filter(l=>l.day===n).sort((a,b)=>a.ts-b.ts);
   openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${n}</p><h2>${D.t}</h2></div>${closeBtn()}</div>
     <div class="day-sheet">
-    ${locked ? `<p class="locked-note">Bu gün ${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})} açılacak.</p>` : `<p class="muted">${D.focus}</p>${dayBody(n, logs)}`}
+    ${locked ? `<p class="locked-note">Bu gün ${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})} açılacak.</p>` : `${dayBody(n, logs, false)}`}
     </div>`);
 }
 
@@ -995,6 +1029,7 @@ const sheetRoot = document.getElementById('sheetRoot');
 let lastFocus = null;
 const closeBtn = () => `<button class="x" data-act="close-sheet" aria-label="Kapat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>`;
 function openSheet(html){
+  setTimeout(()=>document.querySelectorAll('.sheet textarea.lined').forEach(autoGrow),0);
   lastFocus = document.activeElement;
   sheetRoot.innerHTML = `<div class="sheet-wrap" data-act="backdrop"><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div></div>`;
   document.body.style.overflow='hidden';
@@ -1121,7 +1156,7 @@ document.addEventListener('click', e=>{
       if(t.closest('.sheet')) closeSheet(); render(false);
       toast(n===21?'Tebrikler, 21 günü tamamladın':'Gün '+n+' tamamlandı'); },
     'task-done': ()=>{ const n = Number(t.dataset.day); const r = S.refl[n] = S.refl[n] || {}; r.taskDone = !r.taskDone; save();
-      t.setAttribute('aria-pressed', String(r.taskDone)); t.lastChild.textContent = r.taskDone?'Yaptım':'Yaptım mı?'; },
+      t.setAttribute('aria-pressed', String(r.taskDone));  },
     'save-profile': ()=>{ S.name = document.getElementById('set-name').value.trim(); const st = document.getElementById('set-start').value; if(st) S.start = st; save(); render(false); toast('Ayarlar kaydedildi'); },
     'copy-backup': ()=>{ const code = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
       const out = document.getElementById('backupOut');
@@ -1143,12 +1178,13 @@ document.addEventListener('keydown', e=>{
 });
 document.addEventListener('submit', e=>{ if(e.target.id==='logForm'){ e.preventDefault(); submitLog(e.target); } if(e.target.id==='intForm'){ e.preventDefault(); submitIntent(e.target); } });
 let rt;
+function autoGrow(el){ el.style.height='auto'; el.style.height=Math.max(el.scrollHeight, el.rows*32)+'px'; }
 document.addEventListener('input', e=>{
   const dk = e.target.dataset && e.target.dataset.dk;
   if(dk){ const n = Number(e.target.dataset.day), r = S.refl[n] = S.refl[n] || {};
     if(dk==='note') r.note = e.target.value; else { r.q = r.q || {}; r.q[dk] = e.target.value; }
     clearTimeout(rt); rt = setTimeout(save, 300);
-    if(e.target.rows===1){ e.target.style.height='auto'; e.target.style.height=e.target.scrollHeight+'px'; } }
+    if(e.target.classList.contains('lined')) autoGrow(e.target); }
   if(e.target.id==='f-text' || e.target.closest && e.target.closest('#logForm')){ const er=document.getElementById('f-err'); if(er) er.textContent=''; }
 });
 
@@ -1260,6 +1296,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611181609";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611181617";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
