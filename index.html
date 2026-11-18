@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611181557">
+<meta name="build" content="202611181609">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -338,6 +338,28 @@ main.wide{max-width:760px}
 .about[open]{box-shadow:var(--shadow)}
 .about[open] > .about-b{animation:fade .35s ease}
 @media (prefers-reduced-motion:reduce){.home.go .about{opacity:1!important;transform:none!important}}
+.day-head{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.day-head .orbit{width:96px}
+.day-head .o-sub{display:none}
+.day-head h1{font-size:clamp(30px,7vw,40px);line-height:1.05;margin:2px 0 4px}
+.day-head .o-num{font-size:80px}
+.dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px}
+.dcard-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dtask{font-size:16px;font-weight:600;margin:0}
+.dcard textarea{min-height:0;font-size:15px;padding:10px 12px}
+.dsec{display:flex;flex-direction:column;gap:10px}
+.chk{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:13px;color:var(--muted)}
+.chk svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.5;fill:none;opacity:.35}
+.chk[aria-pressed="true"]{background:var(--good-soft);border-color:var(--good);color:var(--good-ink)}
+.chk[aria-pressed="true"] svg{opacity:1}
+.dqs{display:flex;flex-direction:column;gap:12px}
+.dq{display:flex;flex-direction:column;gap:5px}
+.dq span{font-weight:600;font-size:14px}
+.dq textarea{resize:none;overflow:hidden}
+.dfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.empty.slim{padding:16px;flex-direction:row;justify-content:space-between;text-align:left;flex-wrap:wrap}
+.empty.slim p{margin:0;font-size:14px}
+.eb.dm[aria-pressed="true"]{transform:translateY(-3px);box-shadow:0 0 0 2px var(--ink)}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -512,27 +534,27 @@ const WEEKS = [
   {n:'Dönüştür', d:'Enerjini korumak', intro:'Fark ettiklerinle kendi alanını yeniden kuruyorsun.'}
 ];
 const DAYS = [
- {w:1,t:'Kulak Açmak',theme:'Gün boyunca sana yöneltilen sözler çoğu zaman fark edilmeden içeri girer. Bugün hiçbir şeyi değiştirmeye çalışma; sadece duy. Kimin, ne zaman, hangi cümleyi kurduğunu fark etmek yolculuğun ilk adımı.',task:'Bugün sana söylenen en az üç cümleyi, yorum katmadan, olduğu gibi kaydet.',q:'Bugün sana söylenen ve hâlâ aklında dönen cümle hangisi? Neden o?'},
- {w:1,t:'Evin Sesi',theme:'Ailede söylenen sözler en eski sözlerdir. Çoğu yıllardır tekrar eder ve bir süre sonra iç sesimize dönüşür. Bugün evde ve ailende sana söylenenlere kulak ver.',task:'Ev ve aile ortamında sana söylenen cümleleri kaydet. Tekrar eden bir kalıp var mı, dikkat et.',q:'Ailende sana en sık tekrarlanan cümle ne? Bu cümle sana ne zamandan beri tanıdık?'},
- {w:1,t:'İşin ve Okulun Dili',theme:'İş yerinde ve okulda sözler çoğu zaman bir görevin, bir hiyerarşinin ya da bir rekabetin içinden gelir. Aynı cümle bir toplantıda, sınıfta, koridorda ya da mesajda farklı ağırlık taşır.',task:'İş yerinde ya da okulda sana yöneltilen sözleri kaydet. Söyleyenin konumunu (yönetici, ekip arkadaşı, öğretmen, sınıf arkadaşı) not et.',q:'Bugün işte ya da okulda hangi söz seni büyüttü, hangisi küçülttü?'},
- {w:1,t:'Arkadaş Çemberi',theme:'Arkadaşlarımızı seçeriz ama aralarındaki sözlerin bizi nasıl etkilediğini her zaman seçemeyiz. Bazı sohbetlerden hafiflemiş, bazılarından yorulmuş çıkarız.',task:'Arkadaş ortamında duyduğun sözleri kaydet ve her birinin enerjini nasıl etkilediğini işaretle.',q:'Hangi arkadaşının sözleri seni hafifletiyor, hangisininki ağırlaştırıyor?'},
- {w:1,t:'Beden Biliyor',theme:'Zihin bir sözü yorumlamadan önce beden çoktan tepki verir: göğüste sıkışma, omuzlarda gerilme ya da içte bir genişleme. Beden, sözün enerjisini ilk ölçen yerdir.',task:'Her anda “Bana ne hissettirdi?” bölümünden kelimeleri seç. Gerekirse bedeninde hissettiğini de kendi kelimenle ekle.',q:'Bugün bedeninin bir sözü senden önce anladığı bir an oldu mu?'},
- {w:1,t:'Söz ve Ton',theme:'"Tabii ki yaparsın" cümlesi bir tonla destek, başka bir tonla alay olabilir. Ne söylendiği kadar nasıl söylendiği de mesajın parçasıdır: ses tonu, bakış, zamanlama.',task:'Bugünkü kayıtlarında sözün tonunu da not et. "Nasıl karşılık verdin" alanını kullanabilirsin.',q:'Kelimeleri olumlu ama tonu olumsuz olan bir söz duydun mu? Hangisine inandın?'},
- {w:1,t:'Haftanın Aynası',theme:'İlk haftada sadece duydun. Şimdi geriye bak: Hangi ortam, hangi kişi, hangi cümle tekrar etti? Analiz ekranındaki haritan ilk şeklini aldı.',task:'Analiz ekranına göz at. En çok besleyen ve en çok tüketen ortamını belirle.',q:'Bu hafta fark ettiğin ve daha önce hiç fark etmediğin bir şey ne oldu?'},
- {w:2,t:'Sözün Arkasındaki Niyet',theme:'Her söylemin bir amacı vardır: yakınlaşmak, korumak, yönlendirmek, kontrol etmek ya da sadece rahatlamak. Söz bir yüzeyse, niyet onun altındaki akıntıdır.',task:'Bugün her kayıtta sözün asıl amacını seç. Emin değilsen birden fazla seçebilirsin.',q:'Bugün duyduğun bir sözün yüzeyi ile niyeti birbirinden farklı mıydı?'},
- {w:2,t:'Eleştiri mi, Endişe mi?',theme:'"Bu kadar çalışma, hasta olacaksın" cümlesi eleştiri gibi duyulabilir ama altında endişe olabilir. Ya da tam tersi: endişe kılığına girmiş bir kontrol.',task:'Eleştiri gibi gelen bir sözü al ve altında endişe mi, kontrol mü olduğunu ayırt etmeye çalış.',q:'Sana eleştiri gibi gelen ama aslında sevgi taşıyan bir söz hatırlıyor musun?'},
- {w:2,t:'Övgünün Gölgesi',theme:'Her iltifat besleyici değildir. "Sen olmasan bu iş yürümez" cümlesi takdir de olabilir, yük de. Koşullu övgü, sevginin bir karşılığa bağlandığı yerdir.',task:'Bugün aldığın övgüleri kaydet. Seni gerçekten besleyeni, senden bir şey bekleyenden ayır.',q:'Hangi övgü seni hafifletti, hangisi omuzlarına bir yük bıraktı?'},
- {w:2,t:'Şaka Kılıfı',theme:'"Şaka yapıyorum" bazen gerçekten şakadır, bazen de doğrudan söylenemeyen bir mesajın kılıfı. Gülerken içinde bir şey kırıldıysa, o sözün başka bir amacı olabilir.',task:'Şaka olarak söylenen sözleri kaydet ve enerji etkisini dürüstçe işaretle.',q:'Güldüğün ama sonra aklından çıkmayan bir şaka oldu mu?'},
- {w:2,t:'Söylenmeyenler',theme:'Sessizlik, cevapsız kalan bir mesaj, yarım bırakılmış bir cümle... Söylenmeyenler de bir söylemdir ve çoğu zaman en yüksek sesle konuşanlardır.',task:'Bugün seni etkileyen bir sessizliği ya da söylenmeyen bir şeyi kaydet.',q:'Bugün sana söylenmeyen ama duymak istediğin söz neydi?'},
- {w:2,t:'Ayna Etkisi',theme:'Başkalarının bize söyledikleri çoğu zaman kendi korkularını, yorgunluklarını ve hikâyelerini taşır. Bir söz senin hakkında olduğu kadar söyleyen hakkındadır da.',task:'Bir sözde söyleyenin kendi korkusunu ya da ihtiyacını görebiliyor musun? "Kendi korkusunu yansıtmak" niyetini işaretle.',q:'Bugün seni üzen bir sözün aslında söyleyenle ilgili olduğunu fark ettin mi?'},
- {w:2,t:'Haftanın Aynası',theme:'İkinci haftada sözlerin altındaki niyetlere baktın. Niyet haritan artık ilişkilerinin görünmeyen dilini gösteriyor.',task:'Analiz ekranındaki niyet haritasına bak. En sık karşılaştığın niyet hangisi?',q:'Bir sözün niyetini anlamak, onun sende bıraktığı etkiyi değiştirdi mi?'},
- {w:3,t:'Enerji Haritası',theme:'Bazı insanlarla vakit geçirdikten sonra dolarız, bazılarından boşalmış çıkarız. Bu bir yargı değil, bir bilgidir. Enerjini nereye verdiğini görmeni sağlar.',task:'Analizdeki kişiler listene bak. En çok besleyen ve en çok tüketen isimleri belirle.',q:'Enerjini en çok tüketen ilişkide bu tüketim sözlerden mi, yoksa senin cevaplarından mı geliyor?'},
- {w:3,t:'Sınır Cümlesi',theme:'Sınır, karşındakini değiştirmek için değil, kendi enerjini korumak için çizilir. Kısa, net ve sakin bir cümle çoğu zaman uzun bir tartışmadan daha güçlüdür.',task:'Seni en çok tüketen söz için kendi sınır cümleni yaz. Örnek: "Bunu bu şekilde konuşmak istemiyorum."',q:'Kendine ait bir sınır cümlesi kur. Onu kime, ne zaman söylemek isterdin?'},
- {w:3,t:'Tepki Değil Yanıt',theme:'Tepki otomatiktir, yanıt bir seçimdir. Söz ile cevap arasına konan tek bir nefes, enerjinin yönünü değiştirebilir.',task:'Bugün seni tetikleyen bir sözde cevap vermeden önce üç nefes al. Sonra nasıl yanıt verdiğini kaydet.',q:'Bugün durup nefes aldığında cevabın değişti mi?'},
- {w:3,t:'İç Ses',theme:'Yıllar içinde duyduğumuz sözler zamanla içimizde kendi sesimizle konuşmaya başlar. Bugün kendine söylediklerini dinle: Bu ses kimin sesi?',task:'Kendine söylediğin bir cümleyi "Diğer" ortamında kaydet ve onu kimden öğrendiğini düşün.',q:'Kendine en sık söylediğin cümle ne? Onu ilk kimden duymuştun?'},
- {w:3,t:'Besleyen Sözler',theme:'Farkındalık sadece incinen yerleri görmek değildir. Seni besleyen sözleri fark etmek, onları çoğaltmanın ilk adımıdır.',task:'Bugün seni besleyen bir söz kaydet ve söyleyene teşekkür et.',q:'Seni en çok besleyen söz neydi? Onu sen de başka birine söyleyebilir misin?'},
- {w:3,t:'Mesafe ve Yakınlık',theme:'Her ilişki aynı yakınlığı gerektirmez. Bazılarıyla mesafeyi açmak, bazılarıyla kapatmak; ikisi de enerjine özen göstermenin yolları.',task:'Haritana bakarak bir ilişkide mesafeyi, bir ilişkide yakınlığı nasıl ayarlamak istediğini yaz.',q:'Hangi ilişkine biraz daha yaklaşmak, hangisinden biraz uzaklaşmak istiyorsun?'},
- {w:3,t:'Yeni Kulak',theme:'21 gün boyunca sözleri duydun, niyetleri gördün ve enerjini korumayı denedin. Kulağın artık farklı duyuyor. Bu bir bitiş değil, yeni bir dinleme biçiminin başlangıcı.',task:'Tüm yolculuğuna geri bak ve kendine kısa bir mektup yaz.',q:'21 gün önceki kendine ne söylemek isterdin?'}
+ {w:1,t:'Sadece dinle',focus:'Bugün sözleri değiştirmeye çalışma, sadece duy.',task:'Sana söylenen üç cümleyi olduğu gibi yaz.'},
+ {w:1,t:'Evdeki sözler',focus:'Ailende sık duyduğun cümlelere kulak ver.',task:'Evde tekrar eden bir cümleyi yaz.'},
+ {w:1,t:'İşte ve okulda',focus:'İşte ya da okulda sana söylenenleri fark et.',task:'Seni büyüten ve küçülten birer sözü yaz.'},
+ {w:1,t:'Arkadaşlar',focus:'Hangi sohbet seni hafifletiyor, hangisi yoruyor?',task:'Bir arkadaşının sözünün sende bıraktığı etkiyi yaz.'},
+ {w:1,t:'Beden ne diyor?',focus:'Bir söz önce bedende hissedilir.',task:'Bir söz duyduğunda bedeninde ne olduğunu yaz.'},
+ {w:1,t:'Söz ve ton',focus:'Ne söylendiği kadar nasıl söylendiği de önemli.',task:'Tonu, kelimelerinden farklı olan bir sözü yaz.'},
+ {w:1,t:'Haftaya bakış',focus:'İlk haftana Analiz ekranından göz at.',task:'Sana en iyi gelen ve en zorlayan ortamı yaz.'},
+ {w:2,t:'Sözün niyeti',focus:'Her sözün bir amacı vardır.',task:'Bugünkü bir anın asıl amacını yaz.'},
+ {w:2,t:'Eleştiri mi, endişe mi?',focus:'Eleştiri gibi duyulan bir sözün altında endişe olabilir.',task:'Bir eleştirinin altındaki duyguyu yaz.'},
+ {w:2,t:'Övgünün altı',focus:'Her övgü beslemez, bazısı yük bırakır.',task:'Seni gerçekten besleyen bir övgüyü yaz.'},
+ {w:2,t:'Şaka mı?',focus:'Bazı şakalar bir mesaj taşır.',task:'Güldüğün ama içine dokunan bir sözü yaz.'},
+ {w:2,t:'Söylenmeyenler',focus:'Sessizlik de bir sözdür.',task:'Duymak isteyip duymadığın sözü yaz.'},
+ {w:2,t:'Onun hikâyesi',focus:'Söz, söyleyenin kendi korkusunu da taşır.',task:'Bir sözün arkasındaki ihtiyacı yaz.'},
+ {w:2,t:'Haftaya bakış',focus:'Niyet haritana Analiz ekranından göz at.',task:'En sık karşılaştığın niyeti yaz.'},
+ {w:3,t:'Enerji haritası',focus:'Kimin yanında doluyorsun, kimin yanında yoruluyorsun?',task:'Seni besleyen ve yoran birer kişiyi yaz.'},
+ {w:3,t:'Sınır cümlem',focus:'Sınır, kendi enerjini korumaktır.',task:'Kendine ait kısa bir sınır cümlesi yaz.'},
+ {w:3,t:'Önce nefes',focus:'Söz ile cevabın arasına bir nefes koy.',task:'Nefes alıp cevap verdiğin bir anı yaz.'},
+ {w:3,t:'İç sesim',focus:'Kendine söylediklerini de dinle.',task:'Kendine sık söylediğin bir cümleyi yaz.'},
+ {w:3,t:'Güzel sözler',focus:'İyi gelen sözleri fark et ve çoğalt.',task:'Bugün birine iyi gelecek bir söz söyle ve yaz.'},
+ {w:3,t:'Mesafe ve yakınlık',focus:'Her ilişki aynı yakınlığı istemez.',task:'Yaklaşmak ve uzaklaşmak istediğin ilişkiyi yaz.'},
+ {w:3,t:'Yeni bir kulak',focus:'21 güne geri bak.',task:'21 gün önceki kendine kısa bir not yaz.'}
 ];
 const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'arkadas',l:'Arkadaşlar'},{id:'is',l:'İş Yeri'},{id:'okul',l:'Okul'},{id:'diger',l:'Diğerleri'}];
 const TYPES = [
@@ -640,48 +662,53 @@ function logCard(l, showDay){
   </article>`;
 }
 function emptyLogs(day){
-  return `<div class="empty"><p class="display">1. An seni bekliyor.</p><p>Bugün evde, işte, okulda ya da arkadaşlarınla yaşadığın ve sana bir şey hissettiren ilk anı yaz.</p><button class="btn primary" data-act="add" data-day="${day}">1. An’ı yaz</button></div>`;
+  return `<div class="empty slim"><p>Seni etkileyen bir söz duyduğunda buraya yaz.</p><button class="btn primary small" data-act="add" data-day="${day}">An ekle</button></div>`;
 }
 
 /* ================= Bugün ================= */
+const DQ = [['iyi','Bugün bana hangi cümle iyi geldi?'],['fark','Bugün neyi fark ettim?'],['ogren','Bugün ne öğrendim?'],['sukur','Bugün neye, kime şükrettim?']];
 function renderToday(){
   if(!S.start) return '';
-  const d = curDay(), D = DAYS[d-1], W = WEEKS[D.w-1], raw = rawDay();
+  const d = curDay(), D = DAYS[d-1], raw = rawDay();
   const logs = S.logs.filter(l=>l.day===d).sort((a,b)=>a.ts-b.ts);
-  const r = S.refl[d] || {};
-  const en = logs.map(l=>l.energy), a = avg(en);
-  const finished = raw > 21;
   return `${demoBanner()}
-  <header class="greet"><p class="eyebrow">${fmtDate(new Date())}</p><h1>${greeting()}${S.name?', '+esc(S.name):''}</h1></header>
-  ${finished?`<div class="banner"><span><b>21 günü tamamladın.</b> Yolculuğun ve tüm kayıtların Analiz ekranında duruyor.</span><a class="btn small" href="#analiz">Haritama bak</a></div>`:''}
-  <section class="hero card">
+  ${raw>21?`<div class="banner"><span><b>21 günü tamamladın.</b> Tüm anların Analiz ekranında.</span><a class="btn small" href="#analiz">Analize git</a></div>`:''}
+  <header class="day-head">
     <div class="orbit">${orbitSVG(d)}</div>
-    <div><p class="eyebrow">${D.w}. Hafta · ${W.n}</p><h2 class="display">${D.t}</h2><p class="lead">${D.theme}</p></div>
+    <div class="day-head-t"><p class="eyebrow">${fmtDate(new Date())}</p><h1 class="display">${D.t}</h1><p class="muted">${D.focus}</p></div>
+  </header>
+  ${dayBody(d, logs)}`;
+}
+function dayBody(d, logs){
+  const D = DAYS[d-1], r = S.refl[d] || {}, q = r.q || {};
+  const a = avg(logs.map(l=>l.energy));
+  return `
+  <section class="dcard">
+    <div class="dcard-h"><p class="label">Bugünün görevi</p>
+      <button class="chk" data-act="task-done" data-day="${d}" aria-pressed="${!!r.taskDone}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>${r.taskDone?'Yaptım':'Yaptım mı?'}</button></div>
+    <p class="dtask">${D.task}</p>
+    <textarea data-dk="note" data-day="${d}" rows="2" aria-label="Görev notun" placeholder="Buraya yaz…">${esc(r.note||'')}</textarea>
   </section>
-  <section class="grid2">
-    <div class="block task"><p class="label">Bugünün görevi</p><p>${D.task}</p></div>
-    <div class="block today-energy"><p class="label">Bugün nasıl hissettirdi?</p>
-      ${logs.length ? `<div class="row" style="justify-content:space-between"><span class="big-num">${sgnF(a)}</span><span class="muted">${logs.length} an yazıldı</span></div>
-      <div class="meter" aria-hidden="true"><i style="left:${50 + a/2*50}%"></i></div><div class="meter-l"><span>−2 Çok zorlayıcı</span><span>+2 Çok iyi</span></div>`
-      : `<p class="muted">Yazdığın her an, bugünün dengesini bu ölçekte gösterecek.</p><div class="meter" aria-hidden="true"><i style="left:50%"></i></div><div class="meter-l"><span>−2 Çok zorlayıcı</span><span>+2 Çok iyi</span></div>`}
-    </div>
-  </section>
-  <section style="display:flex;flex-direction:column;gap:12px">
-    <div class="sec-head"><h3>Bugünün anları</h3>${logs.length?`<button class="link" data-act="add" data-day="${d}">+ ${logs.length+1}. An</button>`:''}</div>
+
+  <section class="dsec">
+    <div class="sec-head"><h3>Bugünün anları</h3>${logs.length?`<button class="link" data-act="add" data-day="${d}">+ An ekle</button>`:''}</div>
     ${logs.length ? `<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>` : emptyLogs(d)}
   </section>
-  <a class="guide-link" href="#rehber"><span><b>Rehber</b>Sözleri nasıl değerlendirirsin? Eleştiri, destek, nötr ve etki ölçeği.</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-  ${reflBlock(d, r)}`;
-}
-function reflBlock(d, r){
-  return `${d===21 && S.intent ? intentCard(true) : ''}<section class="block mirror"><p class="label">Ayna sorusu · Gün ${d}</p>
-    <p class="q display">${DAYS[d-1].q}</p>
-    <label class="muted" for="refl-text" style="font-size:13px">Cevabını kendine yaz. Sadece bu cihazda saklanır.</label>
-    <textarea id="refl-text" data-day="${d}" rows="4" placeholder="Aklına gelen ilk şeyi yaz...">${esc(r.text||'')}</textarea>
-    <div class="row" style="justify-content:space-between">
-      ${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Gün tamamlandı</span>`:'<span class="muted" style="font-size:13px">Yazdıkların otomatik kaydedilir.</span>'}
-      <button class="btn ${r.done?'':'primary'}" data-act="complete-day" data-day="${d}">${r.done?'Cevabı güncelle':'Günü tamamla'}</button>
-    </div></section>`;
+
+  <section class="dcard">
+    <p class="label">Bugün genel olarak nasıl hissettim?</p>
+    <div class="escale">${[2,1,0,-1,-2].map(v=>`<button type="button" class="eb dm" data-dm="${v}" data-day="${d}" aria-pressed="${r.mood===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}"><span>${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
+    ${logs.length?`<p class="muted" style="font-size:12.5px">Anlarının ortalaması: <b>${sgnF(a)}</b> · ${logs.length} an</p>`:''}
+  </section>
+
+  ${d===21 && hasIntent() ? intentCard(true) : ''}
+  <section class="dcard">
+    <p class="label">Günün soruları</p>
+    <div class="dqs">${DQ.map(([k,l])=>`<label class="dq"><span>${l}</span><textarea data-dk="${k}" data-day="${d}" rows="1" placeholder="Kısaca yaz…">${esc(q[k]||(k==='fark'&&r.text)||'')}</textarea></label>`).join('')}</div>
+  </section>
+
+  <div class="dfoot">${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Gün tamamlandı</span>`:'<span class="muted" style="font-size:12.5px">Yazdıkların otomatik kaydedilir.</span>'}
+    ${r.done?'':`<button class="btn primary" data-act="complete-day" data-day="${d}">Günü tamamla</button>`}</div>`;
 }
 
 /* ================= Yolculuk ================= */
@@ -706,14 +733,9 @@ function renderJourney(){
 function openDay(n){
   const D = DAYS[n-1], d = curDay(), locked = n>d;
   const logs = S.logs.filter(l=>l.day===n).sort((a,b)=>a.ts-b.ts);
-  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${n} · ${D.w}. Hafta · ${WEEKS[D.w-1].n}</p><h2>${D.t}</h2></div>${closeBtn()}</div>
+  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${n}</p><h2>${D.t}</h2></div>${closeBtn()}</div>
     <div class="day-sheet">
-    ${locked ? `<p class="locked-note">Bu gün ${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})} açılacak. Her gün bir öncekinin üzerine kurulur; acele etme.</p>` : `
-      <p class="lead">${D.theme}</p>
-      <div class="block" style="background:var(--bg)"><p class="label">Görev</p><p>${D.task}</p></div>
-      <div class="sec-head"><h3 style="font-size:22px">Bu günün anları</h3><button class="link" data-act="add" data-day="${n}">+ ${logs.length+1}. An</button></div>
-      ${logs.length?`<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>`:'<p class="muted">Bu güne ait an yok.</p>'}
-      ${reflBlock(n, S.refl[n]||{})}`}
+    ${locked ? `<p class="locked-note">Bu gün ${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})} açılacak.</p>` : `<p class="muted">${D.focus}</p>${dayBody(n, logs)}`}
     </div>`);
 }
 
@@ -1066,7 +1088,11 @@ document.addEventListener('click', e=>{
     chip.setAttribute('aria-pressed', g.dataset.multi==='1' ? String(chip.getAttribute('aria-pressed')!=='true') : 'true'); return; }
   const mb = e.target.closest('.mb');
   if(mb){ const was = mb.getAttribute('aria-pressed')==='true'; mb.parentElement.querySelectorAll('.mb').forEach(b=>b.setAttribute('aria-pressed','false')); mb.setAttribute('aria-pressed', String(!was)); return; }
-  const eb = e.target.closest('.eb:not(.mb)');
+  const dm = e.target.closest('.dm');
+  if(dm){ const n = Number(dm.dataset.day), v = Number(dm.dataset.dm), r = S.refl[n] = S.refl[n] || {};
+    r.mood = r.mood===v ? null : v; save();
+    dm.parentElement.querySelectorAll('.dm').forEach(b=>b.setAttribute('aria-pressed', String(Number(b.dataset.dm)===r.mood))); return; }
+  const eb = e.target.closest('.eb:not(.mb):not(.dm)');
   if(eb){ eb.parentElement.querySelectorAll('.eb').forEach(b=>b.setAttribute('aria-pressed','false')); eb.setAttribute('aria-pressed','true');
     const box = document.getElementById('feelBox'); const keep = [...box.querySelectorAll('[aria-pressed="true"]')].map(b=>b.dataset.chip);
     box.innerHTML = feelChips(Number(eb.dataset.e), keep); return; }
@@ -1088,11 +1114,14 @@ document.addEventListener('click', e=>{
     'del-ask': ()=>{ document.getElementById('delZone').innerHTML = `<span class="err">Silinsin mi?</span><button type="button" class="btn danger small" data-act="del-yes">Evet</button><button type="button" class="btn ghost small" data-act="del-no">Hayır</button>`; },
     'del-no': ()=>{ document.getElementById('delZone').innerHTML = '<button type="button" class="btn danger" data-act="del-ask">Sil</button>'; },
     'del-yes': ()=>{ const id = document.getElementById('logForm').dataset.id; S.logs = S.logs.filter(x=>x.id!==id); save(); closeSheet(); render(false); toast('Kayıt silindi'); },
-    'complete-day': ()=>{ const n = Number(t.dataset.day); const ta = document.querySelector(`#refl-text[data-day="${n}"]`); const txt = ta?ta.value.trim():'';
-      if(!txt){ ta && ta.focus(); toast('Önce ayna sorusuna kısa bir cevap yaz'); return; }
-      const was = isDone(n); S.refl[n] = {text:txt, done:true, ts:Date.now()}; save();
-      const inSheet = !!t.closest('.sheet'); if(inSheet) closeSheet(); render(false);
-      toast(was?'Cevabın güncellendi': n===21?'Tebrikler, 21 günü tamamladın':'Gün '+n+' tamamlandı'); },
+    'complete-day': ()=>{ const n = Number(t.dataset.day), r = S.refl[n] || {};
+      const any = r.note || r.mood!==undefined && r.mood!==null || Object.values(r.q||{}).some(Boolean) || S.logs.some(l=>l.day===n);
+      if(!any){ toast('Önce bir şey yaz ya da hissini seç'); return; }
+      S.refl[n] = Object.assign({}, r, {done:true, ts:Date.now()}); save();
+      if(t.closest('.sheet')) closeSheet(); render(false);
+      toast(n===21?'Tebrikler, 21 günü tamamladın':'Gün '+n+' tamamlandı'); },
+    'task-done': ()=>{ const n = Number(t.dataset.day); const r = S.refl[n] = S.refl[n] || {}; r.taskDone = !r.taskDone; save();
+      t.setAttribute('aria-pressed', String(r.taskDone)); t.lastChild.textContent = r.taskDone?'Yaptım':'Yaptım mı?'; },
     'save-profile': ()=>{ S.name = document.getElementById('set-name').value.trim(); const st = document.getElementById('set-start').value; if(st) S.start = st; save(); render(false); toast('Ayarlar kaydedildi'); },
     'copy-backup': ()=>{ const code = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
       const out = document.getElementById('backupOut');
@@ -1115,8 +1144,11 @@ document.addEventListener('keydown', e=>{
 document.addEventListener('submit', e=>{ if(e.target.id==='logForm'){ e.preventDefault(); submitLog(e.target); } if(e.target.id==='intForm'){ e.preventDefault(); submitIntent(e.target); } });
 let rt;
 document.addEventListener('input', e=>{
-  if(e.target.id==='refl-text'){ const n = Number(e.target.dataset.day); clearTimeout(rt);
-    rt = setTimeout(()=>{ S.refl[n] = Object.assign({}, S.refl[n], {text:e.target.value}); save(); }, 400); }
+  const dk = e.target.dataset && e.target.dataset.dk;
+  if(dk){ const n = Number(e.target.dataset.day), r = S.refl[n] = S.refl[n] || {};
+    if(dk==='note') r.note = e.target.value; else { r.q = r.q || {}; r.q[dk] = e.target.value; }
+    clearTimeout(rt); rt = setTimeout(save, 300);
+    if(e.target.rows===1){ e.target.style.height='auto'; e.target.style.height=e.target.scrollHeight+'px'; } }
   if(e.target.id==='f-text' || e.target.closest && e.target.closest('#logForm')){ const er=document.getElementById('f-err'); if(er) er.textContent=''; }
 });
 
@@ -1197,7 +1229,7 @@ function loadDemo(){
   R.forEach(([day,env,person,text,intent,energy,feel,response,type],i)=>{ const d = new Date(st); d.setDate(d.getDate()+day-1); d.setHours(9+(i*3)%11, (i*17)%60); if(d.getTime() > Date.now()) d.setTime(Date.now() - (R.length-i)*36e5);
     S.logs.push({id:uid()+i, day, date:iso(d), ts:d.getTime(), env, person, text, intent, energy, feel, response, type}); });
   const RF = ['Annemin cümlesi. Sanki bir sınavdan geçiyormuşum gibi hissettim.','“Sen bilirsin” cümlesi. Çocukluğumdan beri tanıdık.','Müşterinin cümlesi beni küçülttü, yöneticimin övgüsü büyüttü.','Deniz hafifletiyor, Selin ile konuşunca yoruluyorum.','Göğsüm sıkıştı, ne olduğunu sonra anladım.','Kardeşimin şakası. Kelimeler hafif, ton ağırdı.','Aynı cümlelerin tekrar ettiğini ilk kez bu kadar net gördüm.','Babamın sözü eleştiri gibi geldi ama altında endişe vardı.'];
-  RF.forEach((t,i)=>S.refl[i+1]={text:t,done:true,ts:Date.now()});
+  RF.forEach((t,i)=>S.refl[i+1]={q:{fark:t}, mood:[-1,0,-1,1,-1,0,1,1][i], taskDone:true, done:true, ts:Date.now()});
   S.intent = {why:'Bazı sözler beni günlerce etkiliyor ve nedenini anlamak istiyorum.', notice:'Hangi sözlerin beni gerçekten yorduğunu ve onlara nasıl cevap vermek istediğimi.', focus:['ev','arkadas'], who:'Annem, Selin', mood:-1, promise:'Duyduğum sözleri hemen yargılamadan önce bir nefes alacağım.', ts:st.getTime()};
   save();
 }
@@ -1228,6 +1260,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611181557";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611181609";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
