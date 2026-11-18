@@ -11,6 +11,7 @@
   --accent:#27406E; --accent-ink:#FFFFFF; --accent-soft:#DCE3F0;
   --pos:#C08214; --pos-ink:#7E5205; --pos-soft:#F3E4C4;
   --neg:#6E4BA8; --neg-ink:#523483; --neg-soft:#E5DCF2;
+  --good:#2E7D4F; --good-ink:#1F5E39; --good-soft:#E2F1E7; --bad:#B8453D; --bad-ink:#93302A; --bad-soft:#F8E3E0;
   --shadow:0 1px 2px rgb(24 32 44 / .05), 0 10px 30px rgb(24 32 44 / .07);
   --f-display:'Instrument Serif','Iowan Old Style',Georgia,'Times New Roman',serif;
   --f-body:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
@@ -22,6 +23,7 @@
   --accent:#A9BCF0; --accent-ink:#0E1424; --accent-soft:#25304A;
   --pos:#EDB04B; --pos-ink:#F4C977; --pos-soft:#382C14;
   --neg:#B092E8; --neg-ink:#CBB6F3; --neg-soft:#2A2240;
+  --good:#6CC08D; --good-ink:#8FD3A8; --good-soft:#1C3125; --bad:#E8837A; --bad-ink:#F0A39C; --bad-soft:#3A2220;
   --shadow:0 1px 2px rgb(0 0 0 / .3); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -29,6 +31,7 @@
   --accent:#A9BCF0; --accent-ink:#0E1424; --accent-soft:#25304A;
   --pos:#EDB04B; --pos-ink:#F4C977; --pos-soft:#382C14;
   --neg:#B092E8; --neg-ink:#CBB6F3; --neg-soft:#2A2240;
+  --good:#6CC08D; --good-ink:#8FD3A8; --good-soft:#1C3125; --bad:#E8837A; --bad-ink:#F0A39C; --bad-soft:#3A2220;
   --shadow:0 1px 2px rgb(0 0 0 / .3); color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -250,6 +253,20 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .step-h b{display:block;font-family:var(--f-display);font-weight:400;font-size:22px;line-height:1.1}
 .step-h small{color:var(--muted);font-size:13px}
 .resp b{color:var(--ink);font-weight:600}
+.mx-note{padding:14px 16px;border-radius:var(--r-sm);background:var(--surface-2);font-size:14.5px;line-height:1.5;color:var(--ink)}
+.mx-note b{font-weight:700}
+.mx-note u{text-decoration-color:var(--pos);text-decoration-thickness:2px;text-underline-offset:3px}
+.mx{display:grid;grid-template-columns:30px minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
+.mx-col{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:2px 4px 4px;line-height:1.3;align-self:end}
+.mx-good-t{color:var(--good-ink)} .mx-bad-t{color:var(--bad-ink)}
+.mx-row{writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:21px;line-height:1;color:var(--ink);background:var(--surface-2);border-radius:10px;padding:6px 0}
+.mx-cell{border-radius:14px;padding:12px 12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0;border:1px solid}
+.mx-cell b{font-size:15px;font-weight:800}
+.mx-cell blockquote{margin:0;font-family:var(--f-display);font-size:17px;line-height:1.3;color:var(--ink);overflow-wrap:anywhere}
+.mx-good{background:var(--good-soft);border-color:color-mix(in srgb,var(--good) 35%,transparent)} .mx-good b{color:var(--good-ink)}
+.mx-bad{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 35%,transparent)} .mx-bad b{color:var(--bad-ink)}
+.mx-foot{margin:0;font-size:14px;color:var(--muted)} .mx-foot b{color:var(--ink)}
+@media (min-width:700px){.mx-cell blockquote{font-size:19px}.mx{grid-template-columns:36px 1fr 1fr;gap:10px}.mx-cell{padding:16px}}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -447,7 +464,7 @@ const DAYS = [
 ];
 const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'arkadas',l:'Arkadaşlar'},{id:'is',l:'İş Yeri'},{id:'diger',l:'Diğerleri'}];
 const TYPES = [
- ['saygili','Saygılı eleştiri','Eleştiri'],['kirici','Kırıcı eleştiri','Eleştiri'],
+ ['saygili','Yol gösterici eleştiri','Eleştiri'],['kirici','Kırıcı eleştiri','Eleştiri'],
  ['destekleyici','Destekleyici','Destek'],['igneleyici','İğneleyici','Destek'],['notr','Nötr','Nötr']];
 const typeL = id => (TYPES.find(t=>t[0]===id)||[,''])[1];
 const INTENTS = [
@@ -706,6 +723,20 @@ function renderInsights(){
 }
 
 /* ================= Rehber ================= */
+function matrixHTML(){
+  const cell = (good, title, q) => `<div class="mx-cell ${good?'mx-good':'mx-bad'}"><b>${title}</b><blockquote>“${q}”</blockquote></div>`;
+  return `<div class="mx-note"><b>Eleştiri her zaman olumsuz değildir.</b> Sözün <u>içeriğini</u> (ne söylendiğini) ve <u>söyleniş biçimini</u> (nasıl söylendiğini) ayrı ayrı düşün ve değerlendir.</div>
+  <div class="mx" role="table" aria-label="Sözün içeriği ve söyleniş biçimi">
+    <span></span><span class="mx-col mx-good-t" role="columnheader">Saygılı ve ilgili tutum</span><span class="mx-col mx-bad-t" role="columnheader">Kırıcı / küçümseyici tutum</span>
+    <span class="mx-row" role="rowheader">Eleştiri</span>
+    ${cell(true,'Yol gösterici','Raporda iki rakam hatalı görünüyor, birlikte bakabilir miyiz?')}
+    ${cell(false,'Kırıcı','Sen zaten hiçbir işi doğru yapamazsın.')}
+    <span class="mx-row" role="rowheader">Destek</span>
+    ${cell(true,'Destekleyici','Ne karar verirsen yanındayım.')}
+    ${cell(false,'İğneleyici','Güzel olmuş, tabii ablan kadar değil.')}
+  </div>
+  <p class="mx-foot"><b>Nötr:</b> Bilgi verir, duygu yükü taşımaz. Örnek: “Toplantı saat üçe alındı.”</p>`;
+}
 function gCard(tag, tone, title, intro, signs, quotes){
   const toneCls = tone>0?'e-pos':tone<0?'e-neg':'e-neu';
   return `<article class="g-card"><h3>${title} <span class="g-tag ${toneCls}">${tag}</span></h3>
@@ -726,10 +757,11 @@ function renderGuide(inSheet){
     <p class="page-intro">Sana bir söz söylendiğinde üç soru sor. Bu rehber her birinde neye bakacağını örneklerle gösteriyor.</p></header>
   <div class="g-steps"><span class="g-step"><b>1</b>Bu söz ne türde?</span><span class="g-step"><b>2</b>Asıl amacı ne?</span><span class="g-step"><b>3</b>Bende nasıl bir etki bıraktı?</span></div>
 
-  <section class="g-sec"><p class="eyebrow">1. Soru · Sözün türü</p><h2>Eleştiri</h2>
+  <section class="g-sec"><p class="eyebrow">1. Soru · Sözün türü</p><h2>İçerik ve söyleniş biçimi</h2>${matrixHTML()}</section>
+  <section class="g-sec"><h2>Eleştiri</h2>
     <p>Eleştiri bir davranışı, bir işi ya da bir durumu değerlendirir. Eleştiri kendi başına kötü değildir; önemli olan nasıl yapıldığıdır.</p>
     <div class="g-pair">
-      ${gCard('Saygılı',1,'Saygılı eleştiri','Kişiye değil davranışa odaklanır. Seni küçültmeden bir şeyin değişmesini ister.',
+      ${gCard('Saygılı',1,'Yol gösterici eleştiri','Kişiye değil davranışa odaklanır. Seni küçültmeden bir şeyin değişmesini ister.',
         ['Belirli bir olaydan söz eder','Sakin bir tonla, çoğu zaman baş başa söylenir','“Ben” diliyle konuşur, çözüm önerir','Değiştirebileceğin bir şeyi hedefler'],
         ['Raporda iki rakam hatalı görünüyor, birlikte bakabilir miyiz?','Toplantıya geç kaldığında beklemek zor oluyor. Bir dahaki sefere haber verebilir misin?'])}
       ${gCard('Kırıcı',-1,'Kırıcı eleştiri','Davranış yerine kişiliğe saldırır. Amacı düzeltmekten çok küçültmektir.',
@@ -981,13 +1013,7 @@ function showOnboarding(){
         <p class="g-sub" style="margin-top:4px">Fark Et</p><ol><li>Nerede? <span class="muted">Ev & Aile, Arkadaşlar, İş Yeri, Diğerleri</span></li><li>Kiminle?</li><li>Ne oldu, ne söyledi? <span class="muted">Yargılamadan, olduğu gibi</span></li><li>Bana ne hissettirdi? <span class="muted">−2 ile +2 arası ve his kelimeleri</span></li></ol>
         <p class="g-sub">Anla</p><ol start="5"><li>Bu söz ne türdeydi?</li><li>Sence asıl amacı neydi?</li><li>Karşımdaki insan ne demek istemiş olabilir?</li></ol>
         <p class="g-sub">Dönüştür</p><ol start="8"><li>Nasıl karşılık verdim ya da vermek isterdim?</li></ol>`)}
-      ${acc(4,'Sözleri nasıl değerlendiririm?',`<div class="mini-t">
-          <b>Saygılı eleştiri</b><span class="q">“Raporda iki rakam hatalı, birlikte bakalım mı?”</span>
-          <b>Kırıcı eleştiri</b><span class="q">“Sen zaten hiçbir işi doğru yapamazsın.”</span>
-          <b>Destekleyici</b><span class="q">“Ne karar verirsen yanındayım.”</span>
-          <b>İğneleyici</b><span class="q">“Güzel olmuş, tabii ablan kadar değil.”</span>
-          <b>Nötr</b><span class="q">“Toplantı saat üçe alındı.”</span></div>
-        <p>Saygılı eleştiri davranışa, kırıcı eleştiri kişiye odaklanır. İğneleyici söz destek gibi görünür ama içinde bir “ama” ya da kıyas taşır.</p>`)}
+      ${acc(4,'Sözleri nasıl değerlendiririm?',matrixHTML())}
       ${acc(5,'Etki ölçeği: −2’den +2’ye',`<p>Kendine sor: “Bu söz bende nasıl bir etki bıraktı?”</p><div class="mini-sc">${scale}</div>`)}
       ${acc(6,'Gizlilik',`<p>Yazdıkların yalnızca kendi cihazında saklanır. Hiçbir sunucuya gönderilmez, kimse göremez.</p>`)}
       <button class="btn" type="button" id="onbFullGuide">Rehberin tamamını oku</button>
