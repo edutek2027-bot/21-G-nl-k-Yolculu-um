@@ -290,9 +290,27 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:0;bord
 @media (max-width:560px){.home-links{grid-template-columns:1fr}}
 @media (max-width:440px){.tab{font-size:9.5px}.ti{width:38px}}
 .still .onb-words .w,.still .onb-bless,.still .onb-brand{opacity:1;transform:none;filter:none;animation:none}
-main.wide{max-width:1120px}
+main.wide{max-width:760px}
 .home-intent{max-width:none;gap:12px}
 .home-intent .sec-head h3{font-family:var(--f-display);font-weight:400;font-size:30px}
+.onb-grid{max-width:720px!important;grid-template-columns:1fr!important;grid-template-areas:"hero" "guide" "form"!important;row-gap:22px!important}
+@media (min-width:900px){.onb-guide{max-height:none!important;overflow:visible!important;position:static!important}.onb-hero{align-self:auto!important}}
+.about{padding:0!important;gap:0!important}
+.about > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 16px}
+.about > summary::-webkit-details-marker{display:none}
+.about > summary .eyebrow{display:block;font-size:10.5px}
+.about > summary b{font-weight:700;font-size:15px}
+.about > summary .pl{width:20px;height:20px;flex:none;position:relative}
+.about > summary .pl::before,.about > summary .pl::after{content:"";position:absolute;left:3px;right:3px;top:9px;height:2px;border-radius:2px;background:var(--muted);transition:transform .2s}
+.about > summary .pl::after{transform:rotate(90deg)}
+.about[open] > summary .pl::after{transform:rotate(0)}
+.about-b{padding:0 16px 16px;display:flex;flex-direction:column}
+.home{display:flex;flex-direction:column;gap:28px}
+.home-top{min-height:calc(100svh - var(--tabh) - 60px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;justify-content:center;gap:24px}
+@media (min-width:900px){.home-top{min-height:calc(100vh - 80px)}}
+.scroll-hint{align-self:center;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--muted);font-weight:600;font-size:13px;padding:6px 10px}
+.scroll-hint svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(4px)}}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -782,9 +800,10 @@ function submitIntent(f){
 function renderHome(){
   if(!S.start) return '';
   const editing = intentEdit || !hasIntent();
-  return `${demoBanner()}<div class="onb-grid ${homeAnim?'go':'still'}">
-    ${welcomeHTML()}
-    <section class="onb-form home-intent">
+  return `${demoBanner()}<div class="home ${homeAnim?'go':'still'}">
+    <div class="home-top">${welcomeHTML()}
+      <button class="scroll-hint" data-act="to-intent">Başlangıç <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+    <section class="home-intent" id="homeIntent">
       <div class="sec-head"><h3>Başlangıç${S.name?' · '+esc(S.name):''}</h3>${!editing?'<button class="link" data-act="edit-intent">Düzenle</button>':''}</div>
       ${editing ? `<p class="muted">Yolculuğa başlamadan önce birkaç dakikanı ayır ve niyetini yaz. 21. günde buraya geri döneceksin ve ne kadar yol aldığını göreceksin.</p>${intentFormHTML()}` : intentCard(true, true)}
     </section>
@@ -1032,6 +1051,7 @@ document.addEventListener('click', e=>{
     'edit-log': ()=>openLogForm(t.dataset.id),
     'open-day': ()=>openDay(Number(t.dataset.day)),
     'close-sheet': closeSheet,
+    'to-intent': ()=>document.getElementById('homeIntent')?.scrollIntoView({behavior:'smooth',block:'start'}),
     'full-guide': ()=>openSheet(`<div class="sheet-head"><div><p class="eyebrow">Rehber</p></div>${closeBtn()}</div><div style="display:flex;flex-direction:column;gap:22px">${renderGuide(true)}</div>`),
     'edit-intent': ()=>{ closeSheet(); intentEdit=true; if(view==='anasayfa'){ render(false); document.getElementById('intForm')?.scrollIntoView({block:'start'}); } else location.hash='#anasayfa'; },
     'intent-cancel': ()=>{ intentEdit=false; render(false); },
@@ -1092,9 +1112,7 @@ function welcomeHTML(){
       <p class="onb-words" aria-label="${MOTTO.replace(' | ',' ')}">${mottoHTML()}</p>
     </section>
 
-    <aside class="onb-guide" aria-label="Uygulama hakkında">
-      <p class="eyebrow">Başlamadan önce oku</p>
-      <h2>Uygulama hakkında</h2>
+    <details class="onb-guide about"><summary><span><span class="eyebrow">Başlamadan önce oku</span><b>Uygulama hakkında</b></span><span class="pl" aria-hidden="true"></span></summary><div class="about-b">
       ${acc(1,'Yankı 21 nedir?',`<p>21 gün boyunca duyduğun sözleri fark et, asıl amacını gör ve sende nasıl bir etki bıraktığını anla.</p><p>Amaç, sözün asıl amacını görmek ve sende olumlu mu olumsuz mu bir etki bıraktığını fark etmektir.</p>`, true)}
       ${acc(2,'21 gün nasıl ilerler?',`<p>Her gün ve her anda şu üç adım sırayla tekrar eder:</p>
         <ol><li><b>Fark Et:</b> Yargılamadan ne olduğunu gözlemle. Ne söylendi, sende nasıl bir yankı bıraktı?</li><li><b>Anla:</b> Sözün arkasına bak. Karşındaki ne demek istemiş olabilir?</li><li><b>Dönüştür:</b> Bu farkındalıkla nasıl karşılık vermek istediğini seç.</li></ol>`)}
@@ -1106,7 +1124,7 @@ function welcomeHTML(){
       ${acc(5,'Etki ölçeği: −2’den +2’ye',`<p>Kendine sor: “Bu söz bende nasıl bir etki bıraktı?”</p><div class="mini-sc">${scale}</div>`)}
       ${acc(6,'Gizlilik',`<p>Yazdıkların yalnızca kendi cihazında saklanır. Hiçbir sunucuya gönderilmez, kimse göremez.</p>`)}
       <button class="btn" type="button" data-act="full-guide">Rehberin tamamını oku</button>
-    </aside>`;
+    </div></details>`;
 }
 function showOnboarding(){
   onbRoot.innerHTML = `<div class="onb"><div class="onb-grid">
@@ -1123,7 +1141,7 @@ ${welcomeHTML()}
   const go = () => onb.classList.add('go');
   if(window.__introDone || !document.getElementById('intro')) go(); else document.addEventListener('introdone', go, {once:true});
   document.getElementById('onbForm').addEventListener('submit', ev=>{ ev.preventDefault();
-    S = blank(); S.name = document.getElementById('onb-name').value.trim(); S.start = today(); save(); onbRoot.innerHTML=''; location.hash='#anasayfa'; route(); render(true); toast('Hoş geldin · Önce başlangıç niyetini yaz'); });
+    S = blank(); S.name = document.getElementById('onb-name').value.trim(); S.start = today(); save(); onbRoot.innerHTML=''; location.hash='#anasayfa'; route(); render(true); toast('Hoş geldin · Başlangıç soruları sayfanın altında'); });
   document.getElementById('onbDemo').addEventListener('click', ()=>{ loadDemo(); onbRoot.innerHTML=''; location.hash='#anasayfa'; route(); render(true); });
 }
 
