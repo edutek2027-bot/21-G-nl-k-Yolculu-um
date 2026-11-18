@@ -379,18 +379,18 @@ code.backup{display:block;max-height:90px;overflow:auto;word-break:break-all;fon
 @keyframes viewin{from{opacity:.4;transform:translateY(6px)}}
 /* ---------- açılış animasyonu (tek görünüm, iki temada aynı) ---------- */
 .intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:hidden;cursor:pointer;
-  background:radial-gradient(120% 90% at 50% 45%,#1E3160 0%,#0D1530 55%,#070B1A 100%);color:#F3F1EA;
+  background:radial-gradient(120% 90% at 50% 45%,#1F5A3C 0%,#0E3122 55%,#06170F 100%);color:#F3F1EA;
   transition:opacity .9s ease,transform 1.1s cubic-bezier(.7,0,.2,1),filter .9s}
 .intro.out{opacity:0;transform:scale(1.18);filter:blur(6px);pointer-events:none}
 .intro-stage{position:relative;width:min(92vw,560px);aspect-ratio:1;display:grid;place-items:center}
 .ring{position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;margin:-15% 0 0 -15%;border-radius:50%;border:1.5px solid rgb(237 176 75 / .55);opacity:0;animation:echo 3.2s cubic-bezier(.2,.6,.3,1) infinite}
-.ring:nth-child(2){animation-delay:.8s;border-color:rgb(169 188 240 / .5)}
+.ring:nth-child(2){animation-delay:.8s;border-color:rgb(150 214 172 / .5)}
 .ring:nth-child(3){animation-delay:1.6s}
-.ring:nth-child(4){animation-delay:2.4s;border-color:rgb(169 188 240 / .5)}
+.ring:nth-child(4){animation-delay:2.4s;border-color:rgb(150 214 172 / .5)}
 @keyframes echo{0%{transform:scale(.2);opacity:0}15%{opacity:.9}100%{transform:scale(3.4);opacity:0}}
 .orbit-i{position:absolute;inset:6%;animation:spin 14s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.odot{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#A9BCF0;box-shadow:0 0 14px rgb(169 188 240 / .8);
+.odot{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#A6DDB8;box-shadow:0 0 14px rgb(150 214 172 / .8);
   transform:translate(0,0) scale(0);animation:fly 1.1s cubic-bezier(.2,1.4,.4,1) forwards}
 .odot.gold{background:#EDB04B;box-shadow:0 0 22px #EDB04B;width:16px;height:16px;margin:-8px 0 0 -8px}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) scale(1)}}
@@ -400,11 +400,11 @@ code.backup{display:block;max-height:90px;overflow:auto;word-break:break-all;fon
 .intro-brand .num{font-style:italic;color:#EDB04B;display:inline-block;opacity:0;transform:scale(2.6);filter:blur(14px);animation:slam .8s cubic-bezier(.3,1.5,.4,1) 1.25s forwards;text-shadow:0 0 40px rgb(237 176 75 / .55)}
 @keyframes rise{to{opacity:1;transform:none;filter:none}}
 @keyframes slam{to{opacity:1;transform:none;filter:none}}
-.intro-welcome{font-family:var(--f-body);font-weight:600;font-size:clamp(15px,3.9vw,22px);line-height:1.35;letter-spacing:.01em;color:#DCE3F0;opacity:0;transform:translateY(14px);animation:rise .9s ease 1.75s forwards;text-wrap:balance}
+.intro-welcome{font-family:var(--f-body);font-weight:600;font-size:clamp(15px,3.9vw,22px);line-height:1.35;letter-spacing:.01em;color:#DDF0E3;opacity:0;transform:translateY(14px);animation:rise .9s ease 1.75s forwards;text-wrap:balance}
 .intro-line{width:0;height:2px;background:linear-gradient(90deg,transparent,#EDB04B,transparent);animation:line 1s ease 1.6s forwards;margin-top:8px}
 @keyframes line{to{width:min(70vw,320px)}}
-.intro-sub{font-size:clamp(9.5px,2.4vw,12px);font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8E9BBE;opacity:0;animation:rise .8s ease 2.3s forwards;margin-top:6px}
-.intro-skip{position:absolute;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));background:rgb(255 255 255 / .08);color:#DCE3F0;border:1px solid rgb(255 255 255 / .18);border-radius:99px;padding:8px 16px;font-weight:600;font-size:13px}
+.intro-sub{font-size:clamp(9.5px,2.4vw,12px);font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8FBB9F;opacity:0;animation:rise .8s ease 2.3s forwards;margin-top:6px}
+.intro-skip{position:absolute;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));background:rgb(255 255 255 / .08);color:#DDF0E3;border:1px solid rgb(255 255 255 / .18);border-radius:99px;padding:8px 16px;font-weight:600;font-size:13px}
 .flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgb(237 176 75 / .45),transparent 55%);opacity:0;animation:flash 1.2s ease 1.3s forwards;pointer-events:none}
 @keyframes flash{30%{opacity:1}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}
