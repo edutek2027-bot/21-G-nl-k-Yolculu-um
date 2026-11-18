@@ -324,6 +324,8 @@ main.wide{max-width:760px}
 .scroll-hint{align-self:center;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--muted);font-weight:600;font-size:13px;padding:6px 10px}
 .scroll-hint svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;animation:bob 2s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(4px)}}
+.onb-bless{white-space:nowrap}
+@media (max-width:480px){.onb-bless{font-size:10.5px;letter-spacing:.13em;gap:8px}.onb-bless::before,.onb-bless::after{display:none}}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -1120,7 +1122,7 @@ function welcomeHTML(){
   const acc = (n, title, body, open) => `<details class="acc"${open?' open':''}><summary><span><span class="n">${n}</span>${title}</span><span class="pl" aria-hidden="true"></span></summary><div class="acc-b">${body}</div></details>`;
   const scale = [...SCALE].reverse().map(x=>`<div><span style="${eBtnStyle(x.v)}">${sgn(x.v)}</span><span><b>${x.l}</b> · ${x.w.slice(0,3).join(', ')}</span></div>`).join('');
   return `    <section class="onb-hero">
-      <p class="onb-bless">Farkındalık · Hamd · Şükür</p>
+      <p class="onb-bless">Anda kal · Gözlem yap · Teşekkür et</p>
       <h1 class="onb-brand">Yankı <i>21</i></h1>
       <p class="onb-words" aria-label="${MOTTO.replace(' | ',' ')}">${mottoHTML()}</p>
     </section>
