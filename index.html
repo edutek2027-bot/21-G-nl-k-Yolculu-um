@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611181617">
+<meta name="build" content="202611181620">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -393,6 +393,35 @@ textarea.lined:focus{outline:none;background-image:linear-gradient(to bottom,tra
 .mood[aria-pressed="true"] .dot{transform:scale(1.14);box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
 .mood[aria-pressed="true"] small{color:var(--ink);opacity:1;font-weight:800}
 .j-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.journal{border-radius:22px!important;padding:0!important;gap:0!important;overflow:hidden;background:var(--surface);box-shadow:0 1px 2px rgb(24 32 44 / .05),0 18px 40px -22px rgb(20 60 40 / .35)!important}
+.journal::before{display:none}
+.journal > *:not(.j-head){margin-left:20px;margin-right:20px}
+.journal > .j-sec{padding:20px 0;border-bottom:1px solid var(--line)}
+.journal > .j-sec:last-of-type{border-bottom:0}
+.journal > .j-intent{margin-top:18px}
+.j-head{display:flex;flex-direction:row!important;gap:16px;align-items:center;padding:22px 20px 24px;background:radial-gradient(130% 160% at 0% 0%,#2C7A53 0%,#1F5A3C 55%,#174A31 100%);color:#F2F8F3}
+.j-badge{flex:none;width:68px;height:68px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgb(255 255 255 / .12);border:1px solid rgb(255 255 255 / .25)}
+.j-badge b{font-family:var(--f-display);font-weight:400;font-size:34px;line-height:.9}
+.j-badge small{font-size:10px;font-weight:700;letter-spacing:.08em;opacity:.7}
+.j-head-t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.j-head .j-date{color:#BFE0CB;font-size:11px}
+.j-head .j-title{color:#fff;font-size:clamp(32px,8vw,44px)}
+.j-head .j-intent{margin:2px 0 0;color:#D7EBDD;font-size:17.5px}
+.j-h{display:flex;align-items:center;gap:8px;font-size:12px!important;letter-spacing:.1em!important}
+.j-h svg{width:18px;height:18px;stroke:var(--good);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.j-prompt{font-size:19px!important}
+textarea.lined{background:var(--bg)!important;background-image:none!important;border:1px solid var(--line)!important;border-radius:14px!important;padding:12px 14px!important;line-height:1.5!important;font-size:15.5px!important;min-height:0!important;transition:border-color .15s,box-shadow .15s}
+textarea.lined:focus{border-color:var(--good)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 22%,transparent);background:var(--surface)!important}
+.j-qs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:620px){.j-qs{grid-template-columns:1fr}}
+.j-q{display:flex;flex-direction:column;gap:6px;margin:0!important}
+.j-qp{font-family:var(--f-display);font-size:18px;line-height:1.25}
+.j-empty{border:1.5px dashed var(--line)!important;border-radius:14px;padding:14px!important;text-align:center}
+.j-add{background:var(--good-soft)!important;border-radius:99px!important;padding:6px 12px!important;font-size:13px!important}
+.j-foot{margin:0!important;padding:16px 20px 20px!important;background:var(--bg);border-top:1px solid var(--line)}
+.j-foot .btn.primary{background:var(--good);border-color:var(--good);color:#fff}
+.mood .dot{width:46px;height:46px}
+.sheet .journal{box-shadow:none!important;border:1px solid var(--line)!important}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -709,36 +738,43 @@ function renderToday(){
   ${raw>21?`<div class="banner"><span><b>21 günü tamamladın.</b> Tüm anların Analiz ekranında.</span><a class="btn small" href="#analiz">Analize git</a></div>`:''}
   ${dayBody(d, logs, true)}`;
 }
+const IC = {
+  pen:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>'};
 function dayBody(d, logs, full){
   const D = DAYS[d-1], r = S.refl[d] || {}, q = r.q || {};
   const line = (k, ph, rows) => `<textarea class="lined" data-dk="${k}" data-day="${d}" rows="${rows||1}" aria-label="${ph}" placeholder="">${esc(k==='note'?(r.note||''):(q[k]||(k==='fark'&&r.text)||''))}</textarea>`;
   return `<article class="journal">
-    ${full?`<header class="j-head"><p class="j-date">Gün ${d} · ${fmtDate(new Date(),{day:'numeric',month:'long',weekday:'long'})}</p>
-      <h1 class="j-title">${D.t}</h1></header>`:''}
-    <p class="j-intent">${D.focus}</p>
+    ${full?`<header class="j-head"><div class="j-badge"><b>${d}</b><small>/ 21</small></div>
+      <div class="j-head-t"><p class="j-date">${fmtDate(new Date(),{day:'numeric',month:'long',weekday:'long'})}</p><h1 class="j-title">${D.t}</h1><p class="j-intent">${D.focus}</p></div></header>`
+      :`<p class="j-intent">${D.focus}</p>`}
 
     <section class="j-sec">
-      <div class="j-row"><h2 class="j-h">Bugün dene</h2>
+      <div class="j-row"><h2 class="j-h">${IC.pen}Bugün dene</h2>
         <button class="j-tick" data-act="task-done" data-day="${d}" aria-pressed="${!!r.taskDone}"><span class="box" aria-hidden="true"></span>${r.taskDone?'Yaptım':'Yaptım'}</button></div>
       <p class="j-prompt">${D.task}</p>
       ${line('note', D.task, 2)}
     </section>
 
     <section class="j-sec">
-      <div class="j-row"><h2 class="j-h">Bugünün anları</h2><button class="j-add" data-act="add" data-day="${d}">+ An ekle</button></div>
+      <div class="j-row"><h2 class="j-h">${IC.chat}Bugünün anları</h2><button class="j-add" data-act="add" data-day="${d}">+ An ekle</button></div>
       ${logs.length ? `<div class="logs j-logs">${logs.map(l=>logCard(l)).join('')}</div>` : `<p class="j-empty">Seni etkileyen bir söz duyduğunda buraya ekle.</p>`}
     </section>
 
     <section class="j-sec">
-      <h2 class="j-h">Bugün kendimi…</h2>
+      <h2 class="j-h">${IC.heart}Bugün kendimi…</h2>
       <div class="moods">${[2,1,0,-1,-2].map(v=>`<button type="button" class="mood dm" data-dm="${v}" data-day="${d}" aria-pressed="${r.mood===v}" aria-label="${sgn(v)} ${ELBL[v]}"><span class="dot" style="${eBtnStyle(v)}">${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
       ${logs.length?`<p class="j-note">Anlarının ortalaması ${sgnF(avg(logs.map(l=>l.energy)))}</p>`:''}
     </section>
 
     ${d===21 && hasIntent() ? intentCard(true) : ''}
     <section class="j-sec">
-      <h2 class="j-h">Akşam</h2>
-      ${DQ.map(([k,l])=>`<div class="j-q"><p class="j-prompt">${l}</p>${line(k,l,1)}</div>`).join('')}
+      <h2 class="j-h">${IC.moon}Akşam</h2>
+      <div class="j-qs">
+      ${DQ.map(([k,l])=>`<label class="j-q"><span class="j-qp">${l}</span>${line(k,l,2)}</label>`).join('')}
+      </div>
     </section>
 
     <footer class="j-foot">${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Bu sayfa tamamlandı</span>`:`<span class="j-note">Yazdıkların kendiliğinden kaydedilir.</span><button class="btn primary" data-act="complete-day" data-day="${d}">Günü tamamla</button>`}</footer>
@@ -1296,6 +1332,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611181617";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611181620";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
