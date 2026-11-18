@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: bir cep defteri gibi tek sütun; geniş ekranda solda dikey menü. İmza öğesi: 21 noktalı "yörünge" ve -3..+3 enerji ölçeği. */
+/* Layout: bir cep defteri gibi tek sütun; geniş ekranda solda dikey menü. İmza öğesi: 21 noktalı "yörünge" ve -2..+2 his ölçeği. */
 :root{
   --bg:#EEF0EA; --surface:#FBFBF8; --surface-2:#E3E6DE; --ink:#18202C; --muted:#5A6371; --line:#D2D6CB;
   --accent:#27406E; --accent-ink:#FFFFFF; --accent-soft:#DCE3F0;
@@ -250,8 +250,15 @@ code.backup{display:block;max-height:90px;overflow:auto;word-break:break-all;fon
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:600;color:var(--ink);transition:all .15s}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.escale{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.eb{height:52px;border-radius:12px;border:1px solid var(--line);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;transition:transform .12s;color:var(--ink)}
+.escale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.eb{min-height:64px;padding:6px 2px;border-radius:12px;border:1px solid var(--line);font-weight:700;font-size:18px;font-variant-numeric:tabular-nums;transition:transform .12s;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.1}
+.eb small{font-size:10.5px;font-weight:600;line-height:1.15}
+.feel-box{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:var(--r-sm);background:var(--bg)}
+.feel-box .chip{min-height:36px;font-size:13.5px;background:var(--surface)}
+.feel-box .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.an-no{font-weight:800;font-size:13px;color:var(--accent)}
+.who-line{font-size:13.5px;color:var(--muted);margin:0}.who-line b{color:var(--ink);font-weight:600}
+.feel-cloud{gap:8px}.feel-cloud .epill{padding:5px 12px}.feel-cloud b{opacity:.7;font-weight:800}
 .eb[aria-pressed="true"]{transform:translateY(-3px);box-shadow:0 0 0 2px var(--ink)}
 .e-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
 .e-now{font-family:var(--f-display);font-size:22px;text-align:center;min-height:28px}
@@ -342,7 +349,7 @@ code.backup{display:block;max-height:90px;overflow:auto;word-break:break-all;fon
   </nav>
   <main id="main" tabindex="-1"></main>
 </div>
-<button class="fab" id="fab" data-act="add" aria-label="Söylem ekle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Söylem ekle</button>
+<button class="fab" id="fab" data-act="add" aria-label="An ekle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>An ekle</button>
 <div id="sheetRoot"></div>
 <div id="toastRoot"></div>
 <div id="onbRoot"></div>
@@ -361,7 +368,7 @@ const DAYS = [
  {w:1,t:'Evin Sesi',theme:'Ailede söylenen sözler en eski sözlerdir. Çoğu yıllardır tekrar eder ve bir süre sonra iç sesimize dönüşür. Bugün evde ve ailende sana söylenenlere kulak ver.',task:'Ev ve aile ortamında sana söylenen cümleleri kaydet. Tekrar eden bir kalıp var mı, dikkat et.',q:'Ailende sana en sık tekrarlanan cümle ne? Bu cümle sana ne zamandan beri tanıdık?'},
  {w:1,t:'İş Yerinin Dili',theme:'İş ortamında sözler çoğu zaman bir görevin, bir hiyerarşinin ya da bir rekabetin içinden gelir. Aynı cümle bir toplantıda, koridorda ya da mesajda farklı ağırlık taşır.',task:'İş yerinde sana yöneltilen sözleri kaydet. Söyleyenin konumunu (yönetici, ekip arkadaşı, müşteri) not et.',q:'İş yerinde bugün hangi söz seni büyüttü, hangisi küçülttü?'},
  {w:1,t:'Arkadaş Çemberi',theme:'Arkadaşlarımızı seçeriz ama aralarındaki sözlerin bizi nasıl etkilediğini her zaman seçemeyiz. Bazı sohbetlerden hafiflemiş, bazılarından yorulmuş çıkarız.',task:'Arkadaş ortamında duyduğun sözleri kaydet ve her birinin enerjini nasıl etkilediğini işaretle.',q:'Hangi arkadaşının sözleri seni hafifletiyor, hangisininki ağırlaştırıyor?'},
- {w:1,t:'Beden Biliyor',theme:'Zihin bir sözü yorumlamadan önce beden çoktan tepki verir: göğüste sıkışma, omuzlarda gerilme ya da içte bir genişleme. Beden, sözün enerjisini ilk ölçen yerdir.',task:'Her kayıtta bedeninde ne hissettiğini seç. Sözü duyduğun an ile beden tepkisi arasındaki süreye dikkat et.',q:'Bugün bedeninin bir sözü senden önce anladığı bir an oldu mu?'},
+ {w:1,t:'Beden Biliyor',theme:'Zihin bir sözü yorumlamadan önce beden çoktan tepki verir: göğüste sıkışma, omuzlarda gerilme ya da içte bir genişleme. Beden, sözün enerjisini ilk ölçen yerdir.',task:'Her anda “Bana ne hissettirdi?” bölümünden kelimeleri seç. Gerekirse bedeninde hissettiğini de kendi kelimenle ekle.',q:'Bugün bedeninin bir sözü senden önce anladığı bir an oldu mu?'},
  {w:1,t:'Söz ve Ton',theme:'"Tabii ki yaparsın" cümlesi bir tonla destek, başka bir tonla alay olabilir. Ne söylendiği kadar nasıl söylendiği de mesajın parçasıdır: ses tonu, bakış, zamanlama.',task:'Bugünkü kayıtlarında sözün tonunu da not et. "Nasıl karşılık verdin" alanını kullanabilirsin.',q:'Kelimeleri olumlu ama tonu olumsuz olan bir söz duydun mu? Hangisine inandın?'},
  {w:1,t:'Haftanın Aynası',theme:'İlk haftada sadece duydun. Şimdi geriye bak: Hangi ortam, hangi kişi, hangi cümle tekrar etti? Analiz ekranındaki haritan ilk şeklini aldı.',task:'Analiz ekranına göz at. En çok besleyen ve en çok tüketen ortamını belirle.',q:'Bu hafta fark ettiğin ve daha önce hiç fark etmediğin bir şey ne oldu?'},
  {w:2,t:'Sözün Arkasındaki Niyet',theme:'Her söylemin bir amacı vardır: yakınlaşmak, korumak, yönlendirmek, kontrol etmek ya da sadece rahatlamak. Söz bir yüzeyse, niyet onun altındaki akıntıdır.',task:'Bugün her kayıtta sözün asıl amacını seç. Emin değilsen birden fazla seçebilirsin.',q:'Bugün duyduğun bir sözün yüzeyi ile niyeti birbirinden farklı mıydı?'},
@@ -379,14 +386,22 @@ const DAYS = [
  {w:3,t:'Mesafe ve Yakınlık',theme:'Her ilişki aynı yakınlığı gerektirmez. Bazılarıyla mesafeyi açmak, bazılarıyla kapatmak; ikisi de enerjine özen göstermenin yolları.',task:'Haritana bakarak bir ilişkide mesafeyi, bir ilişkide yakınlığı nasıl ayarlamak istediğini yaz.',q:'Hangi ilişkine biraz daha yaklaşmak, hangisinden biraz uzaklaşmak istiyorsun?'},
  {w:3,t:'Yeni Kulak',theme:'21 gün boyunca sözleri duydun, niyetleri gördün ve enerjini korumayı denedin. Kulağın artık farklı duyuyor. Bu bir bitiş değil, yeni bir dinleme biçiminin başlangıcı.',task:'Tüm yolculuğuna geri bak ve kendine kısa bir mektup yaz.',q:'21 gün önceki kendine ne söylemek isterdin?'}
 ];
-const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'is',l:'İş Yeri'},{id:'arkadas',l:'Arkadaşlar'},{id:'diger',l:'Diğer'}];
+const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'arkadas',l:'Arkadaşlar'},{id:'is',l:'İş Yeri'},{id:'diger',l:'Diğerleri'}];
 const INTENTS = [
  ['destek','Destek olmak'],['takdir','Takdir etmek'],['koruma','Korumak / endişe'],['yonlendirme','Yönlendirmek'],
  ['kontrol','Kontrol etmek'],['elestiri','Eleştirmek / küçültmek'],['sucluluk','Suçluluk yaratmak'],['kiyas','Kıyaslamak'],
  ['korku','Kendi korkusunu yansıtmak'],['sinir','Sınır çizmek'],['saka','Şaka / hafiflik'],['ilgi','İlgi istemek'],['belirsiz','Emin değilim']
 ];
 const BODY = [['gogus','Göğüste sıkışma'],['bogaz','Boğazda düğüm'],['omuz','Omuzlarda gerilim'],['mide','Midede ağırlık'],['hafif','Hafiflik'],['sicak','İçte sıcaklık'],['nefes','Rahat nefes'],['yok','Fark etmedim']];
-const ELBL = {'-3':'Çok tüketti','-2':'Tüketti','-1':'Biraz ağırlaştırdı','0':'Nötr','1':'Biraz iyi geldi','2':'Besledi','3':'Çok besledi'};
+const SCALE = [
+ {v:-2,l:'Çok zorlayıcı',w:['Kırgın','Yorgun','Suçluymuş gibi','Değersiz','Öfkeli','Küçümsenmiş','Çaresiz','Utanmış','Yalnız','Kaygılı','Tükenmiş','Görülmemiş','Aşağılanmış','Kandırılmış','Korkmuş']},
+ {v:-1,l:'Biraz zorlayıcı',w:['Gergin','Huzursuz','Kafası karışık','Hayal kırıklığına uğramış','Rahatsız','Tedirgin','Baskı altında','Biraz üzgün','Alınmış','Sıkılmış','Yetersiz','Anlaşılmamış','Sabırsız']},
+ {v:0,l:'Nötr',w:['Sakin','Dengede','Etkilenmemiş','Kayıtsız','Düşünceli','Mesafeli','Meraklı','Şaşkın']},
+ {v:1,l:'İyi',w:['Rahat','Anlaşılmış','Memnun','Huzurlu','Kabul görmüş','Umutlu','Desteklenmiş','Hafiflemiş','Güvende','İlgi görmüş','Sakinleşmiş']},
+ {v:2,l:'Çok iyi',w:['Değerli','Sevilmiş','Mutlu','Güçlü','Minnettar','Coşkulu','Özgüvenli','Görülmüş','İlham almış','Neşeli','Takdir edilmiş','Huzur dolu','Gururlu']}
+];
+const ELBL = Object.fromEntries(SCALE.map(x=>[String(x.v),x.l]));
+const feelLevel = w => { const x = SCALE.find(x=>x.w.includes(w)); return x ? x.v : null; };
 const intentL = id => (INTENTS.find(i=>i[0]===id)||[,id])[1];
 const bodyL = id => (BODY.find(i=>i[0]===id)||[,id])[1];
 const envL = id => (ENVS.find(e=>e.id===id)||{l:id}).l;
@@ -396,8 +411,9 @@ const KEY = 'yanki21.v1';
 let mem = null;
 function load(){ try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){} return mem; }
 function save(){ mem = S; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
-const blank = () => ({v:1,name:'',start:null,logs:[],refl:{},demo:false});
+const blank = () => ({v:2,name:'',start:null,logs:[],refl:{},demo:false});
 let S = load() || blank();
+if(!(S.v >= 2)){ S.logs.forEach(l=>{ l.energy = Math.max(-2, Math.min(2, l.energy)); l.feel = l.feel || []; delete l.body; }); S.v = 2; save(); }
 
 /* ================= Yardımcılar ================= */
 const pad = n => String(n).padStart(2,'0');
@@ -454,26 +470,30 @@ function orbitSVG(d){
     <text class="o-num" x="100" y="112" text-anchor="middle">${d}</text>
     <text class="o-sub" x="100" y="134" text-anchor="middle">GÜN / 21</text></svg>`;
 }
+function anNo(l){ return S.logs.filter(x=>x.day===l.day).sort((a,b)=>a.ts-b.ts).indexOf(l)+1; }
 function logCard(l, showDay){
+  const feels = (l.feel||[]).map(f=>`<span class="epill ${ecls(feelLevel(f)??l.energy)}">${esc(f)}</span>`).join('');
   const intents = (l.intent||[]).map(i=>`<span class="chip-sm">${esc(intentL(i))}</span>`).join('');
-  return `<article class="log" tabindex="0" role="button" data-act="edit-log" data-id="${l.id}" aria-label="Kaydı düzenle">
-    <div class="log-top"><span class="tag">${esc(envL(l.env))}</span>${l.person?`<span class="who">${esc(l.person)}</span>`:''}
+  return `<article class="log" tabindex="0" role="button" data-act="edit-log" data-id="${l.id}" aria-label="Anı düzenle">
+    <div class="log-top"><span class="an-no">${showDay?`Gün ${l.day} · `:''}${anNo(l)}. An</span><span class="tag">${esc(envL(l.env))}</span>
       <span class="epill ${ecls(l.energy)}">${sgn(l.energy)} · ${ELBL[l.energy]}</span>
-      <span class="time">${showDay?`Gün ${l.day} · `:''}${fmtTime(l.ts)}</span></div>
+      <span class="time">${fmtTime(l.ts)}</span></div>
+    ${l.person?`<p class="who-line">Kiminle: <b>${esc(l.person)}</b></p>`:''}
     <blockquote class="quote">“${esc(l.text)}”</blockquote>
-    ${intents?`<div class="chips-sm">${intents}</div>`:''}
+    ${feels?`<div class="chips-sm" aria-label="Hissettirdikleri">${feels}</div>`:''}
+    ${intents?`<div class="chips-sm" aria-label="Asıl amaç">${intents}</div>`:''}
     ${l.response?`<p class="resp">${esc(l.response)}</p>`:''}
   </article>`;
 }
 function emptyLogs(day){
-  return `<div class="empty"><p class="display">Henüz bir söz kaydetmedin.</p><p>Bugün sana söylenen bir cümleyi duyduğunda buraya ekle.</p><button class="btn primary" data-act="add" data-day="${day}">İlk sözü ekle</button></div>`;
+  return `<div class="empty"><p class="display">1. An seni bekliyor.</p><p>Bugün evde, işte ya da arkadaşlarınla yaşadığın ve sana bir şey hissettiren ilk anı yaz.</p><button class="btn primary" data-act="add" data-day="${day}">1. An’ı yaz</button></div>`;
 }
 
 /* ================= Bugün ================= */
 function renderToday(){
   if(!S.start) return '';
   const d = curDay(), D = DAYS[d-1], W = WEEKS[D.w-1], raw = rawDay();
-  const logs = S.logs.filter(l=>l.day===d).sort((a,b)=>b.ts-a.ts);
+  const logs = S.logs.filter(l=>l.day===d).sort((a,b)=>a.ts-b.ts);
   const r = S.refl[d] || {};
   const en = logs.map(l=>l.energy), a = avg(en);
   const finished = raw > 21;
@@ -486,14 +506,14 @@ function renderToday(){
   </section>
   <section class="grid2">
     <div class="block task"><p class="label">Bugünün görevi</p><p>${D.task}</p></div>
-    <div class="block today-energy"><p class="label">Bugünün enerji dengesi</p>
-      ${logs.length ? `<div class="row" style="justify-content:space-between"><span class="big-num">${sgnF(a)}</span><span class="muted">${logs.length} söz kaydedildi</span></div>
-      <div class="meter" aria-hidden="true"><i style="left:${50 + a/3*50}%"></i></div><div class="meter-l"><span>Tüketen</span><span>Besleyen</span></div>`
-      : `<p class="muted">Kaydettiğin her söz, bugünün dengesini bu ölçekte gösterecek.</p><div class="meter" aria-hidden="true"><i style="left:50%"></i></div><div class="meter-l"><span>Tüketen</span><span>Besleyen</span></div>`}
+    <div class="block today-energy"><p class="label">Bugün nasıl hissettirdi?</p>
+      ${logs.length ? `<div class="row" style="justify-content:space-between"><span class="big-num">${sgnF(a)}</span><span class="muted">${logs.length} an yazıldı</span></div>
+      <div class="meter" aria-hidden="true"><i style="left:${50 + a/2*50}%"></i></div><div class="meter-l"><span>−2 Çok zorlayıcı</span><span>+2 Çok iyi</span></div>`
+      : `<p class="muted">Yazdığın her an, bugünün dengesini bu ölçekte gösterecek.</p><div class="meter" aria-hidden="true"><i style="left:50%"></i></div><div class="meter-l"><span>−2 Çok zorlayıcı</span><span>+2 Çok iyi</span></div>`}
     </div>
   </section>
   <section style="display:flex;flex-direction:column;gap:12px">
-    <div class="sec-head"><h3>Bugün duyduğun sözler</h3>${logs.length?`<button class="link" data-act="add" data-day="${d}">+ Yeni söz</button>`:''}</div>
+    <div class="sec-head"><h3>Bugünün anları</h3>${logs.length?`<button class="link" data-act="add" data-day="${d}">+ ${logs.length+1}. An</button>`:''}</div>
     ${logs.length ? `<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>` : emptyLogs(d)}
   </section>
   ${reflBlock(d, r)}`;
@@ -523,21 +543,21 @@ function renderJourney(){
         const st = isDone(D.n)?'done': D.n===d?'now': D.n>d?'locked':'past';
         const lbl = {done:'✓ Tamam',now:'Bugün',locked:fmtDate(dayDate(D.n),{day:'numeric',month:'short'}),past:'Açık'}[st];
         const cnt = S.logs.filter(l=>l.day===D.n).length;
-        return `<button class="day ${st}" data-act="open-day" data-day="${D.n}"><span class="ds">${lbl}</span><span class="dn">${D.n}</span><span class="dt">${D.t}</span>${cnt?`<span class="muted" style="font-size:12px">${cnt} söz</span>`:''}</button>`;
+        return `<button class="day ${st}" data-act="open-day" data-day="${D.n}"><span class="ds">${lbl}</span><span class="dn">${D.n}</span><span class="dt">${D.t}</span>${cnt?`<span class="muted" style="font-size:12px">${cnt} an</span>`:''}</button>`;
       }).join('')}</div></section>`;
   });
   return html;
 }
 function openDay(n){
   const D = DAYS[n-1], d = curDay(), locked = n>d;
-  const logs = S.logs.filter(l=>l.day===n).sort((a,b)=>b.ts-a.ts);
+  const logs = S.logs.filter(l=>l.day===n).sort((a,b)=>a.ts-b.ts);
   openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${n} · ${D.w}. Hafta · ${WEEKS[D.w-1].n}</p><h2>${D.t}</h2></div>${closeBtn()}</div>
     <div class="day-sheet">
     ${locked ? `<p class="locked-note">Bu gün ${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})} açılacak. Her gün bir öncekinin üzerine kurulur; acele etme.</p>` : `
       <p class="lead">${D.theme}</p>
       <div class="block" style="background:var(--bg)"><p class="label">Görev</p><p>${D.task}</p></div>
-      <div class="sec-head"><h3 style="font-size:22px">Bu günün sözleri</h3><button class="link" data-act="add" data-day="${n}">+ Söz ekle</button></div>
-      ${logs.length?`<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>`:'<p class="muted">Bu güne ait kayıt yok.</p>'}
+      <div class="sec-head"><h3 style="font-size:22px">Bu günün anları</h3><button class="link" data-act="add" data-day="${n}">+ ${logs.length+1}. An</button></div>
+      ${logs.length?`<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>`:'<p class="muted">Bu güne ait an yok.</p>'}
       ${reflBlock(n, S.refl[n]||{})}`}
     </div>`);
 }
@@ -545,9 +565,9 @@ function openDay(n){
 /* ================= Analiz ================= */
 function renderInsights(){
   const L = S.logs;
-  const head = `${demoBanner()}<header><p class="eyebrow">Söz ve enerji haritan</p><h1 class="page-title">Analiz</h1>
-    <p class="page-intro">Kaydettiğin sözler hangi ortamdan geliyor, hangi niyeti taşıyor ve enerjini nasıl etkiliyor?</p></header>`;
-  if(!L.length) return head + `<div class="empty"><p class="display">Haritan ilk sözle başlar.</p><p>Birkaç kayıt ekledikten sonra ortamlarına, niyetlere ve kişilere göre enerji dengen burada görünecek.</p><button class="btn primary" data-act="add">Söylem ekle</button></div>`;
+  const head = `${demoBanner()}<header><p class="eyebrow">Anların ve hislerin</p><h1 class="page-title">Analiz</h1>
+    <p class="page-intro">Yazdığın anlar hangi ortamdan geliyor, sana ne hissettiriyor ve altında hangi niyet yatıyor?</p></header>`;
+  if(!L.length) return head + `<div class="empty"><p class="display">Haritan ilk anla başlar.</p><p>Birkaç an yazdıktan sonra ortamlara, kişilere ve hislere göre dengen burada görünecek.</p><button class="btn primary" data-act="add">An ekle</button></div>`;
   const all = avg(L.map(l=>l.energy));
   const pos = L.filter(l=>l.energy>0).length, neg = L.filter(l=>l.energy<0).length;
   const doneN = Object.values(S.refl).filter(r=>r.done).length;
@@ -555,57 +575,63 @@ function renderInsights(){
   const used = envs.filter(e=>e.n);
   const best = [...used].sort((a,b)=>b.a-a.a)[0], worst = [...used].sort((a,b)=>a.a-b.a)[0];
   let line = '';
-  if(used.length>1 && best.a!==worst.a) line = `Seni en çok besleyen ortam <span class="p">${best.l} (${sgnF(best.a)})</span>, en çok tüketen ortam <span class="n">${worst.l} (${sgnF(worst.a)})</span>.`;
-  else line = `Şu ana kadar sözlerin çoğu <span class="${best.a>=0?'p':'n'}">${best.l}</span> ortamından geliyor; ortalama etkisi ${sgnF(best.a)}.`;
+  if(used.length>1 && best.a!==worst.a) line = `Sana en iyi gelen ortam <span class="p">${best.l} (${sgnF(best.a)})</span>, en zorlayıcı ortam <span class="n">${worst.l} (${sgnF(worst.a)})</span>.`;
+  else line = `Şu ana kadar anlarının çoğu <span class="${best.a>=0?'p':'n'}">${best.l}</span> ortamından geliyor; ortalama etkisi ${sgnF(best.a)}.`;
 
   const envRows = used.map(e=>{
-    const w = Math.abs(e.a)/3*50;
-    return `<div><div class="env-row"><div class="el">${e.l}<small>${e.n} söz</small></div>
+    const w = Math.abs(e.a)/2*50;
+    return `<div><div class="env-row"><div class="el">${e.l}<small>${e.n} an</small></div>
       <div class="div-track" role="img" aria-label="${e.l} ortalama enerji ${sgnF(e.a)}"><i class="div-bar ${e.a>=0?'pos':'neg'}" style="width:${w}%"></i></div>
       <div class="ev" style="color:var(${e.a>0?'--pos-ink':e.a<0?'--neg-ink':'--muted'})">${sgnF(e.a)}</div></div>
-      <div class="env-row" style="margin-top:0"><span></span><div class="split" style="grid-column:auto;margin-top:0" title="Besleyen ${e.p}, nötr ${e.n-e.p-e.ng}, tüketen ${e.ng}"><i class="sp" style="width:${e.p/e.n*100}%"></i><i class="s0" style="width:${(e.n-e.p-e.ng)/e.n*100}%"></i><i class="sn" style="width:${e.ng/e.n*100}%"></i></div><span></span></div></div>`;
+      <div class="env-row" style="margin-top:0"><span></span><div class="split" style="grid-column:auto;margin-top:0" title="İyi ${e.p}, nötr ${e.n-e.p-e.ng}, zorlayıcı ${e.ng}"><i class="sp" style="width:${e.p/e.n*100}%"></i><i class="s0" style="width:${(e.n-e.p-e.ng)/e.n*100}%"></i><i class="sn" style="width:${e.ng/e.n*100}%"></i></div><span></span></div></div>`;
   }).join('');
 
   const d = curDay();
   let cols='', xs='';
   for(let i=1;i<=21;i++){
-    const ls = L.filter(l=>l.day===i), a = avg(ls.map(l=>l.energy)), h = Math.abs(a)/3*50;
-    cols += `<div class="fcol ${i===d?'cur':''}" title="Gün ${i}: ${ls.length?sgnF(a)+' ('+ls.length+' söz)':'kayıt yok'}">${ls.length&&a!==0?`<i class="${a>0?'p':'n'}" style="height:${Math.max(h,3)}%"></i>`:''}${ls.length&&a===0?`<i class="p" style="height:1.5%;background:var(--muted)"></i>`:''}</div>`;
+    const ls = L.filter(l=>l.day===i), a = avg(ls.map(l=>l.energy)), h = Math.abs(a)/2*50;
+    cols += `<div class="fcol ${i===d?'cur':''}" title="Gün ${i}: ${ls.length?sgnF(a)+' ('+ls.length+' an)':'kayıt yok'}">${ls.length&&a!==0?`<i class="${a>0?'p':'n'}" style="height:${Math.max(h,3)}%"></i>`:''}${ls.length&&a===0?`<i class="p" style="height:1.5%;background:var(--muted)"></i>`:''}</div>`;
     xs += `<span style="${i===d?'color:var(--ink);font-weight:700':''}">${i}</span>`;
   }
 
   const ic = INTENTS.map(([id,l])=>{ const ls=L.filter(x=>(x.intent||[]).includes(id)); return {l,n:ls.length,a:avg(ls.map(x=>x.energy))}; }).filter(x=>x.n).sort((a,b)=>b.n-a.n);
   const imax = ic.length ? ic[0].n : 1;
   const intentRows = ic.length ? ic.map(x=>`<div class="hbar"><span class="t">${x.l}</span><span class="b"><i style="width:${x.n/imax*100}%;background:var(${x.a>0?'--pos':x.a<0?'--neg':'--muted'})"></i></span><span class="c">${x.n}</span></div>`).join('')
-    : '<p class="muted">Kayıtlarında niyet seçtiğinde burada görünecek.</p>';
+    : '<p class="muted">Anlarında asıl amacı seçtiğinde burada görünecek.</p>';
 
   const pm = {};
   L.filter(l=>l.person&&l.person.trim()).forEach(l=>{ const k=l.person.trim().toLocaleLowerCase('tr-TR'); (pm[k]=pm[k]||{name:l.person.trim(),e:[],env:l.env}).e.push(l.energy); });
   const people = Object.values(pm).map(p=>({...p,n:p.e.length,a:avg(p.e)})).sort((a,b)=>b.n-a.n||b.a-a.a).slice(0,8);
-  const peopleHtml = people.length ? people.map(p=>`<div class="person"><span class="av ${ecls(Math.round(p.a))}">${esc(p.name.charAt(0).toLocaleUpperCase('tr-TR'))}</span><span class="nm">${esc(p.name)}<small>${envL(p.env)} · ${p.n} söz</small></span><span class="epill ${ecls(p.a)}">${sgnF(p.a)}</span></div>`).join('')
-    : '<p class="muted">Kayıtlarda "Kim söyledi?" alanını doldurduğunda kişiler burada listelenir.</p>';
+  const peopleHtml = people.length ? people.map(p=>`<div class="person"><span class="av ${ecls(Math.round(p.a))}">${esc(p.name.charAt(0).toLocaleUpperCase('tr-TR'))}</span><span class="nm">${esc(p.name)}<small>${envL(p.env)} · ${p.n} an</small></span><span class="epill ${ecls(p.a)}">${sgnF(p.a)}</span></div>`).join('')
+    : '<p class="muted">"Kiminle?" alanını doldurduğunda kişiler burada listelenir.</p>';
 
+  const fc = {}; L.forEach(l=>(l.feel||[]).forEach(f=>{ fc[f]=(fc[f]||0)+1; }));
+  const ft = Object.entries(fc).sort((a,b)=>b[1]-a[1]).slice(0,16);
+  const feelHtml = ft.length ? `<div class="chips-sm feel-cloud">${ft.map(([f,c])=>`<span class="epill ${ecls(feelLevel(f)??0)}" style="font-size:${Math.min(17,12+c*1.3)}px">${esc(f)} <b>${c}</b></span>`).join('')}</div>`
+    : '<p class="muted">Anlarında his kelimeleri seçtiğinde burada görünecek.</p>';
   return head + `
   <section class="stats">
-    <div class="stat"><span class="v">${L.length}</span><span class="k">Kaydedilen söz</span></div>
-    <div class="stat"><span class="v" style="color:var(${all>0?'--pos-ink':all<0?'--neg-ink':'--ink'})">${sgnF(all)}</span><span class="k">Ortalama enerji</span></div>
-    <div class="stat"><span class="v">${Math.round(pos/L.length*100)}<small style="font-size:20px">%</small></span><span class="k">Besleyen sözler</span></div>
+    <div class="stat"><span class="v">${L.length}</span><span class="k">Yazılan an</span></div>
+    <div class="stat"><span class="v" style="color:var(${all>0?'--pos-ink':all<0?'--neg-ink':'--ink'})">${sgnF(all)}</span><span class="k">Ortalama his (−2/+2)</span></div>
+    <div class="stat"><span class="v">${Math.round(pos/L.length*100)}<small style="font-size:20px">%</small></span><span class="k">İyi gelen anlar</span></div>
     <div class="stat"><span class="v">${doneN}<small style="font-size:20px">/21</small></span><span class="k">Tamamlanan gün</span></div>
   </section>
   <section class="block"><p class="label">Öne çıkan</p><p class="insight-line">${line}</p>
-    <p class="muted" style="font-size:13.5px">Toplam ${pos} besleyen, ${L.length-pos-neg} nötr ve ${neg} tüketen söz kaydettin.</p></section>
-  <section class="block"><div class="sec-head"><h3>Ortamlara göre enerji</h3></div>
+    <p class="muted" style="font-size:13.5px">Toplam ${pos} iyi gelen, ${L.length-pos-neg} nötr ve ${neg} zorlayıcı an yazdın.</p></section>
+  <section class="block"><div class="sec-head"><h3>Ortamlara göre his dengesi</h3></div>
     <div class="env-rows">${envRows}</div>
-    <div class="env-row"><span></span><div class="axis"><span>−3 tüketen</span><span>0</span><span>+3 besleyen</span></div><span></span></div>
-    <div class="legend"><span><i style="background:var(--pos)"></i>Besleyen</span><span><i style="background:var(--line)"></i>Nötr</span><span><i style="background:var(--neg)"></i>Tüketen</span></div>
+    <div class="env-row"><span></span><div class="axis"><span>−2 zorlayıcı</span><span>0</span><span>+2 çok iyi</span></div><span></span></div>
+    <div class="legend"><span><i style="background:var(--pos)"></i>İyi</span><span><i style="background:var(--line)"></i>Nötr</span><span><i style="background:var(--neg)"></i>Zorlayıcı</span></div>
   </section>
-  <section class="block"><div class="sec-head"><h3>21 günlük enerji akışı</h3></div>
-    <p class="muted" style="font-size:13.5px">Her sütun o günün ortalama enerji etkisi. Çizginin üstü besleyen, altı tüketen.</p>
+  <section class="block"><div class="sec-head"><h3>21 günlük his akışı</h3></div>
+    <p class="muted" style="font-size:13.5px">Her sütun o günün ortalaması. Çizginin üstü iyi gelen, altı zorlayıcı.</p>
     <div class="flow"><div class="flow-in">${cols}</div><div class="flow-x">${xs}</div></div>
   </section>
+  <section class="block"><div class="sec-head"><h3>En sık hissettiklerin</h3></div>
+    ${feelHtml}</section>
   <section class="grid2">
-    <div class="block"><h3 class="display" style="font-size:24px">Niyet haritası</h3><p class="muted" style="font-size:13px">Sözlerin altında en sık gördüğün amaçlar. Renk, o niyetin ortalama etkisini gösterir.</p><div class="hbars">${intentRows}</div></div>
-    <div class="block"><h3 class="display" style="font-size:24px">Kişiler</h3><p class="muted" style="font-size:13px">En sık kayıt ettiğin kişiler ve ortalama etkileri.</p><div class="people">${peopleHtml}</div></div>
+    <div class="block"><h3 class="display" style="font-size:24px">Niyet haritası</h3><p class="muted" style="font-size:13px">Anların altında en sık gördüğün amaçlar. Renk, o niyetin ortalama etkisini gösterir.</p><div class="hbars">${intentRows}</div></div>
+    <div class="block"><h3 class="display" style="font-size:24px">Kişiler</h3><p class="muted" style="font-size:13px">En sık an yaşadığın kişiler ve ortalama etkileri.</p><div class="people">${peopleHtml}</div></div>
   </section>`;
 }
 
@@ -660,34 +686,42 @@ function chipGroup(name, items, sel, multi){
 }
 function eBtnStyle(v){
   if(v===0) return 'background:var(--surface-2)';
-  const p = 18 + Math.abs(v)*24;
+  const p = 22 + Math.abs(v)*34;
   return `background:color-mix(in srgb, var(${v>0?'--pos':'--neg'}) ${p}%, var(--surface))`;
+}
+function feelChips(v, sel){
+  const L = SCALE.find(x=>x.v===v);
+  if(!L) return '<p class="hint" style="margin:0">Önce yukarıdan bir değer seç; ona uygun his kelimeleri burada çıkacak.</p>';
+  return `<p class="hint" style="margin:0">${sgn(v)} · ${L.l} için kelimeler. Birden fazla seçebilirsin.</p>` + chipGroup('feel', L.w.map(w=>[w,w]), sel, true);
 }
 function openLogForm(id, day){
   delAsk = false;
   const l = id ? S.logs.find(x=>x.id===id) : null;
   const dd = l ? l.day : (day || curDay());
+  const no = l ? anNo(l) : S.logs.filter(x=>x.day===dd).length + 1;
   const persons = [...new Set(S.logs.map(x=>x.person&&x.person.trim()).filter(Boolean))];
   const e = l ? l.energy : null;
-  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${dd} · ${DAYS[dd-1].t}</p><h2>${l?'Kaydı düzenle':'Bir söz kaydet'}</h2></div>${closeBtn()}</div>
+  const fsel = l ? (l.feel||[]) : [];
+  const custom = fsel.filter(f=>feelLevel(f)===null).join(', ');
+  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${dd} · ${DAYS[dd-1].t}</p><h2>${no}. An</h2></div>${closeBtn()}</div>
   <form class="form" id="logForm" data-id="${l?l.id:''}" data-day="${dd}" novalidate>
-    <fieldset class="fset"><legend>Nerede duydun?</legend>${chipGroup('env', ENVS.map(x=>[x.id,x.l]), [l?l.env:'ev'], false)}</fieldset>
-    <div class="fset"><label for="f-person">Kim söyledi?</label><input type="text" id="f-person" list="plist" value="${esc(l?l.person:'')}" placeholder="Örn. Annem, yöneticim, Deniz" autocomplete="off">
+    <fieldset class="fset"><legend>Nerede?</legend>${chipGroup('env', ENVS.map(x=>[x.id,x.l]), [l?l.env:'ev'], false)}</fieldset>
+    <div class="fset"><label for="f-person">Kiminle?</label><input type="text" id="f-person" list="plist" value="${esc(l?l.person:'')}" placeholder="Örn. Annem, yöneticim, Deniz" autocomplete="off">
       <datalist id="plist">${persons.map(p=>`<option value="${esc(p)}">`).join('')}</datalist></div>
-    <div class="fset"><label for="f-text">Ne söylendi?</label><p class="hint">Cümleyi olabildiğince duyduğun gibi yaz.</p>
-      <textarea id="f-text" rows="3" placeholder="“...”" ${l?'':'autofocus'}>${esc(l?l.text:'')}</textarea></div>
-    <fieldset class="fset"><legend>Sözün asıl amacı ne olabilir?</legend><p class="hint">Yüzeyin altına bak. Birden fazla seçebilirsin.</p>${chipGroup('intent', INTENTS, l?l.intent||[]:[], true)}</fieldset>
-    <fieldset class="fset"><legend>Enerjini nasıl etkiledi?</legend>
-      <div class="escale" data-group="energy">${[-3,-2,-1,0,1,2,3].map(v=>`<button type="button" class="eb" data-e="${v}" aria-pressed="${e===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}">${sgn(v)}</button>`).join('')}</div>
-      <div class="e-lbl"><span>Tüketti</span><span>Nötr</span><span>Besledi</span></div>
-      <p class="e-now" id="e-now">${e===null?'<span class="muted" style="font-family:var(--f-body);font-size:14px">Bir değer seç</span>':ELBL[e]}</p></fieldset>
-    <fieldset class="fset"><legend>Bedeninde ne hissettin?</legend>${chipGroup('body', BODY, l?l.body||[]:[], true)}</fieldset>
-    <div class="fset"><label for="f-resp">Nasıl karşılık verdin ya da vermek isterdin?</label>
-      <textarea id="f-resp" rows="2" placeholder="İsteğe bağlı">${esc(l?l.response:'')}</textarea></div>
+    <div class="fset"><label for="f-text">Ne oldu, ne söyledi?</label><p class="hint">Olanı kısaca anlat; söylenen cümleyi olabildiğince duyduğun gibi yaz.</p>
+      <textarea id="f-text" rows="3" placeholder="Örn. Akşam yemeğinde annem “Hâlâ o işte mi çalışıyorsun?” dedi." ${l?'':'autofocus'}>${esc(l?l.text:'')}</textarea></div>
+    <fieldset class="fset"><legend>Bana ne hissettirdi?</legend>
+      <div class="escale" data-group="energy">${[-2,-1,0,1,2].map(v=>`<button type="button" class="eb" data-e="${v}" aria-pressed="${e===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}"><span>${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
+      <div id="feelBox" class="feel-box">${feelChips(e, fsel)}</div>
+      <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka his kelimeleri">
+    </fieldset>
+    <fieldset class="fset"><legend>Sence asıl amacı neydi? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></legend><p class="hint">Söylenenin yüzeyinin altına bak.</p>${chipGroup('intent', INTENTS, l?l.intent||[]:[], true)}</fieldset>
+    <div class="fset"><label for="f-resp">Nasıl karşılık verdin ya da vermek isterdin? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></label>
+      <textarea id="f-resp" rows="2" placeholder="Örn. Sustum. Aslında “Evet, ve mutluyum” demek isterdim.">${esc(l?l.response:'')}</textarea></div>
     <p class="err" id="f-err" role="alert"></p>
     <div class="form-actions">
       <div class="row" id="delZone">${l?'<button type="button" class="btn danger" data-act="del-ask">Sil</button>':''}</div>
-      <div class="row"><button type="button" class="btn ghost" data-act="close-sheet">Vazgeç</button><button type="submit" class="btn primary">${l?'Güncelle':'Kaydet'}</button></div>
+      <div class="row"><button type="button" class="btn ghost" data-act="close-sheet">Vazgeç</button><button type="submit" class="btn primary">${l?'Güncelle':'Anı kaydet'}</button></div>
     </div>
   </form>`);
 }
@@ -695,14 +729,15 @@ function submitLog(form){
   const text = form.querySelector('#f-text').value.trim();
   const eb = form.querySelector('.eb[aria-pressed="true"]');
   const err = form.querySelector('#f-err');
-  if(!text){ err.textContent='Söylenen cümleyi yaz.'; form.querySelector('#f-text').focus(); return; }
-  if(!eb){ err.textContent='Bu sözün enerjini nasıl etkilediğini seç.'; eb||form.querySelector('.eb').focus(); return; }
+  if(!text){ err.textContent='Ne olduğunu ya da ne söylendiğini yaz.'; form.querySelector('#f-text').focus(); return; }
+  if(!eb){ err.textContent='Bu anın sana ne hissettirdiğini −2 ile +2 arasında seç.'; form.querySelector('.eb').focus(); return; }
   const pick = g => [...form.querySelectorAll(`[data-group="${g}"] [aria-pressed="true"]`)].map(b=>b.dataset.chip);
+  const extra = form.querySelector('#f-feel').value.split(',').map(x=>x.trim()).filter(Boolean);
   const id = form.dataset.id;
-  const rec = { env: pick('env')[0]||'diger', person: form.querySelector('#f-person').value.trim(), text, intent: pick('intent'), energy: Number(eb.dataset.e), body: pick('body'), response: form.querySelector('#f-resp').value.trim() };
+  const rec = { env: pick('env')[0]||'diger', person: form.querySelector('#f-person').value.trim(), text, intent: pick('intent'), energy: Number(eb.dataset.e), feel: [...new Set([...pick('feel'), ...extra])], response: form.querySelector('#f-resp').value.trim() };
   if(id){ Object.assign(S.logs.find(x=>x.id===id), rec); }
   else S.logs.push({id:uid(), day:Number(form.dataset.day), date:today(), ts:Date.now(), ...rec});
-  save(); closeSheet(); render(false); toast(id?'Kayıt güncellendi':'Söz kaydedildi');
+  save(); closeSheet(); render(false); toast(id?'An güncellendi':'An kaydedildi');
 }
 
 /* ================= Olaylar ================= */
@@ -712,7 +747,8 @@ document.addEventListener('click', e=>{
     chip.setAttribute('aria-pressed', g.dataset.multi==='1' ? String(chip.getAttribute('aria-pressed')!=='true') : 'true'); return; }
   const eb = e.target.closest('.eb');
   if(eb){ eb.parentElement.querySelectorAll('.eb').forEach(b=>b.setAttribute('aria-pressed','false')); eb.setAttribute('aria-pressed','true');
-    document.getElementById('e-now').textContent = ELBL[eb.dataset.e]; return; }
+    const box = document.getElementById('feelBox'); const keep = [...box.querySelectorAll('[aria-pressed="true"]')].map(b=>b.dataset.chip);
+    box.innerHTML = feelChips(Number(eb.dataset.e), keep); return; }
   const t = e.target.closest('[data-act]'); if(!t) return;
   const act = t.dataset.act;
   if(act==='backdrop'){ if(e.target===t) closeSheet(); return; }
@@ -767,7 +803,7 @@ function showOnboarding(){
   onbRoot.innerHTML = `<div class="onb"><div class="onb-in">
     <p class="eyebrow">21 günlük farkındalık programı</p>
     <h1>Sana söylenen her söz bir <i>yankı</i> bırakır.</h1>
-    <p class="lead">Evde, iş yerinde ve arkadaş ortamında sana yöneltilen sözleri fark et. Altındaki asıl amacı gör. Enerjini besleyip beslemediğini ölç.</p>
+    <p class="lead">Her gün evde, iş yerinde ve arkadaş ortamında yaşadığın anları yaz. Söylenenin asıl amacını gör, sana ne hissettirdiğini −2 ile +2 arasında ölç.</p>
     <div class="pillars">
       <div class="pillar"><b>1 · Fark Et</b><span>Sözleri yargılamadan duy.</span></div>
       <div class="pillar"><b>2 · Anla</b><span>Söylemin niyetini gör.</span></div>
@@ -787,24 +823,24 @@ function loadDemo(){
   const st = new Date(); st.setDate(st.getDate()-8);
   S = blank(); S.demo = true; S.name = 'Ayşe'; S.start = iso(st);
   const R = [
-    [1,'ev','Annem','Hâlâ evlenmeyecek misin? Herkes yerleşti.',['kontrol','kiyas','korku'],-2,['mide'],'Sustum, konuyu değiştirdim.'],
-    [1,'is','Yöneticim','Sunumun çok netti, ekibe örnek oldu.',['takdir'],3,['hafif','sicak'],''],
-    [2,'ev','Babam','Yorulma bu kadar, sağlığın her şeyden önemli.',['koruma'],1,['sicak'],''],
-    [2,'ev','Kardeşim','Şaka şaka, sen zaten hep annemin gözdesiydin.',['saka','kiyas'],-1,['bogaz'],'Güldüm ama içim burkuldu.'],
-    [3,'is','Müşteri','Bu iş dün bitmeliydi.',['kontrol','elestiri'],-3,['gogus','omuz'],'Hemen özür diledim. Aslında gecikme onlardandı.'],
-    [3,'is','Ekip arkadaşım','Bunu sen hallet, sen daha iyi yaparsın.',['yonlendirme','takdir'],-1,['omuz'],''],
-    [4,'arkadas','Selin','Sen hep böylesin zaten, her şeyi dert ediyorsun.',['elestiri'],-2,['omuz'],'Belki haklıdır diye düşündüm.'],
-    [4,'arkadas','Deniz','Seni dinlemek bana iyi geliyor.',['destek','takdir'],3,['sicak','nefes'],'Teşekkür ettim.'],
-    [5,'diger','İç sesim','Yeterince iyi değilsin.',['korku'],-3,['gogus'],'Bunu ilk kimden duyduğumu düşündüm.'],
-    [5,'arkadas','Ece','Bu hafta seni çok özledim, buluşalım mı?',['destek','ilgi'],2,['hafif'],''],
-    [6,'is','Yöneticim','Bunu yarına yetiştirebilir misin? Biliyorum yoğunsun.',['yonlendirme','destek'],0,['yok'],'Perşembeye kadar sürer dedim.'],
-    [7,'ev','Annem','Yemeğini yedin mi? Kendine iyi bak.',['koruma'],2,['sicak'],''],
-    [8,'arkadas','Selin','Geçen sefer gelmedin, yine mi işin var?',['sucluluk','ilgi'],-2,['mide'],'Bu sefer açıkladım, gerilmedim.'],
-    [8,'is','Ekip arkadaşım','Fikrini toplantıda savunman çok cesurcaydı.',['takdir'],2,['hafif'],''],
-    [9,'ev','Annem','Sen bilirsin, ben sadece söylüyorum.',['sucluluk','korku'],-1,['bogaz'],'Nefes aldım, “Biliyorum anne, merak ettiğin için teşekkürler” dedim.'],
+    [1,'ev','Annem','Akşam yemeğinde annem “Hâlâ evlenmeyecek misin? Herkes yerleşti.” dedi.',['kontrol','kiyas','korku'],-2,['Kırgın','Değersiz'],'Sustum, konuyu değiştirdim.'],
+    [1,'is','Yöneticim','Toplantıdan sonra “Sunumun çok netti, ekibe örnek oldu.” dedi.',['takdir'],2,['Değerli','Görülmüş'],''],
+    [2,'ev','Babam','Gece geç geldiğimde “Yorulma bu kadar, sağlığın her şeyden önemli.” dedi.',['koruma'],1,['Desteklenmiş'],''],
+    [2,'ev','Kardeşim','Herkesin önünde “Şaka şaka, sen zaten hep annemin gözdesiydin.” dedi.',['saka','kiyas'],-1,['Alınmış','Gergin'],'Güldüm ama içim burkuldu.'],
+    [3,'is','Müşteri','Telefonda sert bir sesle “Bu iş dün bitmeliydi.” dedi.',['kontrol','elestiri'],-2,['Suçluymuş gibi','Küçümsenmiş'],'Hemen özür diledim. Aslında gecikme onlardandı.'],
+    [3,'is','Ekip arkadaşım','Yeni dosyayı masama bırakıp “Bunu sen hallet, sen daha iyi yaparsın.” dedi.',['yonlendirme','takdir'],-1,['Baskı altında'],''],
+    [4,'arkadas','Selin','Kafede “Sen hep böylesin zaten, her şeyi dert ediyorsun.” dedi.',['elestiri'],-2,['Kırgın','Yorgun'],'Belki haklıdır diye düşündüm.'],
+    [4,'arkadas','Deniz','Uzun bir yürüyüşün sonunda “Seni dinlemek bana iyi geliyor.” dedi.',['destek','takdir'],2,['Sevilmiş','Minnettar'],'Teşekkür ettim.'],
+    [5,'diger','İç sesim','Hata yaptığımda içimden “Yeterince iyi değilsin.” dedim.',['korku'],-2,['Değersiz','Utanmış'],'Bunu ilk kimden duyduğumu düşündüm.'],
+    [5,'arkadas','Ece','Mesaj attı: “Bu hafta seni çok özledim, buluşalım mı?”',['destek','ilgi'],2,['Mutlu','Sevilmiş'],''],
+    [6,'is','Yöneticim','“Bunu yarına yetiştirebilir misin? Biliyorum yoğunsun.” dedi.',['yonlendirme','destek'],0,['Düşünceli'],'Perşembeye kadar sürer dedim.'],
+    [7,'ev','Annem','Telefonda “Yemeğini yedin mi? Kendine iyi bak.” dedi.',['koruma'],1,['Huzurlu','Anlaşılmış'],''],
+    [8,'arkadas','Selin','Davetine gidemeyince “Geçen sefer gelmedin, yine mi işin var?” dedi.',['sucluluk','ilgi'],-1,['Huzursuz'],'Bu sefer açıkladım, gerilmedim.'],
+    [8,'is','Ekip arkadaşım','Toplantı çıkışında “Fikrini savunman çok cesurcaydı.” dedi.',['takdir'],2,['Güçlü','Gururlu'],''],
+    [9,'ev','Annem','Kararımı anlatınca “Sen bilirsin, ben sadece söylüyorum.” dedi.',['sucluluk','korku'],-1,['Suçluymuş gibi'],'Nefes aldım, “Biliyorum anne, merak ettiğin için teşekkürler” dedim.'],
   ];
-  R.forEach(([day,env,person,text,intent,energy,body,response],i)=>{ const d = new Date(st); d.setDate(d.getDate()+day-1); d.setHours(9+(i*3)%11, (i*17)%60);
-    S.logs.push({id:uid()+i, day, date:iso(d), ts:d.getTime(), env, person, text, intent, energy, body, response}); });
+  R.forEach(([day,env,person,text,intent,energy,feel,response],i)=>{ const d = new Date(st); d.setDate(d.getDate()+day-1); d.setHours(9+(i*3)%11, (i*17)%60); if(d.getTime() > Date.now()) d.setTime(Date.now() - (R.length-i)*36e5);
+    S.logs.push({id:uid()+i, day, date:iso(d), ts:d.getTime(), env, person, text, intent, energy, feel, response}); });
   const RF = ['Annemin cümlesi. Sanki bir sınavdan geçiyormuşum gibi hissettim.','“Sen bilirsin” cümlesi. Çocukluğumdan beri tanıdık.','Müşterinin cümlesi beni küçülttü, yöneticimin övgüsü büyüttü.','Deniz hafifletiyor, Selin ile konuşunca yoruluyorum.','Göğsüm sıkıştı, ne olduğunu sonra anladım.','Kardeşimin şakası. Kelimeler hafif, ton ağırdı.','Aynı cümlelerin tekrar ettiğini ilk kez bu kadar net gördüm.','Babamın sözü eleştiri gibi geldi ama altında endişe vardı.'];
   RF.forEach((t,i)=>S.refl[i+1]={text:t,done:true,ts:Date.now()});
   save();
