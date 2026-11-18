@@ -8,6 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
+<meta name="build" content="202611181551">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -818,10 +819,12 @@ function renderHome(){
   return `${demoBanner()}<div class="home ${homeAnim?'go':'still'}">
     <div class="home-top">${welcomeHTML()}
       <button class="scroll-hint" data-act="to-intent">Başlangıç <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
-    <section class="home-intent" id="homeIntent">
-      <div class="sec-head"><h3>Başlangıç${S.name?' · '+esc(S.name):''}</h3>${!editing?'<button class="link" data-act="edit-intent">Düzenle</button>':''}</div>
-      ${editing ? `<p class="muted">Yolculuğa başlamadan önce birkaç dakikanı ayır ve niyetini yaz. 21. günde buraya geri döneceksin ve ne kadar yol aldığını göreceksin.</p>${intentFormHTML()}` : intentCard(true, true)}
-    </section>
+    <details class="onb-guide about home-intent" id="homeIntent"${intentEdit?' open':''}>
+      <summary><span><span class="eyebrow">${hasIntent()?'Niyetin':'Başlamadan önce yaz'}</span><b>Başlangıç${S.name?' · '+esc(S.name):''}</b></span><span class="pl" aria-hidden="true"></span></summary>
+      <div class="about-b" style="gap:12px">
+      ${editing ? `<p class="muted">Yolculuğa başlamadan önce birkaç dakikanı ayır ve niyetini yaz. 21. günde buraya geri döneceksin ve ne kadar yol aldığını göreceksin.</p>${intentFormHTML()}` : intentCard(true, true)+'<div><button class="btn small" data-act="edit-intent">Düzenle</button></div>'}
+      </div>
+    </details>
   </div>`;
 }
 
@@ -1066,7 +1069,7 @@ document.addEventListener('click', e=>{
     'edit-log': ()=>openLogForm(t.dataset.id),
     'open-day': ()=>openDay(Number(t.dataset.day)),
     'close-sheet': closeSheet,
-    'to-intent': ()=>document.getElementById('homeIntent')?.scrollIntoView({behavior:'smooth',block:'start'}),
+    'to-intent': ()=>{ const h=document.getElementById('homeIntent'); if(h){ h.open=true; h.scrollIntoView({behavior:'smooth',block:'start'}); } },
     'full-guide': ()=>openSheet(`<div class="sheet-head"><div><p class="eyebrow">Rehber</p></div>${closeBtn()}</div><div style="display:flex;flex-direction:column;gap:22px">${renderGuide(true)}</div>`),
     'edit-intent': ()=>{ closeSheet(); intentEdit=true; if(view==='anasayfa'){ render(false); document.getElementById('intForm')?.scrollIntoView({block:'start'}); } else location.hash='#anasayfa'; },
     'intent-cancel': ()=>{ intentEdit=false; render(false); },
@@ -1215,5 +1218,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
+<script>(function(){var B="202611181551";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
