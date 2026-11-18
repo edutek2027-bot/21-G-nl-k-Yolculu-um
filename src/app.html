@@ -289,6 +289,10 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .home-links{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:560px){.home-links{grid-template-columns:1fr}}
 @media (max-width:440px){.tab{font-size:9.5px}.ti{width:38px}}
+.still .onb-words .w,.still .onb-bless,.still .onb-brand{opacity:1;transform:none;filter:none;animation:none}
+main.wide{max-width:1120px}
+.home-intent{max-width:none;gap:12px}
+.home-intent .sec-head h3{font-family:var(--f-display);font-weight:400;font-size:30px}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -354,7 +358,7 @@ code.backup{display:block;max-height:90px;overflow:auto;word-break:break-all;fon
 .onb-brand i{color:var(--pos)}
 .onb-words{font-family:var(--f-display);font-size:clamp(25px,5.4vw,38px);line-height:1.25;margin:0;max-width:24ch;text-wrap:balance}
 .onb-words .w{display:inline-block;opacity:0;transform:translateY(12px);filter:blur(6px)}
-.onb.go .onb-words .w{animation:wordin 1.1s cubic-bezier(.2,.8,.2,1) forwards}
+.go .onb-words .w{animation:wordin 1.1s cubic-bezier(.2,.8,.2,1) forwards}
 .onb-words .br{display:block;height:.25em}
 @keyframes wordin{to{opacity:1;transform:none;filter:none}}
 .onb:not(.go) .onb-bless,.onb:not(.go) .onb-brand{animation-play-state:paused}
@@ -550,6 +554,7 @@ function route(){
   render(changed);
 }
 function render(anim){
+  homeAnim = !!anim; main.classList.toggle('wide', view==='anasayfa');
   main.innerHTML = VIEWS[view]();
   if(anim){ main.classList.remove('view-in'); void main.offsetWidth; main.classList.add('view-in'); window.scrollTo(0,0); }
   document.getElementById('fab').hidden = !S.start || view==='ayarlar' || view==='rehber' || view==='anasayfa';
@@ -746,7 +751,7 @@ function renderInsights(){
 }
 
 /* ================= Ana Sayfa ve başlangıç niyeti ================= */
-let intentEdit = false;
+let intentEdit = false, homeAnim = true;
 const hasIntent = () => !!(S.intent && (S.intent.why || S.intent.notice || S.intent.promise));
 function intentFormHTML(){
   const I = S.intent || {};
@@ -776,25 +781,14 @@ function submitIntent(f){
 }
 function renderHome(){
   if(!S.start) return '';
-  const d = curDay(), D = DAYS[d-1], raw = rawDay();
-  const doneN = Object.values(S.refl).filter(r=>r.done).length;
   const editing = intentEdit || !hasIntent();
-  return `${demoBanner()}
-  <header class="home-head"><p class="onb-bless" style="animation:none;opacity:1">Farkındalık · Hamd · Şükür</p>
-    <h1 class="int-title">${greeting()}${S.name?', '+esc(S.name):''}</h1>
-    <p class="muted">Her sabah yeni bir gün, her gün yeni bir an.</p></header>
-  <a class="today-go" href="#bugun">
-    <span class="tg-num">${raw>21?'21':d}<small>/21</small></span>
-    <span class="tg-txt"><span class="eyebrow">${raw>21?'Yolculuk tamamlandı':'Bugünün sayfası'}</span><b>${raw>21?'Gün 21 · '+DAYS[20].t:'Gün '+d+' · '+D.t}</b><span>${doneN} gün tamamlandı · ${S.logs.length} an yazıldı</span></span>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-  <section class="g-sec">
-    <div class="sec-head"><h3>Başlangıç</h3>${!editing?'<button class="link" data-act="edit-intent">Düzenle</button>':''}</div>
-    ${editing ? `<p class="muted">Yolculuğa başlamadan önce birkaç dakikanı ayır ve niyetini yaz. 21. günde buraya geri döneceksin ve ne kadar yol aldığını göreceksin.</p>${intentFormHTML()}` : intentCard(true, true)}
-  </section>
-  <section class="home-links">
-    <a class="guide-link" href="#rehber"><span><b>Rehber</b>Sözleri nasıl değerlendirirsin?</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-    <a class="guide-link" href="#yolculuk"><span><b>Yolculuk</b>21 günün tamamı ve tamamladıkların</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-  </section>`;
+  return `${demoBanner()}<div class="onb-grid ${homeAnim?'go':'still'}">
+    ${welcomeHTML()}
+    <section class="onb-form home-intent">
+      <div class="sec-head"><h3>Başlangıç${S.name?' · '+esc(S.name):''}</h3>${!editing?'<button class="link" data-act="edit-intent">Düzenle</button>':''}</div>
+      ${editing ? `<p class="muted">Yolculuğa başlamadan önce birkaç dakikanı ayır ve niyetini yaz. 21. günde buraya geri döneceksin ve ne kadar yol aldığını göreceksin.</p>${intentFormHTML()}` : intentCard(true, true)}
+    </section>
+  </div>`;
 }
 
 function intentCard(full, home){
@@ -1038,6 +1032,7 @@ document.addEventListener('click', e=>{
     'edit-log': ()=>openLogForm(t.dataset.id),
     'open-day': ()=>openDay(Number(t.dataset.day)),
     'close-sheet': closeSheet,
+    'full-guide': ()=>openSheet(`<div class="sheet-head"><div><p class="eyebrow">Rehber</p></div>${closeBtn()}</div><div style="display:flex;flex-direction:column;gap:22px">${renderGuide(true)}</div>`),
     'edit-intent': ()=>{ closeSheet(); intentEdit=true; if(view==='anasayfa'){ render(false); document.getElementById('intForm')?.scrollIntoView({block:'start'}); } else location.hash='#anasayfa'; },
     'intent-cancel': ()=>{ intentEdit=false; render(false); },
     'close-sheet-guide': ()=>{ closeSheet(); location.hash='#rehber'; },
@@ -1088,11 +1083,10 @@ function mottoHTML(){
   let i = 0;
   return MOTTO.split(' ').map(w => w==='|' ? '<span class="br"></span>' : `<span class="w" style="animation-delay:${(0.9 + (i++)*0.32).toFixed(2)}s">${w}</span>`).join(' ');
 }
-function showOnboarding(){
+function welcomeHTML(){
   const acc = (n, title, body, open) => `<details class="acc"${open?' open':''}><summary><span><span class="n">${n}</span>${title}</span><span class="pl" aria-hidden="true"></span></summary><div class="acc-b">${body}</div></details>`;
   const scale = [...SCALE].reverse().map(x=>`<div><span style="${eBtnStyle(x.v)}">${sgn(x.v)}</span><span><b>${x.l}</b> · ${x.w.slice(0,3).join(', ')}</span></div>`).join('');
-  onbRoot.innerHTML = `<div class="onb"><div class="onb-grid">
-    <section class="onb-hero">
+  return `    <section class="onb-hero">
       <p class="onb-bless">Farkındalık · Hamd · Şükür</p>
       <h1 class="onb-brand">Yankı <i>21</i></h1>
       <p class="onb-words" aria-label="${MOTTO.replace(' | ',' ')}">${mottoHTML()}</p>
@@ -1111,8 +1105,12 @@ function showOnboarding(){
       ${acc(4,'Sözleri nasıl değerlendiririm?',matrixHTML())}
       ${acc(5,'Etki ölçeği: −2’den +2’ye',`<p>Kendine sor: “Bu söz bende nasıl bir etki bıraktı?”</p><div class="mini-sc">${scale}</div>`)}
       ${acc(6,'Gizlilik',`<p>Yazdıkların yalnızca kendi cihazında saklanır. Hiçbir sunucuya gönderilmez, kimse göremez.</p>`)}
-      <button class="btn" type="button" id="onbFullGuide">Rehberin tamamını oku</button>
-    </aside>
+      <button class="btn" type="button" data-act="full-guide">Rehberin tamamını oku</button>
+    </aside>`;
+}
+function showOnboarding(){
+  onbRoot.innerHTML = `<div class="onb"><div class="onb-grid">
+${welcomeHTML()}
 
     <form id="onbForm" class="onb-form" novalidate>
       <div class="field"><label for="onb-name">Adın</label><input type="text" id="onb-name" placeholder="Sana nasıl seslenelim?" autocomplete="given-name" value="${esc(S.name||'')}"></div>
@@ -1124,7 +1122,6 @@ function showOnboarding(){
   const onb = onbRoot.querySelector('.onb');
   const go = () => onb.classList.add('go');
   if(window.__introDone || !document.getElementById('intro')) go(); else document.addEventListener('introdone', go, {once:true});
-  document.getElementById('onbFullGuide').addEventListener('click', ()=>openSheet(`<div class="sheet-head"><div><p class="eyebrow">Rehber</p></div>${closeBtn()}</div><div style="display:flex;flex-direction:column;gap:22px">${renderGuide(true)}</div>`));
   document.getElementById('onbForm').addEventListener('submit', ev=>{ ev.preventDefault();
     S = blank(); S.name = document.getElementById('onb-name').value.trim(); S.start = today(); save(); onbRoot.innerHTML=''; location.hash='#anasayfa'; route(); render(true); toast('Hoş geldin · Önce başlangıç niyetini yaz'); });
   document.getElementById('onbDemo').addEventListener('click', ()=>{ loadDemo(); onbRoot.innerHTML=''; location.hash='#anasayfa'; route(); render(true); });
