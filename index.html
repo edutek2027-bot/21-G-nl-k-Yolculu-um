@@ -804,7 +804,7 @@ function renderGuide(inSheet){
 
   <section class="g-sec"><p class="eyebrow">3. Soru · Etki ölçeği</p><h2>Bu söz bende nasıl bir etki bıraktı?</h2>
     <p>Sözün doğru ya da yanlış olmasına değil, sende ne bıraktığına bak. Aynı söz iki kişide farklı etki bırakabilir. Saygılı bir eleştiri bile −1 bırakabilir; bu normaldir.</p>
-    <div class="g-scale">${sc.map(([v,h,p])=>{ const L=SCALE.find(x=>x.v===v); return `<div class="g-row"><span class="g-num" style="${eBtnStyle(v)}">${sgn(v)}</span><div><h4>${L.l} · ${h}</h4><p>${p}</p><p class="g-words">${L.w.slice(0,6).join(', ')}…</p></div></div>`; }).join('')}</div>
+    <div class="g-scale">${[...sc].reverse().map(([v,h,p])=>{ const L=SCALE.find(x=>x.v===v); return `<div class="g-row"><span class="g-num" style="${eBtnStyle(v)}">${sgn(v)}</span><div><h4>${L.l} · ${h}</h4><p>${p}</p><p class="g-words">${L.w.slice(0,6).join(', ')}…</p></div></div>`; }).join('')}</div>
   </section>
 
   <section class="g-sec"><p class="eyebrow">Hepsi bir arada</p><h2>Örnek bir an</h2>
@@ -869,9 +869,13 @@ function chipGroup(name, items, sel, multi){
   return `<div class="chips" role="group" data-group="${name}" data-multi="${multi?1:0}">${items.map(([id,l])=>`<button type="button" class="chip" data-chip="${id}" aria-pressed="${sel.includes(id)}">${l}</button>`).join('')}</div>`;
 }
 function eBtnStyle(v){
-  if(v===0) return 'background:var(--surface-2)';
-  const p = 22 + Math.abs(v)*34;
-  return `background:color-mix(in srgb, var(${v>0?'--pos':'--neg'}) ${p}%, var(--surface))`;
+  return {
+    '2':'background:var(--good);color:var(--accent-ink)',
+    '1':'background:color-mix(in srgb, var(--good) 38%, var(--surface))',
+    '0':'background:var(--surface-2)',
+    '-1':'background:color-mix(in srgb, var(--bad) 38%, var(--surface))',
+    '-2':'background:color-mix(in srgb, var(--bad) 82%, #000);color:var(--accent-ink)'
+  }[String(v)];
 }
 function feelChips(v, sel){
   const L = SCALE.find(x=>x.v===v);
@@ -1006,7 +1010,7 @@ function mottoHTML(){
 }
 function showOnboarding(){
   const acc = (n, title, body, open) => `<details class="acc"${open?' open':''}><summary><span><span class="n">${n}</span>${title}</span><span class="pl" aria-hidden="true"></span></summary><div class="acc-b">${body}</div></details>`;
-  const scale = SCALE.map(x=>`<div><span style="${eBtnStyle(x.v)}">${sgn(x.v)}</span><span><b>${x.l}</b> · ${x.w.slice(0,3).join(', ')}</span></div>`).join('');
+  const scale = [...SCALE].reverse().map(x=>`<div><span style="${eBtnStyle(x.v)}">${sgn(x.v)}</span><span><b>${x.l}</b> · ${x.w.slice(0,3).join(', ')}</span></div>`).join('');
   onbRoot.innerHTML = `<div class="onb"><div class="onb-grid">
     <section class="onb-hero">
       <p class="onb-bless">Farkındalık · Hamd · Şükür</p>
