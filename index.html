@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611181627">
+<meta name="build" content="202611181634">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -461,6 +461,10 @@ textarea.lined:focus{border-color:var(--good)!important;box-shadow:0 0 0 3px col
 .mw-chips .chip[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:#fff}
 .e-pos{background:var(--good-soft)!important;color:var(--good-ink)!important}
 .e-neg{background:var(--bad-soft)!important;color:var(--bad-ink)!important}
+.sheet .sheet-head h2{font-family:var(--f-body);font-weight:800;font-size:24px;letter-spacing:-.01em;line-height:1.2}
+.sheet .step-h b{font-family:var(--f-body);font-weight:800;font-size:16px}
+.sheet .display,.sheet .sec-head h3,.sheet .quote,.sheet .q{font-family:var(--f-body)}
+.sheet .quote{font-size:16px;font-weight:600}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -1410,6 +1414,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611181627";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611181634";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
