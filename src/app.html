@@ -1,0 +1,756 @@
+<title>Yankı 21</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#EEF0EA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: bir cep defteri gibi tek sütun; geniş ekranda solda dikey menü. İmza öğesi: 21 noktalı "yörünge" ve -3..+3 enerji ölçeği. */
+:root{
+  --bg:#EEF0EA; --surface:#FBFBF8; --surface-2:#E3E6DE; --ink:#18202C; --muted:#5A6371; --line:#D2D6CB;
+  --accent:#27406E; --accent-ink:#FFFFFF; --accent-soft:#DCE3F0;
+  --pos:#C08214; --pos-ink:#7E5205; --pos-soft:#F3E4C4;
+  --neg:#6E4BA8; --neg-ink:#523483; --neg-soft:#E5DCF2;
+  --shadow:0 1px 2px rgb(24 32 44 / .05), 0 10px 30px rgb(24 32 44 / .07);
+  --f-display:'Instrument Serif','Iowan Old Style',Georgia,'Times New Roman',serif;
+  --f-body:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --r:20px; --r-sm:12px;
+  --tabh:68px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10131A; --surface:#181D27; --surface-2:#212736; --ink:#ECEEF2; --muted:#9AA2B1; --line:#2B3242;
+  --accent:#A9BCF0; --accent-ink:#0E1424; --accent-soft:#25304A;
+  --pos:#EDB04B; --pos-ink:#F4C977; --pos-soft:#382C14;
+  --neg:#B092E8; --neg-ink:#CBB6F3; --neg-soft:#2A2240;
+  --shadow:0 1px 2px rgb(0 0 0 / .3); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#10131A; --surface:#181D27; --surface-2:#212736; --ink:#ECEEF2; --muted:#9AA2B1; --line:#2B3242;
+  --accent:#A9BCF0; --accent-ink:#0E1424; --accent-soft:#25304A;
+  --pos:#EDB04B; --pos-ink:#F4C977; --pos-soft:#382C14;
+  --neg:#B092E8; --neg-ink:#CBB6F3; --neg-soft:#2A2240;
+  --shadow:0 1px 2px rgb(0 0 0 / .3); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.display{font-family:var(--f-display);font-weight:400;letter-spacing:-.005em}
+.eyebrow,.label{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- shell ---------- */
+.app{min-height:100%}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);
+  background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.tabs .brand{display:none}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:var(--tabh);text-decoration:none;color:var(--muted);font-size:11.5px;font-weight:600}
+.tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-current="page"]{color:var(--accent)}
+.tab[aria-current="page"] .ti{background:var(--accent-soft)}
+.ti{display:grid;place-items:center;width:52px;height:30px;border-radius:99px;transition:background .2s}
+main{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px calc(var(--tabh) + 96px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:22px;outline:none}
+.fab{position:fixed;z-index:21;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(var(--tabh) + 16px + env(safe-area-inset-bottom,0px));
+  display:flex;align-items:center;gap:8px;height:54px;padding:0 20px 0 16px;border:0;border-radius:99px;background:var(--accent);color:var(--accent-ink);
+  font-weight:700;font-size:15px;box-shadow:0 8px 24px rgb(20 30 60 / .25)}
+.fab svg{width:22px;height:22px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
+@media (min-width:900px){
+  .app{display:grid;grid-template-columns:232px 1fr}
+  .tabs{position:sticky;top:0;bottom:auto;height:100vh;display:flex;flex-direction:column;gap:4px;padding:28px 16px;border-top:0;border-right:1px solid var(--line);backdrop-filter:none;background:var(--surface)}
+  .tabs .brand{display:block;padding:0 12px 22px}
+  .tab{flex-direction:row;justify-content:flex-start;height:46px;padding:0 6px;font-size:14.5px;gap:10px;border-radius:12px}
+  .tab:hover{background:var(--surface-2)}
+  .ti{width:34px;height:34px}
+  main{padding-block:40px 120px;width:100%}
+  .fab{bottom:28px;right:32px}
+}
+.brand .mark{font-family:var(--f-display);font-size:34px;line-height:1}
+.brand .mark i{color:var(--pos)}
+.brand small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+
+/* ---------- common ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sec-head h3{font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.15}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:99px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:14.5px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--neg-ink);border-color:var(--neg)}
+.btn.small{min-height:36px;padding:0 14px;font-size:13.5px}
+.link{background:none;border:0;padding:6px 0;color:var(--accent);font-weight:700;font-size:14px}
+.muted{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:620px){.grid2{grid-template-columns:1fr}}
+.banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 14px;border-radius:var(--r-sm);background:var(--accent-soft);font-size:13.5px}
+.banner b{font-weight:700}
+
+/* ---------- today ---------- */
+.greet{display:flex;flex-direction:column;gap:4px}
+.greet h1{font-family:var(--f-display);font-weight:400;font-size:clamp(34px,7vw,46px);line-height:1.05}
+.hero{display:grid;grid-template-columns:200px 1fr;gap:22px;align-items:center;padding:22px}
+.hero h2{font-size:clamp(32px,6vw,42px);line-height:1.05;margin:4px 0 10px}
+.hero .lead{color:var(--muted);font-size:15.5px;max-width:52ch}
+.orbit svg{width:100%;height:auto;display:block}
+@media (max-width:620px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}.orbit{width:190px}.hero .lead{margin-inline:auto}}
+.o-track{fill:none;stroke:var(--line);stroke-width:1}
+.o-dot{fill:var(--surface-2);stroke:var(--line)}
+.o-dot.past{fill:var(--surface);stroke:var(--muted)}
+.o-dot.done{fill:var(--accent);stroke:var(--accent)}
+.o-dot.now{fill:var(--pos);stroke:var(--pos)}
+.o-halo{fill:none;stroke:var(--pos);stroke-width:1.5;opacity:.5;transform-origin:center;transform-box:fill-box;animation:halo 2.6s ease-out infinite}
+@keyframes halo{from{transform:scale(1);opacity:.6}to{transform:scale(2.1);opacity:0}}
+.o-num{font-family:var(--f-display);font-size:72px;fill:var(--ink)}
+.o-sub{font-size:12px;font-weight:700;letter-spacing:.12em;fill:var(--muted)}
+.task p:last-child{font-size:15.5px}
+.today-energy{gap:12px}
+.meter{position:relative;height:10px;border-radius:99px;background:linear-gradient(90deg,var(--neg),var(--surface-2) 50%,var(--pos))}
+.meter i{position:absolute;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);transition:left .5s}
+.meter-l{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.big-num{font-family:var(--f-display);font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.mirror .q{font-size:clamp(24px,4.6vw,30px);line-height:1.2}
+textarea,input[type=text],input[type=date]{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:var(--r-sm);padding:12px 14px;font-size:15.5px;line-height:1.5}
+textarea{resize:vertical;min-height:96px}
+textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.done-mark{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:700;font-size:13.5px}
+
+/* ---------- log cards ---------- */
+.logs{display:flex;flex-direction:column;gap:10px}
+.log{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .15s,transform .15s;min-width:0}
+.log:hover{border-color:var(--muted)}
+.log:active{transform:scale(.995)}
+.log-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}
+.tag{font-weight:700;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.who{font-weight:600}
+.time{color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.quote{margin:0;font-family:var(--f-display);font-size:23px;line-height:1.25;overflow-wrap:anywhere}
+.chips-sm{display:flex;flex-wrap:wrap;gap:6px}
+.chip-sm{font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--surface-2);color:var(--muted)}
+.epill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.e-pos{background:var(--pos-soft);color:var(--pos-ink)}
+.e-neg{background:var(--neg-soft);color:var(--neg-ink)}
+.e-neu{background:var(--surface-2);color:var(--muted)}
+.log .resp{font-size:13.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:10px}
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:26px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted)}
+.empty .display{font-size:24px;color:var(--ink)}
+
+/* ---------- journey ---------- */
+.page-title{font-family:var(--f-display);font-weight:400;font-size:clamp(36px,7vw,48px);line-height:1.02}
+.page-intro{color:var(--muted);max-width:60ch;margin-top:6px}
+.week{display:flex;flex-direction:column;gap:12px}
+.week-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.week-head h3{font-family:var(--f-display);font-weight:400;font-size:28px;line-height:1.1}
+.week-head .wprog{font-size:13px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.day{position:relative;text-align:left;display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--surface);min-height:108px}
+.day .dn{font-family:var(--f-display);font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.day .dt{font-weight:600;font-size:13.5px;line-height:1.3}
+.day .ds{position:absolute;top:12px;right:12px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.day.done .ds{color:var(--accent)}
+.day.now{border-color:var(--pos);box-shadow:0 0 0 1px var(--pos) inset}
+.day.now .ds{color:var(--pos-ink)}
+.day.locked{background:transparent;color:var(--muted);border-style:dashed}
+.day.locked .ds{color:var(--muted)}
+
+/* ---------- insights ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:620px){.stats{grid-template-columns:1fr 1fr}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat .v{font-family:var(--f-display);font-size:36px;line-height:1;font-variant-numeric:tabular-nums}
+.stat .k{font-size:12.5px;color:var(--muted);font-weight:600}
+.insight-line{font-family:var(--f-display);font-size:clamp(22px,4.4vw,27px);line-height:1.25}
+.insight-line .p{color:var(--pos-ink)} .insight-line .n{color:var(--neg-ink)}
+.env-rows{display:flex;flex-direction:column;gap:16px}
+.env-row{display:grid;grid-template-columns:110px 1fr 54px;gap:12px;align-items:center}
+@media (max-width:480px){.env-row{grid-template-columns:86px 1fr 46px}}
+.env-row .el{font-weight:600;font-size:14px;line-height:1.2}
+.env-row .el small{display:block;color:var(--muted);font-weight:500;font-size:12px}
+.div-track{position:relative;height:26px;border-radius:8px;background:var(--surface-2)}
+.div-track::after{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--muted)}
+.div-bar{position:absolute;top:4px;bottom:4px;border-radius:5px}
+.div-bar.pos{left:50%;background:var(--pos)}
+.div-bar.neg{right:50%;background:var(--neg)}
+.env-row .ev{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;font-size:15px}
+.split{display:flex;height:6px;border-radius:99px;overflow:hidden;background:var(--surface-2);margin-top:6px;grid-column:2/3}
+.split i{display:block;height:100%}
+.split .sp{background:var(--pos)} .split .sn{background:var(--neg)} .split .s0{background:var(--line)}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.flow{overflow-x:auto}
+.flow-in{display:grid;grid-template-columns:repeat(21,minmax(0,1fr));gap:3px;height:150px;position:relative}
+.flow-in::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
+.fcol{position:relative;border-radius:4px}
+.fcol.cur{background:color-mix(in srgb,var(--pos) 10%,transparent)}
+.fcol i{position:absolute;left:15%;right:15%;border-radius:3px}
+.fcol i.p{bottom:50%;background:var(--pos)}
+.fcol i.n{top:50%;background:var(--neg)}
+.flow-x{display:grid;grid-template-columns:repeat(21,minmax(0,1fr));gap:3px;font-size:10px;color:var(--muted);text-align:center;margin-top:6px;font-variant-numeric:tabular-nums}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.hbars{display:flex;flex-direction:column;gap:10px}
+.hbar{display:grid;grid-template-columns:minmax(0,170px) 1fr 30px;gap:10px;align-items:center;font-size:13.5px}
+.hbar .t{min-width:0;overflow-wrap:anywhere;font-weight:600}
+.hbar .b{height:12px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.hbar .b i{display:block;height:100%;border-radius:99px}
+.hbar .c{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:700}
+.people{display:flex;flex-direction:column}
+.person{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.person:last-child{border-bottom:0}
+.person .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.person .nm{font-weight:600;flex:1;min-width:0;overflow-wrap:anywhere}
+.person .nm small{display:block;color:var(--muted);font-weight:500;font-size:12px}
+
+/* ---------- settings ---------- */
+.set-list{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:13.5px}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;color:var(--ink)}
+.os{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.os{grid-template-columns:1fr}}
+.os > div{background:var(--bg);border-radius:var(--r-sm);padding:14px;display:flex;flex-direction:column;gap:8px}
+.os b{font-size:14px}
+code.backup{display:block;max-height:90px;overflow:auto;word-break:break-all;font-size:11px;background:var(--bg);padding:10px;border-radius:8px;user-select:all}
+
+/* ---------- sheet ---------- */
+.sheet-wrap{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgb(10 14 22 / .45);animation:fade .2s}
+.sheet{width:100%;max-width:620px;max-height:92vh;overflow-y:auto;background:var(--surface);border-radius:24px 24px 0 0;
+  padding:8px max(18px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));animation:up .28s cubic-bezier(.2,.8,.2,1)}
+@media (min-width:700px){.sheet-wrap{align-items:center}.sheet{border-radius:24px;max-height:88vh;padding:8px 26px 26px}}
+.grab{width:42px;height:5px;border-radius:99px;background:var(--line);margin:4px auto 10px}
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;position:sticky;top:-8px;background:var(--surface);padding:6px 0 10px;z-index:2}
+.sheet-head h2{font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1.1}
+.x{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.x svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+.form{display:flex;flex-direction:column;gap:20px}
+.fset{display:flex;flex-direction:column;gap:9px;border:0;padding:0;margin:0}
+.fset legend,.fset > label{font-weight:700;font-size:14px;padding:0;margin-bottom:9px}
+.fset .hint{font-size:12.5px;color:var(--muted);margin-top:-4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--bg);font-size:14px;font-weight:600;color:var(--ink);transition:all .15s}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.escale{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.eb{height:52px;border-radius:12px;border:1px solid var(--line);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;transition:transform .12s;color:var(--ink)}
+.eb[aria-pressed="true"]{transform:translateY(-3px);box-shadow:0 0 0 2px var(--ink)}
+.e-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.e-now{font-family:var(--f-display);font-size:22px;text-align:center;min-height:28px}
+.form-actions{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;position:sticky;bottom:-24px;background:var(--surface);padding:12px 0 4px;border-top:1px solid var(--line)}
+.err{color:var(--neg-ink);font-weight:600;font-size:13.5px}
+.day-sheet{display:flex;flex-direction:column;gap:16px}
+.day-sheet .lead{color:var(--muted);font-size:15.5px}
+.locked-note{padding:18px;border-radius:var(--r-sm);background:var(--bg);color:var(--muted)}
+
+/* ---------- onboarding ---------- */
+.onb{position:fixed;inset:0;z-index:60;background:var(--bg);overflow-y:auto;display:flex;align-items:center;justify-content:center;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+.onb-in{max-width:560px;width:100%;display:flex;flex-direction:column;gap:22px}
+.onb h1{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,11vw,72px);line-height:.98;letter-spacing:-.01em}
+.onb h1 i{color:var(--pos)}
+.onb .lead{font-size:17px;color:var(--muted);max-width:46ch}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:520px){.pillars{grid-template-columns:1fr}}
+.pillar{border-top:2px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:2px}
+.pillar b{font-family:var(--f-display);font-weight:400;font-size:22px}
+.pillar span{font-size:13.5px;color:var(--muted)}
+.onb form{display:flex;flex-direction:column;gap:14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 84px + env(safe-area-inset-bottom,0px));z-index:70;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;font-size:14px;animation:up .25s;max-width:calc(100% - 32px);text-align:center}
+@media (min-width:900px){.toast{bottom:100px}}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+.toast{animation-name:toastup}
+@keyframes toastup{from{transform:translate(-50%,16px);opacity:0}}
+@keyframes fade{from{opacity:0}}
+.view-in{animation:viewin .35s ease-out}
+@keyframes viewin{from{opacity:.4;transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app">
+  <nav class="tabs" aria-label="Ana menü">
+    <div class="brand"><div class="mark">Yankı <i>21</i></div><small>21 günlük farkındalık</small></div>
+    <a class="tab" href="#bugun" data-tab="bugun"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg></span>Bugün</a>
+    <a class="tab" href="#yolculuk" data-tab="yolculuk"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h6.5a3.5 3.5 0 0 0 0-7h-3a3.5 3.5 0 0 1 0-7H17"/></svg></span>Yolculuk</a>
+    <a class="tab" href="#analiz" data-tab="analiz"><span class="ti"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16V10M12 16V5M17 16v-4"/></svg></span>Analiz</a>
+    <a class="tab" href="#ayarlar" data-tab="ayarlar"><span class="ti"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></span>Ayarlar</a>
+  </nav>
+  <main id="main" tabindex="-1"></main>
+</div>
+<button class="fab" id="fab" data-act="add" aria-label="Söylem ekle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Söylem ekle</button>
+<div id="sheetRoot"></div>
+<div id="toastRoot"></div>
+<div id="onbRoot"></div>
+
+<script>
+document.documentElement.lang = 'tr';
+
+/* ================= İçerik ================= */
+const WEEKS = [
+  {n:'Fark Et', d:'Sözleri duymak', intro:'Sana söylenenleri yargılamadan duymayı öğreniyorsun.'},
+  {n:'Anla', d:'Niyeti görmek', intro:'Her sözün altındaki asıl amaca bakıyorsun.'},
+  {n:'Dönüştür', d:'Enerjini korumak', intro:'Fark ettiklerinle kendi alanını yeniden kuruyorsun.'}
+];
+const DAYS = [
+ {w:1,t:'Kulak Açmak',theme:'Gün boyunca sana yöneltilen sözler çoğu zaman fark edilmeden içeri girer. Bugün hiçbir şeyi değiştirmeye çalışma; sadece duy. Kimin, ne zaman, hangi cümleyi kurduğunu fark etmek yolculuğun ilk adımı.',task:'Bugün sana söylenen en az üç cümleyi, yorum katmadan, olduğu gibi kaydet.',q:'Bugün sana söylenen ve hâlâ aklında dönen cümle hangisi? Neden o?'},
+ {w:1,t:'Evin Sesi',theme:'Ailede söylenen sözler en eski sözlerdir. Çoğu yıllardır tekrar eder ve bir süre sonra iç sesimize dönüşür. Bugün evde ve ailende sana söylenenlere kulak ver.',task:'Ev ve aile ortamında sana söylenen cümleleri kaydet. Tekrar eden bir kalıp var mı, dikkat et.',q:'Ailende sana en sık tekrarlanan cümle ne? Bu cümle sana ne zamandan beri tanıdık?'},
+ {w:1,t:'İş Yerinin Dili',theme:'İş ortamında sözler çoğu zaman bir görevin, bir hiyerarşinin ya da bir rekabetin içinden gelir. Aynı cümle bir toplantıda, koridorda ya da mesajda farklı ağırlık taşır.',task:'İş yerinde sana yöneltilen sözleri kaydet. Söyleyenin konumunu (yönetici, ekip arkadaşı, müşteri) not et.',q:'İş yerinde bugün hangi söz seni büyüttü, hangisi küçülttü?'},
+ {w:1,t:'Arkadaş Çemberi',theme:'Arkadaşlarımızı seçeriz ama aralarındaki sözlerin bizi nasıl etkilediğini her zaman seçemeyiz. Bazı sohbetlerden hafiflemiş, bazılarından yorulmuş çıkarız.',task:'Arkadaş ortamında duyduğun sözleri kaydet ve her birinin enerjini nasıl etkilediğini işaretle.',q:'Hangi arkadaşının sözleri seni hafifletiyor, hangisininki ağırlaştırıyor?'},
+ {w:1,t:'Beden Biliyor',theme:'Zihin bir sözü yorumlamadan önce beden çoktan tepki verir: göğüste sıkışma, omuzlarda gerilme ya da içte bir genişleme. Beden, sözün enerjisini ilk ölçen yerdir.',task:'Her kayıtta bedeninde ne hissettiğini seç. Sözü duyduğun an ile beden tepkisi arasındaki süreye dikkat et.',q:'Bugün bedeninin bir sözü senden önce anladığı bir an oldu mu?'},
+ {w:1,t:'Söz ve Ton',theme:'"Tabii ki yaparsın" cümlesi bir tonla destek, başka bir tonla alay olabilir. Ne söylendiği kadar nasıl söylendiği de mesajın parçasıdır: ses tonu, bakış, zamanlama.',task:'Bugünkü kayıtlarında sözün tonunu da not et. "Nasıl karşılık verdin" alanını kullanabilirsin.',q:'Kelimeleri olumlu ama tonu olumsuz olan bir söz duydun mu? Hangisine inandın?'},
+ {w:1,t:'Haftanın Aynası',theme:'İlk haftada sadece duydun. Şimdi geriye bak: Hangi ortam, hangi kişi, hangi cümle tekrar etti? Analiz ekranındaki haritan ilk şeklini aldı.',task:'Analiz ekranına göz at. En çok besleyen ve en çok tüketen ortamını belirle.',q:'Bu hafta fark ettiğin ve daha önce hiç fark etmediğin bir şey ne oldu?'},
+ {w:2,t:'Sözün Arkasındaki Niyet',theme:'Her söylemin bir amacı vardır: yakınlaşmak, korumak, yönlendirmek, kontrol etmek ya da sadece rahatlamak. Söz bir yüzeyse, niyet onun altındaki akıntıdır.',task:'Bugün her kayıtta sözün asıl amacını seç. Emin değilsen birden fazla seçebilirsin.',q:'Bugün duyduğun bir sözün yüzeyi ile niyeti birbirinden farklı mıydı?'},
+ {w:2,t:'Eleştiri mi, Endişe mi?',theme:'"Bu kadar çalışma, hasta olacaksın" cümlesi eleştiri gibi duyulabilir ama altında endişe olabilir. Ya da tam tersi: endişe kılığına girmiş bir kontrol.',task:'Eleştiri gibi gelen bir sözü al ve altında endişe mi, kontrol mü olduğunu ayırt etmeye çalış.',q:'Sana eleştiri gibi gelen ama aslında sevgi taşıyan bir söz hatırlıyor musun?'},
+ {w:2,t:'Övgünün Gölgesi',theme:'Her iltifat besleyici değildir. "Sen olmasan bu iş yürümez" cümlesi takdir de olabilir, yük de. Koşullu övgü, sevginin bir karşılığa bağlandığı yerdir.',task:'Bugün aldığın övgüleri kaydet. Seni gerçekten besleyeni, senden bir şey bekleyenden ayır.',q:'Hangi övgü seni hafifletti, hangisi omuzlarına bir yük bıraktı?'},
+ {w:2,t:'Şaka Kılıfı',theme:'"Şaka yapıyorum" bazen gerçekten şakadır, bazen de doğrudan söylenemeyen bir mesajın kılıfı. Gülerken içinde bir şey kırıldıysa, o sözün başka bir amacı olabilir.',task:'Şaka olarak söylenen sözleri kaydet ve enerji etkisini dürüstçe işaretle.',q:'Güldüğün ama sonra aklından çıkmayan bir şaka oldu mu?'},
+ {w:2,t:'Söylenmeyenler',theme:'Sessizlik, cevapsız kalan bir mesaj, yarım bırakılmış bir cümle... Söylenmeyenler de bir söylemdir ve çoğu zaman en yüksek sesle konuşanlardır.',task:'Bugün seni etkileyen bir sessizliği ya da söylenmeyen bir şeyi kaydet.',q:'Bugün sana söylenmeyen ama duymak istediğin söz neydi?'},
+ {w:2,t:'Ayna Etkisi',theme:'Başkalarının bize söyledikleri çoğu zaman kendi korkularını, yorgunluklarını ve hikâyelerini taşır. Bir söz senin hakkında olduğu kadar söyleyen hakkındadır da.',task:'Bir sözde söyleyenin kendi korkusunu ya da ihtiyacını görebiliyor musun? "Kendi korkusunu yansıtmak" niyetini işaretle.',q:'Bugün seni üzen bir sözün aslında söyleyenle ilgili olduğunu fark ettin mi?'},
+ {w:2,t:'Haftanın Aynası',theme:'İkinci haftada sözlerin altındaki niyetlere baktın. Niyet haritan artık ilişkilerinin görünmeyen dilini gösteriyor.',task:'Analiz ekranındaki niyet haritasına bak. En sık karşılaştığın niyet hangisi?',q:'Bir sözün niyetini anlamak, onun sende bıraktığı etkiyi değiştirdi mi?'},
+ {w:3,t:'Enerji Haritası',theme:'Bazı insanlarla vakit geçirdikten sonra dolarız, bazılarından boşalmış çıkarız. Bu bir yargı değil, bir bilgidir. Enerjini nereye verdiğini görmeni sağlar.',task:'Analizdeki kişiler listene bak. En çok besleyen ve en çok tüketen isimleri belirle.',q:'Enerjini en çok tüketen ilişkide bu tüketim sözlerden mi, yoksa senin cevaplarından mı geliyor?'},
+ {w:3,t:'Sınır Cümlesi',theme:'Sınır, karşındakini değiştirmek için değil, kendi enerjini korumak için çizilir. Kısa, net ve sakin bir cümle çoğu zaman uzun bir tartışmadan daha güçlüdür.',task:'Seni en çok tüketen söz için kendi sınır cümleni yaz. Örnek: "Bunu bu şekilde konuşmak istemiyorum."',q:'Kendine ait bir sınır cümlesi kur. Onu kime, ne zaman söylemek isterdin?'},
+ {w:3,t:'Tepki Değil Yanıt',theme:'Tepki otomatiktir, yanıt bir seçimdir. Söz ile cevap arasına konan tek bir nefes, enerjinin yönünü değiştirebilir.',task:'Bugün seni tetikleyen bir sözde cevap vermeden önce üç nefes al. Sonra nasıl yanıt verdiğini kaydet.',q:'Bugün durup nefes aldığında cevabın değişti mi?'},
+ {w:3,t:'İç Ses',theme:'Yıllar içinde duyduğumuz sözler zamanla içimizde kendi sesimizle konuşmaya başlar. Bugün kendine söylediklerini dinle: Bu ses kimin sesi?',task:'Kendine söylediğin bir cümleyi "Diğer" ortamında kaydet ve onu kimden öğrendiğini düşün.',q:'Kendine en sık söylediğin cümle ne? Onu ilk kimden duymuştun?'},
+ {w:3,t:'Besleyen Sözler',theme:'Farkındalık sadece incinen yerleri görmek değildir. Seni besleyen sözleri fark etmek, onları çoğaltmanın ilk adımıdır.',task:'Bugün seni besleyen bir söz kaydet ve söyleyene teşekkür et.',q:'Seni en çok besleyen söz neydi? Onu sen de başka birine söyleyebilir misin?'},
+ {w:3,t:'Mesafe ve Yakınlık',theme:'Her ilişki aynı yakınlığı gerektirmez. Bazılarıyla mesafeyi açmak, bazılarıyla kapatmak; ikisi de enerjine özen göstermenin yolları.',task:'Haritana bakarak bir ilişkide mesafeyi, bir ilişkide yakınlığı nasıl ayarlamak istediğini yaz.',q:'Hangi ilişkine biraz daha yaklaşmak, hangisinden biraz uzaklaşmak istiyorsun?'},
+ {w:3,t:'Yeni Kulak',theme:'21 gün boyunca sözleri duydun, niyetleri gördün ve enerjini korumayı denedin. Kulağın artık farklı duyuyor. Bu bir bitiş değil, yeni bir dinleme biçiminin başlangıcı.',task:'Tüm yolculuğuna geri bak ve kendine kısa bir mektup yaz.',q:'21 gün önceki kendine ne söylemek isterdin?'}
+];
+const ENVS = [{id:'ev',l:'Ev & Aile'},{id:'is',l:'İş Yeri'},{id:'arkadas',l:'Arkadaşlar'},{id:'diger',l:'Diğer'}];
+const INTENTS = [
+ ['destek','Destek olmak'],['takdir','Takdir etmek'],['koruma','Korumak / endişe'],['yonlendirme','Yönlendirmek'],
+ ['kontrol','Kontrol etmek'],['elestiri','Eleştirmek / küçültmek'],['sucluluk','Suçluluk yaratmak'],['kiyas','Kıyaslamak'],
+ ['korku','Kendi korkusunu yansıtmak'],['sinir','Sınır çizmek'],['saka','Şaka / hafiflik'],['ilgi','İlgi istemek'],['belirsiz','Emin değilim']
+];
+const BODY = [['gogus','Göğüste sıkışma'],['bogaz','Boğazda düğüm'],['omuz','Omuzlarda gerilim'],['mide','Midede ağırlık'],['hafif','Hafiflik'],['sicak','İçte sıcaklık'],['nefes','Rahat nefes'],['yok','Fark etmedim']];
+const ELBL = {'-3':'Çok tüketti','-2':'Tüketti','-1':'Biraz ağırlaştırdı','0':'Nötr','1':'Biraz iyi geldi','2':'Besledi','3':'Çok besledi'};
+const intentL = id => (INTENTS.find(i=>i[0]===id)||[,id])[1];
+const bodyL = id => (BODY.find(i=>i[0]===id)||[,id])[1];
+const envL = id => (ENVS.find(e=>e.id===id)||{l:id}).l;
+
+/* ================= Durum ================= */
+const KEY = 'yanki21.v1';
+let mem = null;
+function load(){ try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){} return mem; }
+function save(){ mem = S; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+const blank = () => ({v:1,name:'',start:null,logs:[],refl:{},demo:false});
+let S = load() || blank();
+
+/* ================= Yardımcılar ================= */
+const pad = n => String(n).padStart(2,'0');
+const iso = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parseISO = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+const dayDiff = (a,b) => Math.round((Date.UTC(...ymd(b)) - Date.UTC(...ymd(a)))/864e5);
+function ymd(s){ const [y,m,d]=s.split('-').map(Number); return [y,m-1,d]; }
+const today = () => iso(new Date());
+function rawDay(){ return S.start ? dayDiff(S.start, today())+1 : 1; }
+function curDay(){ return Math.min(21, Math.max(1, rawDay())); }
+function dayDate(n){ const d = parseISO(S.start||today()); d.setDate(d.getDate()+n-1); return d; }
+const fmtDate = (d,o={day:'numeric',month:'long',weekday:'long'}) => d.toLocaleDateString('tr-TR',o);
+const fmtTime = ts => new Date(ts).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const avg = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+const sgn = v => v>0 ? '+'+v : v<0 ? '−'+Math.abs(v) : '0';
+const sgnF = v => { const r = Math.round(v*10)/10; return r>0?'+'+r.toFixed(1).replace('.',','):r<0?'−'+Math.abs(r).toFixed(1).replace('.',','):'0'; };
+const ecls = v => v>0?'e-pos':v<0?'e-neg':'e-neu';
+function greeting(){ const h=new Date().getHours(); return h<5?'İyi geceler':h<11?'Günaydın':h<17?'İyi günler':h<22?'İyi akşamlar':'İyi geceler'; }
+const isDone = n => !!(S.refl[n] && S.refl[n].done);
+
+/* ================= Router ================= */
+const main = document.getElementById('main');
+const VIEWS = {bugun:renderToday, yolculuk:renderJourney, analiz:renderInsights, ayarlar:renderSettings};
+let view = 'bugun';
+function route(){
+  let v = location.hash.slice(1); if(!VIEWS[v]) v='bugun';
+  const changed = v !== view; view = v;
+  document.querySelectorAll('.tab').forEach(t => { if(t.dataset.tab===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+  render(changed);
+}
+function render(anim){
+  main.innerHTML = VIEWS[view]();
+  if(anim){ main.classList.remove('view-in'); void main.offsetWidth; main.classList.add('view-in'); window.scrollTo(0,0); }
+  document.getElementById('fab').hidden = !S.start || view==='ayarlar';
+}
+window.addEventListener('hashchange', route);
+
+/* ================= Parçalar ================= */
+function demoBanner(){
+  return S.demo ? `<div class="banner"><span><b>Örnek veriler gösteriliyor.</b> Kendi yolculuğuna başlamak için temizle.</span><button class="btn small" data-act="start-own">Kendi yolculuğumu başlat</button></div>` : '';
+}
+function orbitSVG(d){
+  const R=82, c=100; let dots='';
+  for(let i=1;i<=21;i++){
+    const a = (-90 + (i-1)*360/21) * Math.PI/180, x = c+R*Math.cos(a), y = c+R*Math.sin(a);
+    const cls = isDone(i)?'done': i===d?'now': i<d?'past':'';
+    if(i===d) dots += `<circle class="o-halo" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6"/>`;
+    dots += `<circle class="o-dot ${cls}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===d?6.5:5}"/>`;
+  }
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="21 günün ${d}. günü, ${Object.values(S.refl).filter(r=>r.done).length} gün tamamlandı">
+    <circle class="o-track" cx="100" cy="100" r="${R}"/>${dots}
+    <text class="o-num" x="100" y="112" text-anchor="middle">${d}</text>
+    <text class="o-sub" x="100" y="134" text-anchor="middle">GÜN / 21</text></svg>`;
+}
+function logCard(l, showDay){
+  const intents = (l.intent||[]).map(i=>`<span class="chip-sm">${esc(intentL(i))}</span>`).join('');
+  return `<article class="log" tabindex="0" role="button" data-act="edit-log" data-id="${l.id}" aria-label="Kaydı düzenle">
+    <div class="log-top"><span class="tag">${esc(envL(l.env))}</span>${l.person?`<span class="who">${esc(l.person)}</span>`:''}
+      <span class="epill ${ecls(l.energy)}">${sgn(l.energy)} · ${ELBL[l.energy]}</span>
+      <span class="time">${showDay?`Gün ${l.day} · `:''}${fmtTime(l.ts)}</span></div>
+    <blockquote class="quote">“${esc(l.text)}”</blockquote>
+    ${intents?`<div class="chips-sm">${intents}</div>`:''}
+    ${l.response?`<p class="resp">${esc(l.response)}</p>`:''}
+  </article>`;
+}
+function emptyLogs(day){
+  return `<div class="empty"><p class="display">Henüz bir söz kaydetmedin.</p><p>Bugün sana söylenen bir cümleyi duyduğunda buraya ekle.</p><button class="btn primary" data-act="add" data-day="${day}">İlk sözü ekle</button></div>`;
+}
+
+/* ================= Bugün ================= */
+function renderToday(){
+  if(!S.start) return '';
+  const d = curDay(), D = DAYS[d-1], W = WEEKS[D.w-1], raw = rawDay();
+  const logs = S.logs.filter(l=>l.day===d).sort((a,b)=>b.ts-a.ts);
+  const r = S.refl[d] || {};
+  const en = logs.map(l=>l.energy), a = avg(en);
+  const finished = raw > 21;
+  return `${demoBanner()}
+  <header class="greet"><p class="eyebrow">${fmtDate(new Date())}</p><h1>${greeting()}${S.name?', '+esc(S.name):''}</h1></header>
+  ${finished?`<div class="banner"><span><b>21 günü tamamladın.</b> Yolculuğun ve tüm kayıtların Analiz ekranında duruyor.</span><a class="btn small" href="#analiz">Haritama bak</a></div>`:''}
+  <section class="hero card">
+    <div class="orbit">${orbitSVG(d)}</div>
+    <div><p class="eyebrow">${D.w}. Hafta · ${W.n}</p><h2 class="display">${D.t}</h2><p class="lead">${D.theme}</p></div>
+  </section>
+  <section class="grid2">
+    <div class="block task"><p class="label">Bugünün görevi</p><p>${D.task}</p></div>
+    <div class="block today-energy"><p class="label">Bugünün enerji dengesi</p>
+      ${logs.length ? `<div class="row" style="justify-content:space-between"><span class="big-num">${sgnF(a)}</span><span class="muted">${logs.length} söz kaydedildi</span></div>
+      <div class="meter" aria-hidden="true"><i style="left:${50 + a/3*50}%"></i></div><div class="meter-l"><span>Tüketen</span><span>Besleyen</span></div>`
+      : `<p class="muted">Kaydettiğin her söz, bugünün dengesini bu ölçekte gösterecek.</p><div class="meter" aria-hidden="true"><i style="left:50%"></i></div><div class="meter-l"><span>Tüketen</span><span>Besleyen</span></div>`}
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <div class="sec-head"><h3>Bugün duyduğun sözler</h3>${logs.length?`<button class="link" data-act="add" data-day="${d}">+ Yeni söz</button>`:''}</div>
+    ${logs.length ? `<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>` : emptyLogs(d)}
+  </section>
+  ${reflBlock(d, r)}`;
+}
+function reflBlock(d, r){
+  return `<section class="block mirror"><p class="label">Ayna sorusu · Gün ${d}</p>
+    <p class="q display">${DAYS[d-1].q}</p>
+    <label class="muted" for="refl-text" style="font-size:13px">Cevabını kendine yaz. Sadece bu cihazda saklanır.</label>
+    <textarea id="refl-text" data-day="${d}" rows="4" placeholder="Aklına gelen ilk şeyi yaz...">${esc(r.text||'')}</textarea>
+    <div class="row" style="justify-content:space-between">
+      ${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Gün tamamlandı</span>`:'<span class="muted" style="font-size:13px">Yazdıkların otomatik kaydedilir.</span>'}
+      <button class="btn ${r.done?'':'primary'}" data-act="complete-day" data-day="${d}">${r.done?'Cevabı güncelle':'Günü tamamla'}</button>
+    </div></section>`;
+}
+
+/* ================= Yolculuk ================= */
+function renderJourney(){
+  const d = curDay();
+  const doneN = Object.values(S.refl).filter(r=>r.done).length;
+  let html = `${demoBanner()}<header><p class="eyebrow">${doneN} / 21 gün tamamlandı</p><h1 class="page-title">Yolculuk</h1>
+    <p class="page-intro">Üç hafta, üç adım: önce sözleri duy, sonra niyetlerini anla, en sonunda enerjini koru. Bir güne dokunarak içeriğini ve kayıtlarını aç.</p></header>`;
+  WEEKS.forEach((W,wi)=>{
+    const days = DAYS.map((D,i)=>({...D,n:i+1})).filter(D=>D.w===wi+1);
+    const wd = days.filter(D=>isDone(D.n)).length;
+    html += `<section class="week"><div class="week-head"><div><p class="eyebrow">${wi+1}. Hafta · ${W.d}</p><h3>${W.n}</h3></div><span class="wprog">${wd}/7</span></div>
+      <div class="days">${days.map(D=>{
+        const st = isDone(D.n)?'done': D.n===d?'now': D.n>d?'locked':'past';
+        const lbl = {done:'✓ Tamam',now:'Bugün',locked:fmtDate(dayDate(D.n),{day:'numeric',month:'short'}),past:'Açık'}[st];
+        const cnt = S.logs.filter(l=>l.day===D.n).length;
+        return `<button class="day ${st}" data-act="open-day" data-day="${D.n}"><span class="ds">${lbl}</span><span class="dn">${D.n}</span><span class="dt">${D.t}</span>${cnt?`<span class="muted" style="font-size:12px">${cnt} söz</span>`:''}</button>`;
+      }).join('')}</div></section>`;
+  });
+  return html;
+}
+function openDay(n){
+  const D = DAYS[n-1], d = curDay(), locked = n>d;
+  const logs = S.logs.filter(l=>l.day===n).sort((a,b)=>b.ts-a.ts);
+  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${n} · ${D.w}. Hafta · ${WEEKS[D.w-1].n}</p><h2>${D.t}</h2></div>${closeBtn()}</div>
+    <div class="day-sheet">
+    ${locked ? `<p class="locked-note">Bu gün ${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})} açılacak. Her gün bir öncekinin üzerine kurulur; acele etme.</p>` : `
+      <p class="lead">${D.theme}</p>
+      <div class="block" style="background:var(--bg)"><p class="label">Görev</p><p>${D.task}</p></div>
+      <div class="sec-head"><h3 style="font-size:22px">Bu günün sözleri</h3><button class="link" data-act="add" data-day="${n}">+ Söz ekle</button></div>
+      ${logs.length?`<div class="logs">${logs.map(l=>logCard(l)).join('')}</div>`:'<p class="muted">Bu güne ait kayıt yok.</p>'}
+      ${reflBlock(n, S.refl[n]||{})}`}
+    </div>`);
+}
+
+/* ================= Analiz ================= */
+function renderInsights(){
+  const L = S.logs;
+  const head = `${demoBanner()}<header><p class="eyebrow">Söz ve enerji haritan</p><h1 class="page-title">Analiz</h1>
+    <p class="page-intro">Kaydettiğin sözler hangi ortamdan geliyor, hangi niyeti taşıyor ve enerjini nasıl etkiliyor?</p></header>`;
+  if(!L.length) return head + `<div class="empty"><p class="display">Haritan ilk sözle başlar.</p><p>Birkaç kayıt ekledikten sonra ortamlarına, niyetlere ve kişilere göre enerji dengen burada görünecek.</p><button class="btn primary" data-act="add">Söylem ekle</button></div>`;
+  const all = avg(L.map(l=>l.energy));
+  const pos = L.filter(l=>l.energy>0).length, neg = L.filter(l=>l.energy<0).length;
+  const doneN = Object.values(S.refl).filter(r=>r.done).length;
+  const envs = ENVS.map(e=>{ const ls=L.filter(l=>l.env===e.id); return {...e,n:ls.length,a:avg(ls.map(l=>l.energy)),p:ls.filter(l=>l.energy>0).length,ng:ls.filter(l=>l.energy<0).length}; });
+  const used = envs.filter(e=>e.n);
+  const best = [...used].sort((a,b)=>b.a-a.a)[0], worst = [...used].sort((a,b)=>a.a-b.a)[0];
+  let line = '';
+  if(used.length>1 && best.a!==worst.a) line = `Seni en çok besleyen ortam <span class="p">${best.l} (${sgnF(best.a)})</span>, en çok tüketen ortam <span class="n">${worst.l} (${sgnF(worst.a)})</span>.`;
+  else line = `Şu ana kadar sözlerin çoğu <span class="${best.a>=0?'p':'n'}">${best.l}</span> ortamından geliyor; ortalama etkisi ${sgnF(best.a)}.`;
+
+  const envRows = used.map(e=>{
+    const w = Math.abs(e.a)/3*50;
+    return `<div><div class="env-row"><div class="el">${e.l}<small>${e.n} söz</small></div>
+      <div class="div-track" role="img" aria-label="${e.l} ortalama enerji ${sgnF(e.a)}"><i class="div-bar ${e.a>=0?'pos':'neg'}" style="width:${w}%"></i></div>
+      <div class="ev" style="color:var(${e.a>0?'--pos-ink':e.a<0?'--neg-ink':'--muted'})">${sgnF(e.a)}</div></div>
+      <div class="env-row" style="margin-top:0"><span></span><div class="split" style="grid-column:auto;margin-top:0" title="Besleyen ${e.p}, nötr ${e.n-e.p-e.ng}, tüketen ${e.ng}"><i class="sp" style="width:${e.p/e.n*100}%"></i><i class="s0" style="width:${(e.n-e.p-e.ng)/e.n*100}%"></i><i class="sn" style="width:${e.ng/e.n*100}%"></i></div><span></span></div></div>`;
+  }).join('');
+
+  const d = curDay();
+  let cols='', xs='';
+  for(let i=1;i<=21;i++){
+    const ls = L.filter(l=>l.day===i), a = avg(ls.map(l=>l.energy)), h = Math.abs(a)/3*50;
+    cols += `<div class="fcol ${i===d?'cur':''}" title="Gün ${i}: ${ls.length?sgnF(a)+' ('+ls.length+' söz)':'kayıt yok'}">${ls.length&&a!==0?`<i class="${a>0?'p':'n'}" style="height:${Math.max(h,3)}%"></i>`:''}${ls.length&&a===0?`<i class="p" style="height:1.5%;background:var(--muted)"></i>`:''}</div>`;
+    xs += `<span style="${i===d?'color:var(--ink);font-weight:700':''}">${i}</span>`;
+  }
+
+  const ic = INTENTS.map(([id,l])=>{ const ls=L.filter(x=>(x.intent||[]).includes(id)); return {l,n:ls.length,a:avg(ls.map(x=>x.energy))}; }).filter(x=>x.n).sort((a,b)=>b.n-a.n);
+  const imax = ic.length ? ic[0].n : 1;
+  const intentRows = ic.length ? ic.map(x=>`<div class="hbar"><span class="t">${x.l}</span><span class="b"><i style="width:${x.n/imax*100}%;background:var(${x.a>0?'--pos':x.a<0?'--neg':'--muted'})"></i></span><span class="c">${x.n}</span></div>`).join('')
+    : '<p class="muted">Kayıtlarında niyet seçtiğinde burada görünecek.</p>';
+
+  const pm = {};
+  L.filter(l=>l.person&&l.person.trim()).forEach(l=>{ const k=l.person.trim().toLocaleLowerCase('tr-TR'); (pm[k]=pm[k]||{name:l.person.trim(),e:[],env:l.env}).e.push(l.energy); });
+  const people = Object.values(pm).map(p=>({...p,n:p.e.length,a:avg(p.e)})).sort((a,b)=>b.n-a.n||b.a-a.a).slice(0,8);
+  const peopleHtml = people.length ? people.map(p=>`<div class="person"><span class="av ${ecls(Math.round(p.a))}">${esc(p.name.charAt(0).toLocaleUpperCase('tr-TR'))}</span><span class="nm">${esc(p.name)}<small>${envL(p.env)} · ${p.n} söz</small></span><span class="epill ${ecls(p.a)}">${sgnF(p.a)}</span></div>`).join('')
+    : '<p class="muted">Kayıtlarda "Kim söyledi?" alanını doldurduğunda kişiler burada listelenir.</p>';
+
+  return head + `
+  <section class="stats">
+    <div class="stat"><span class="v">${L.length}</span><span class="k">Kaydedilen söz</span></div>
+    <div class="stat"><span class="v" style="color:var(${all>0?'--pos-ink':all<0?'--neg-ink':'--ink'})">${sgnF(all)}</span><span class="k">Ortalama enerji</span></div>
+    <div class="stat"><span class="v">${Math.round(pos/L.length*100)}<small style="font-size:20px">%</small></span><span class="k">Besleyen sözler</span></div>
+    <div class="stat"><span class="v">${doneN}<small style="font-size:20px">/21</small></span><span class="k">Tamamlanan gün</span></div>
+  </section>
+  <section class="block"><p class="label">Öne çıkan</p><p class="insight-line">${line}</p>
+    <p class="muted" style="font-size:13.5px">Toplam ${pos} besleyen, ${L.length-pos-neg} nötr ve ${neg} tüketen söz kaydettin.</p></section>
+  <section class="block"><div class="sec-head"><h3>Ortamlara göre enerji</h3></div>
+    <div class="env-rows">${envRows}</div>
+    <div class="env-row"><span></span><div class="axis"><span>−3 tüketen</span><span>0</span><span>+3 besleyen</span></div><span></span></div>
+    <div class="legend"><span><i style="background:var(--pos)"></i>Besleyen</span><span><i style="background:var(--line)"></i>Nötr</span><span><i style="background:var(--neg)"></i>Tüketen</span></div>
+  </section>
+  <section class="block"><div class="sec-head"><h3>21 günlük enerji akışı</h3></div>
+    <p class="muted" style="font-size:13.5px">Her sütun o günün ortalama enerji etkisi. Çizginin üstü besleyen, altı tüketen.</p>
+    <div class="flow"><div class="flow-in">${cols}</div><div class="flow-x">${xs}</div></div>
+  </section>
+  <section class="grid2">
+    <div class="block"><h3 class="display" style="font-size:24px">Niyet haritası</h3><p class="muted" style="font-size:13px">Sözlerin altında en sık gördüğün amaçlar. Renk, o niyetin ortalama etkisini gösterir.</p><div class="hbars">${intentRows}</div></div>
+    <div class="block"><h3 class="display" style="font-size:24px">Kişiler</h3><p class="muted" style="font-size:13px">En sık kayıt ettiğin kişiler ve ortalama etkileri.</p><div class="people">${peopleHtml}</div></div>
+  </section>`;
+}
+
+/* ================= Ayarlar ================= */
+let resetAsk = false;
+function renderSettings(){
+  return `${demoBanner()}<header><h1 class="page-title">Ayarlar</h1><p class="page-intro">Yolculuğunu kişiselleştir, uygulamayı telefonuna ekle ve kayıtlarını yedekle.</p></header>
+  <section class="block"><h3 class="display" style="font-size:24px">Profil</h3>
+    <div class="set-list">
+      <div class="field"><label for="set-name">Adın</label><input type="text" id="set-name" value="${esc(S.name)}" placeholder="Sana nasıl seslenelim?" autocomplete="given-name"></div>
+      <div class="field"><label for="set-start">Yolculuğun başlangıç tarihi</label><input type="date" id="set-start" value="${S.start||today()}">
+        <span class="muted" style="font-size:12.5px">Bugün ${curDay()}. gündesin. Tarihi değiştirirsen günler buna göre yeniden hesaplanır.</span></div>
+      <div><button class="btn primary" data-act="save-profile">Kaydet</button></div>
+    </div></section>
+  <section class="block"><h3 class="display" style="font-size:24px">Telefonuna uygulama olarak ekle</h3>
+    <p class="muted">Yankı 21 bir web uygulamasıdır. Ana ekranına eklediğinde normal bir uygulama gibi tek dokunuşla açılır.</p>
+    <div class="os">
+      <div><b>iPhone · iPad (Safari)</b><ol class="steps"><li>Bu sayfayı Safari'de aç.</li><li>Alttaki <b>Paylaş</b> simgesine dokun.</li><li><b>Ana Ekrana Ekle</b>'yi seç.</li></ol></div>
+      <div><b>Android (Chrome)</b><ol class="steps"><li>Bu sayfayı Chrome'da aç.</li><li>Sağ üstteki <b>⋮</b> menüsüne dokun.</li><li><b>Ana ekrana ekle</b> ya da <b>Uygulamayı yükle</b>'yi seç.</li></ol></div>
+      <div><b>Laptop (Chrome · Edge)</b><ol class="steps"><li>Adres çubuğunun sağındaki <b>yükle</b> simgesine tıkla.</li><li>Ya da sayfayı yer imlerine ekle.</li></ol></div>
+      <div><b>Mac (Safari)</b><ol class="steps"><li><b>Dosya</b> menüsünü aç.</li><li><b>Dock'a Ekle</b>'yi seç.</li></ol></div>
+    </div></section>
+  <section class="block"><h3 class="display" style="font-size:24px">Gizlilik ve yedek</h3>
+    <p class="muted">Kayıtların yalnızca bu cihazın tarayıcısında saklanır; hiçbir sunucuya gönderilmez. Başka bir cihaza taşımak ya da güvenceye almak için yedek kodunu kopyala.</p>
+    <div class="row"><button class="btn" data-act="copy-backup">Yedek kodunu kopyala</button></div>
+    <div id="backupOut"></div>
+    <div class="field" style="margin-top:6px"><label for="imp">Yedekten geri yükle</label><textarea id="imp" rows="3" placeholder="Yedek kodunu buraya yapıştır"></textarea>
+    <div class="row"><button class="btn" data-act="import-backup">Geri yükle</button><span id="impMsg" class="err" role="status"></span></div></div>
+  </section>
+  <section class="block"><h3 class="display" style="font-size:24px">Baştan başla</h3>
+    <p class="muted">Tüm sözler, cevaplar ve ilerleme bu cihazdan silinir. Bu işlem geri alınamaz.</p>
+    <div class="row">${resetAsk?`<span class="err">Tüm veriler silinsin mi?</span><button class="btn danger" data-act="reset-yes">Evet, sil</button><button class="btn ghost" data-act="reset-no">Vazgeç</button>`:`<button class="btn danger" data-act="reset-ask">Tüm verileri sil</button>`}</div>
+  </section>`;
+}
+
+/* ================= Sheet ================= */
+const sheetRoot = document.getElementById('sheetRoot');
+let lastFocus = null;
+const closeBtn = () => `<button class="x" data-act="close-sheet" aria-label="Kapat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>`;
+function openSheet(html){
+  lastFocus = document.activeElement;
+  sheetRoot.innerHTML = `<div class="sheet-wrap" data-act="backdrop"><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div></div>`;
+  document.body.style.overflow='hidden';
+  const f = sheetRoot.querySelector('.sheet [autofocus]') || sheetRoot.querySelector('.sheet .x'); f && f.focus({preventScroll:true});
+}
+function closeSheet(){ sheetRoot.innerHTML=''; document.body.style.overflow=''; lastFocus && lastFocus.focus && lastFocus.focus({preventScroll:true}); }
+
+/* ================= Kayıt formu ================= */
+let delAsk = false;
+function chipGroup(name, items, sel, multi){
+  return `<div class="chips" role="group" data-group="${name}" data-multi="${multi?1:0}">${items.map(([id,l])=>`<button type="button" class="chip" data-chip="${id}" aria-pressed="${sel.includes(id)}">${l}</button>`).join('')}</div>`;
+}
+function eBtnStyle(v){
+  if(v===0) return 'background:var(--surface-2)';
+  const p = 18 + Math.abs(v)*24;
+  return `background:color-mix(in srgb, var(${v>0?'--pos':'--neg'}) ${p}%, var(--surface))`;
+}
+function openLogForm(id, day){
+  delAsk = false;
+  const l = id ? S.logs.find(x=>x.id===id) : null;
+  const dd = l ? l.day : (day || curDay());
+  const persons = [...new Set(S.logs.map(x=>x.person&&x.person.trim()).filter(Boolean))];
+  const e = l ? l.energy : null;
+  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${dd} · ${DAYS[dd-1].t}</p><h2>${l?'Kaydı düzenle':'Bir söz kaydet'}</h2></div>${closeBtn()}</div>
+  <form class="form" id="logForm" data-id="${l?l.id:''}" data-day="${dd}" novalidate>
+    <fieldset class="fset"><legend>Nerede duydun?</legend>${chipGroup('env', ENVS.map(x=>[x.id,x.l]), [l?l.env:'ev'], false)}</fieldset>
+    <div class="fset"><label for="f-person">Kim söyledi?</label><input type="text" id="f-person" list="plist" value="${esc(l?l.person:'')}" placeholder="Örn. Annem, yöneticim, Deniz" autocomplete="off">
+      <datalist id="plist">${persons.map(p=>`<option value="${esc(p)}">`).join('')}</datalist></div>
+    <div class="fset"><label for="f-text">Ne söylendi?</label><p class="hint">Cümleyi olabildiğince duyduğun gibi yaz.</p>
+      <textarea id="f-text" rows="3" placeholder="“...”" ${l?'':'autofocus'}>${esc(l?l.text:'')}</textarea></div>
+    <fieldset class="fset"><legend>Sözün asıl amacı ne olabilir?</legend><p class="hint">Yüzeyin altına bak. Birden fazla seçebilirsin.</p>${chipGroup('intent', INTENTS, l?l.intent||[]:[], true)}</fieldset>
+    <fieldset class="fset"><legend>Enerjini nasıl etkiledi?</legend>
+      <div class="escale" data-group="energy">${[-3,-2,-1,0,1,2,3].map(v=>`<button type="button" class="eb" data-e="${v}" aria-pressed="${e===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}">${sgn(v)}</button>`).join('')}</div>
+      <div class="e-lbl"><span>Tüketti</span><span>Nötr</span><span>Besledi</span></div>
+      <p class="e-now" id="e-now">${e===null?'<span class="muted" style="font-family:var(--f-body);font-size:14px">Bir değer seç</span>':ELBL[e]}</p></fieldset>
+    <fieldset class="fset"><legend>Bedeninde ne hissettin?</legend>${chipGroup('body', BODY, l?l.body||[]:[], true)}</fieldset>
+    <div class="fset"><label for="f-resp">Nasıl karşılık verdin ya da vermek isterdin?</label>
+      <textarea id="f-resp" rows="2" placeholder="İsteğe bağlı">${esc(l?l.response:'')}</textarea></div>
+    <p class="err" id="f-err" role="alert"></p>
+    <div class="form-actions">
+      <div class="row" id="delZone">${l?'<button type="button" class="btn danger" data-act="del-ask">Sil</button>':''}</div>
+      <div class="row"><button type="button" class="btn ghost" data-act="close-sheet">Vazgeç</button><button type="submit" class="btn primary">${l?'Güncelle':'Kaydet'}</button></div>
+    </div>
+  </form>`);
+}
+function submitLog(form){
+  const text = form.querySelector('#f-text').value.trim();
+  const eb = form.querySelector('.eb[aria-pressed="true"]');
+  const err = form.querySelector('#f-err');
+  if(!text){ err.textContent='Söylenen cümleyi yaz.'; form.querySelector('#f-text').focus(); return; }
+  if(!eb){ err.textContent='Bu sözün enerjini nasıl etkilediğini seç.'; eb||form.querySelector('.eb').focus(); return; }
+  const pick = g => [...form.querySelectorAll(`[data-group="${g}"] [aria-pressed="true"]`)].map(b=>b.dataset.chip);
+  const id = form.dataset.id;
+  const rec = { env: pick('env')[0]||'diger', person: form.querySelector('#f-person').value.trim(), text, intent: pick('intent'), energy: Number(eb.dataset.e), body: pick('body'), response: form.querySelector('#f-resp').value.trim() };
+  if(id){ Object.assign(S.logs.find(x=>x.id===id), rec); }
+  else S.logs.push({id:uid(), day:Number(form.dataset.day), date:today(), ts:Date.now(), ...rec});
+  save(); closeSheet(); render(false); toast(id?'Kayıt güncellendi':'Söz kaydedildi');
+}
+
+/* ================= Olaylar ================= */
+document.addEventListener('click', e=>{
+  const chip = e.target.closest('[data-chip]');
+  if(chip){ const g = chip.parentElement; if(g.dataset.multi!=='1') g.querySelectorAll('[data-chip]').forEach(c=>c.setAttribute('aria-pressed','false'));
+    chip.setAttribute('aria-pressed', g.dataset.multi==='1' ? String(chip.getAttribute('aria-pressed')!=='true') : 'true'); return; }
+  const eb = e.target.closest('.eb');
+  if(eb){ eb.parentElement.querySelectorAll('.eb').forEach(b=>b.setAttribute('aria-pressed','false')); eb.setAttribute('aria-pressed','true');
+    document.getElementById('e-now').textContent = ELBL[eb.dataset.e]; return; }
+  const t = e.target.closest('[data-act]'); if(!t) return;
+  const act = t.dataset.act;
+  if(act==='backdrop'){ if(e.target===t) closeSheet(); return; }
+  e.preventDefault();
+  const A = {
+    'add': ()=>openLogForm(null, t.dataset.day?Number(t.dataset.day):null),
+    'edit-log': ()=>openLogForm(t.dataset.id),
+    'open-day': ()=>openDay(Number(t.dataset.day)),
+    'close-sheet': closeSheet,
+    'del-ask': ()=>{ document.getElementById('delZone').innerHTML = `<span class="err">Silinsin mi?</span><button type="button" class="btn danger small" data-act="del-yes">Evet</button><button type="button" class="btn ghost small" data-act="del-no">Hayır</button>`; },
+    'del-no': ()=>{ document.getElementById('delZone').innerHTML = '<button type="button" class="btn danger" data-act="del-ask">Sil</button>'; },
+    'del-yes': ()=>{ const id = document.getElementById('logForm').dataset.id; S.logs = S.logs.filter(x=>x.id!==id); save(); closeSheet(); render(false); toast('Kayıt silindi'); },
+    'complete-day': ()=>{ const n = Number(t.dataset.day); const ta = document.querySelector(`#refl-text[data-day="${n}"]`); const txt = ta?ta.value.trim():'';
+      if(!txt){ ta && ta.focus(); toast('Önce ayna sorusuna kısa bir cevap yaz'); return; }
+      const was = isDone(n); S.refl[n] = {text:txt, done:true, ts:Date.now()}; save();
+      const inSheet = !!t.closest('.sheet'); if(inSheet) closeSheet(); render(false);
+      toast(was?'Cevabın güncellendi': n===21?'Tebrikler, 21 günü tamamladın':'Gün '+n+' tamamlandı'); },
+    'save-profile': ()=>{ S.name = document.getElementById('set-name').value.trim(); const st = document.getElementById('set-start').value; if(st) S.start = st; save(); render(false); toast('Ayarlar kaydedildi'); },
+    'copy-backup': ()=>{ const code = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+      const out = document.getElementById('backupOut');
+      const show = () => { out.innerHTML = `<p class="muted" style="font-size:13px;margin-bottom:6px">Kodu seçip kopyala ve güvenli bir yere kaydet:</p><code class="backup">${code}</code>`; };
+      try{ navigator.clipboard.writeText(code).then(()=>toast('Yedek kodu kopyalandı'), show); }catch(_){ show(); } },
+    'import-backup': ()=>{ const v = document.getElementById('imp').value.trim(), m = document.getElementById('impMsg');
+      try{ const o = JSON.parse(decodeURIComponent(escape(atob(v)))); if(!o || !Array.isArray(o.logs)) throw 0; S = Object.assign(blank(), o); save(); render(false); toast('Yedek geri yüklendi'); }
+      catch(_){ m.textContent = 'Bu kod okunamadı. Kodun tamamını kopyaladığından emin ol.'; } },
+    'reset-ask': ()=>{ resetAsk=true; render(false); },
+    'reset-no': ()=>{ resetAsk=false; render(false); },
+    'reset-yes': ()=>{ resetAsk=false; S = blank(); save(); location.hash='#bugun'; showOnboarding(); render(false); },
+    'start-own': ()=>{ const name = S.name; S = blank(); S.name = name==='Ayşe'?'':name; save(); showOnboarding(); render(false); },
+  };
+  A[act] && A[act]();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && sheetRoot.innerHTML) closeSheet();
+  if((e.key==='Enter'||e.key===' ') && e.target.matches('.log[data-act]')){ e.preventDefault(); e.target.click(); }
+});
+document.addEventListener('submit', e=>{ if(e.target.id==='logForm'){ e.preventDefault(); submitLog(e.target); } });
+let rt;
+document.addEventListener('input', e=>{
+  if(e.target.id==='refl-text'){ const n = Number(e.target.dataset.day); clearTimeout(rt);
+    rt = setTimeout(()=>{ S.refl[n] = Object.assign({}, S.refl[n], {text:e.target.value}); save(); }, 400); }
+  if(e.target.id==='f-text' || e.target.closest && e.target.closest('#logForm')){ const er=document.getElementById('f-err'); if(er) er.textContent=''; }
+});
+
+/* ================= Toast ================= */
+let tt;
+function toast(msg){ const r = document.getElementById('toastRoot'); r.innerHTML = `<div class="toast" role="status">${esc(msg)}</div>`; clearTimeout(tt); tt = setTimeout(()=>r.innerHTML='', 2400); }
+
+/* ================= Karşılama ================= */
+const onbRoot = document.getElementById('onbRoot');
+function showOnboarding(){
+  onbRoot.innerHTML = `<div class="onb"><div class="onb-in">
+    <p class="eyebrow">21 günlük farkındalık programı</p>
+    <h1>Sana söylenen her söz bir <i>yankı</i> bırakır.</h1>
+    <p class="lead">Evde, iş yerinde ve arkadaş ortamında sana yöneltilen sözleri fark et. Altındaki asıl amacı gör. Enerjini besleyip beslemediğini ölç.</p>
+    <div class="pillars">
+      <div class="pillar"><b>1 · Fark Et</b><span>Sözleri yargılamadan duy.</span></div>
+      <div class="pillar"><b>2 · Anla</b><span>Söylemin niyetini gör.</span></div>
+      <div class="pillar"><b>3 · Dönüştür</b><span>Enerjini koru.</span></div>
+    </div>
+    <form id="onbForm" novalidate>
+      <div class="field"><label for="onb-name">Adın</label><input type="text" id="onb-name" placeholder="Sana nasıl seslenelim?" autocomplete="given-name" value="${esc(S.name||'')}"></div>
+      <div class="row"><button class="btn primary" type="submit">Yolculuğa bugün başla</button><button class="btn ghost" type="button" id="onbDemo">Örnek verilerle incele</button></div>
+      <p class="muted" style="font-size:13px">Kayıtların yalnızca bu cihazda saklanır.</p>
+    </form></div></div>`;
+  document.getElementById('fab').hidden = true;
+  document.getElementById('onbForm').addEventListener('submit', ev=>{ ev.preventDefault();
+    S = blank(); S.name = document.getElementById('onb-name').value.trim(); S.start = today(); save(); onbRoot.innerHTML=''; location.hash='#bugun'; route(); render(true); toast('Yolculuğun başladı · Gün 1'); });
+  document.getElementById('onbDemo').addEventListener('click', ()=>{ loadDemo(); onbRoot.innerHTML=''; location.hash='#bugun'; route(); render(true); });
+}
+function loadDemo(){
+  const st = new Date(); st.setDate(st.getDate()-8);
+  S = blank(); S.demo = true; S.name = 'Ayşe'; S.start = iso(st);
+  const R = [
+    [1,'ev','Annem','Hâlâ evlenmeyecek misin? Herkes yerleşti.',['kontrol','kiyas','korku'],-2,['mide'],'Sustum, konuyu değiştirdim.'],
+    [1,'is','Yöneticim','Sunumun çok netti, ekibe örnek oldu.',['takdir'],3,['hafif','sicak'],''],
+    [2,'ev','Babam','Yorulma bu kadar, sağlığın her şeyden önemli.',['koruma'],1,['sicak'],''],
+    [2,'ev','Kardeşim','Şaka şaka, sen zaten hep annemin gözdesiydin.',['saka','kiyas'],-1,['bogaz'],'Güldüm ama içim burkuldu.'],
+    [3,'is','Müşteri','Bu iş dün bitmeliydi.',['kontrol','elestiri'],-3,['gogus','omuz'],'Hemen özür diledim. Aslında gecikme onlardandı.'],
+    [3,'is','Ekip arkadaşım','Bunu sen hallet, sen daha iyi yaparsın.',['yonlendirme','takdir'],-1,['omuz'],''],
+    [4,'arkadas','Selin','Sen hep böylesin zaten, her şeyi dert ediyorsun.',['elestiri'],-2,['omuz'],'Belki haklıdır diye düşündüm.'],
+    [4,'arkadas','Deniz','Seni dinlemek bana iyi geliyor.',['destek','takdir'],3,['sicak','nefes'],'Teşekkür ettim.'],
+    [5,'diger','İç sesim','Yeterince iyi değilsin.',['korku'],-3,['gogus'],'Bunu ilk kimden duyduğumu düşündüm.'],
+    [5,'arkadas','Ece','Bu hafta seni çok özledim, buluşalım mı?',['destek','ilgi'],2,['hafif'],''],
+    [6,'is','Yöneticim','Bunu yarına yetiştirebilir misin? Biliyorum yoğunsun.',['yonlendirme','destek'],0,['yok'],'Perşembeye kadar sürer dedim.'],
+    [7,'ev','Annem','Yemeğini yedin mi? Kendine iyi bak.',['koruma'],2,['sicak'],''],
+    [8,'arkadas','Selin','Geçen sefer gelmedin, yine mi işin var?',['sucluluk','ilgi'],-2,['mide'],'Bu sefer açıkladım, gerilmedim.'],
+    [8,'is','Ekip arkadaşım','Fikrini toplantıda savunman çok cesurcaydı.',['takdir'],2,['hafif'],''],
+    [9,'ev','Annem','Sen bilirsin, ben sadece söylüyorum.',['sucluluk','korku'],-1,['bogaz'],'Nefes aldım, “Biliyorum anne, merak ettiğin için teşekkürler” dedim.'],
+  ];
+  R.forEach(([day,env,person,text,intent,energy,body,response],i)=>{ const d = new Date(st); d.setDate(d.getDate()+day-1); d.setHours(9+(i*3)%11, (i*17)%60);
+    S.logs.push({id:uid()+i, day, date:iso(d), ts:d.getTime(), env, person, text, intent, energy, body, response}); });
+  const RF = ['Annemin cümlesi. Sanki bir sınavdan geçiyormuşum gibi hissettim.','“Sen bilirsin” cümlesi. Çocukluğumdan beri tanıdık.','Müşterinin cümlesi beni küçülttü, yöneticimin övgüsü büyüttü.','Deniz hafifletiyor, Selin ile konuşunca yoruluyorum.','Göğsüm sıkıştı, ne olduğunu sonra anladım.','Kardeşimin şakası. Kelimeler hafif, ton ağırdı.','Aynı cümlelerin tekrar ettiğini ilk kez bu kadar net gördüm.','Babamın sözü eleştiri gibi geldi ama altında endişe vardı.'];
+  RF.forEach((t,i)=>S.refl[i+1]={text:t,done:true,ts:Date.now()});
+  save();
+}
+
+/* ================= Başlat ================= */
+if(!S.start) showOnboarding();
+route(); render(true);
+</script>
