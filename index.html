@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611181645">
+<meta name="build" content="202611181648">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -807,8 +807,8 @@ const IC = {
 function mwCount(d){ const r = S.refl[d] || {}; const n = (r.moodWords||[]).length + String(r.moodCustom||'').split(',').map(x=>x.trim()).filter(Boolean).length; return n ? n+' seçili' : 'Seç'; }
 function mwBox(d){
   const r = S.refl[d] || {}, L = SCALE.find(x=>x.v===r.mood), sel = r.moodWords || [];
-  if(!L) return `<p class="mw-hint">Bir değer seç; o hisse uygun kelimeler burada çıkar.</p>`;
-  return `<p class="mw-hint">${sgn(L.v)} · ${L.l}. Hangi kelimeler seni anlatıyor?</p>
+  if(!L) return `<p class="mw-hint">Bir değer seç; ona uygun duygular burada çıkar.</p>`;
+  return `<p class="mw-hint">${sgn(L.v)} · ${L.l}. Hangi duygular seni anlatıyor?</p>
     <div class="chips mw-chips">${L.w.map(w=>`<button type="button" class="chip" data-mw="${esc(w)}" data-day="${d}" aria-pressed="${sel.includes(w)}">${w}</button>`).join('')}</div>`;
 }
 function dayBody(d, logs, full){
@@ -828,9 +828,9 @@ function dayBody(d, logs, full){
       <h2 class="j-h">${IC.heart}Bugün kendimi… hissettim</h2>
       <div class="feel-grid">
         <div class="moods">${[2,1,0,-1,-2].map(v=>`<button type="button" class="mood dm" data-dm="${v}" data-day="${d}" aria-pressed="${r.mood===v}" aria-label="${sgn(v)} ${ELBL[v]}"><span class="dot" style="${eBtnStyle(v)}">${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
-        <details class="mw-det"><summary><span>His kelimeleri</span><span class="mw-count">${mwCount(d)}</span><span class="pl" aria-hidden="true"></span></summary>
+        <details class="mw-det"><summary><span>Duygular</span><span class="mw-count">${mwCount(d)}</span><span class="pl" aria-hidden="true"></span></summary>
           <div class="mw-side"><div class="mw-box">${mwBox(d)}</div>
-          <input type="text" class="mw-custom" data-dk="moodCustom" data-day="${d}" value="${esc(r.moodCustom||'')}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" aria-label="Başka his kelimeleri" autocomplete="off"></div></details>
+          <input type="text" class="mw-custom" data-dk="moodCustom" data-day="${d}" value="${esc(r.moodCustom||'')}" placeholder="Başka bir duygu eklemek istersen yaz (virgülle ayır)" aria-label="Başka duygular" autocomplete="off"></div></details>
       </div>
       <label class="why"><span>Neden böyle hissettim?</span>
         <textarea class="lined" data-dk="why" data-day="${d}" rows="2" placeholder="Bugün beni en çok ne etkiledi? Kısaca yaz.">${esc(r.why||'')}</textarea></label>
@@ -925,7 +925,7 @@ function renderInsights(){
   const typeHtml = tc.some(t=>t.n) ? `<div class="hbars">${tc.map(t=>`<div class="hbar"><span class="t">${t.l}</span><span class="b"><i style="width:${t.n/tmax*100}%;background:var(${t.a>0?'--pos':t.a<0?'--neg':'--muted'})"></i></span><span class="c">${t.n}</span></div><div class="hbar" style="margin-top:-6px"><span></span><span class="muted" style="font-size:12px">${t.n?'Ortalama etki '+sgnF(t.a):'Henüz yok'}</span><span></span></div>`).join('')}</div>`
     : '<p class="muted">Anlarında "Bu söz ne türdeydi?" sorusunu cevapladığında burada görünecek.</p>';
   const feelHtml = ft.length ? `<div class="chips-sm feel-cloud">${ft.map(([f,c])=>`<span class="epill ${ecls(feelLevel(f)??0)}" style="font-size:${Math.min(17,12+c*1.3)}px">${esc(f)} <b>${c}</b></span>`).join('')}</div>`
-    : '<p class="muted">Anlarında his kelimeleri seçtiğinde burada görünecek.</p>';
+    : '<p class="muted">Anlarında duyguları seçtiğinde burada görünecek.</p>';
   return head + `
   <section class="stats">
     <div class="stat"><span class="v">${L.length}</span><span class="k">Yazılan an</span></div>
@@ -1188,8 +1188,8 @@ function eBtnStyle(v){
 }
 function feelChips(v, sel){
   const L = SCALE.find(x=>x.v===v);
-  if(!L) return '<p class="hint" style="margin:0">Önce yukarıdan bir değer seç; ona uygun his kelimeleri burada çıkacak.</p>';
-  return `<p class="hint" style="margin:0">${sgn(v)} · ${L.l} için kelimeler. Birden fazla seçebilirsin.</p>` + chipGroup('feel', L.w.map(w=>[w,w]), sel, true);
+  if(!L) return '<p class="hint" style="margin:0">Önce yukarıdan bir değer seç; ona uygun duygular burada çıkacak.</p>';
+  return `<p class="hint" style="margin:0">${sgn(v)} · ${L.l} için duygular. Birden fazla seçebilirsin.</p>` + chipGroup('feel', L.w.map(w=>[w,w]), sel, true);
 }
 function openLogForm(id, day){
   delAsk = false;
@@ -1213,7 +1213,7 @@ function openLogForm(id, day){
     <fieldset class="fset"><legend>4. Bana ne hissettirdi?</legend><p class="hint">Bu söz sende nasıl bir yankı bıraktı?</p>
       <div class="escale" data-group="energy">${[-2,-1,0,1,2].map(v=>`<button type="button" class="eb" data-e="${v}" aria-pressed="${e===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}"><span>${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
       <div id="feelBox" class="feel-box">${feelChips(e, fsel)}</div>
-      <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka his kelimeleri">
+      <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir duygu eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka duygular">
     </fieldset>
     <div class="step-h"><span>2</span><div><b>Anla</b><small>Sözün arkasına bak.</small></div></div>
     <fieldset class="fset"><legend>5. Bu söz ne türdeydi?</legend><p class="hint">Emin değil misin? <a href="#rehber" class="inline-link" data-act="close-sheet-guide">Rehbere bak</a></p>
@@ -1359,7 +1359,7 @@ function welcomeHTML(){
       ${acc(2,'21 gün nasıl ilerler?',`<p>Her gün ve her anda şu üç adım sırayla tekrar eder:</p>
         <ol><li><b>Fark Et:</b> Yargılamadan ne olduğunu gözlemle. Ne söylendi, sende nasıl bir yankı bıraktı?</li><li><b>Anla:</b> Sözün arkasına bak. Karşındaki ne demek istemiş olabilir?</li><li><b>Dönüştür:</b> Bu farkındalıkla nasıl karşılık vermek istediğini seç.</li></ol>`)}
       ${acc(3,'Bir “An” nasıl yazılır?',`<p>Gün içinde seni etkileyen her söz bir andır. Her an üç adımda yazılır:</p>
-        <p class="g-sub" style="margin-top:4px">Fark Et</p><ol><li>Kim söyledi? <span class="muted">İsim ya da takma isim</span></li><li>Nerede? <span class="muted">Ev & Aile, Arkadaşlar, İş Yeri, Okul, Diğerleri</span></li><li>Ne oldu, ne söyledi? <span class="muted">Yargılamadan, olduğu gibi</span></li><li>Bana ne hissettirdi? <span class="muted">−2 ile +2 arası ve his kelimeleri</span></li></ol>
+        <p class="g-sub" style="margin-top:4px">Fark Et</p><ol><li>Kim söyledi? <span class="muted">İsim ya da takma isim</span></li><li>Nerede? <span class="muted">Ev & Aile, Arkadaşlar, İş Yeri, Okul, Diğerleri</span></li><li>Ne oldu, ne söyledi? <span class="muted">Yargılamadan, olduğu gibi</span></li><li>Bana ne hissettirdi? <span class="muted">−2 ile +2 arası ve duygular</span></li></ol>
         <p class="g-sub">Anla</p><ol start="5"><li>Bu söz ne türdeydi?</li><li>Sence asıl amacı neydi?</li><li>Karşımdaki insan ne demek istemiş olabilir?</li></ol>
         <p class="g-sub">Dönüştür</p><ol start="8"><li>Nasıl karşılık verdim ya da vermek isterdim?</li></ol>`)}
       ${acc(4,'Sözleri nasıl değerlendiririm?',matrixHTML())}
@@ -1442,6 +1442,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611181645";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611181648";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
