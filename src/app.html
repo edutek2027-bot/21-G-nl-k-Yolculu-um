@@ -245,6 +245,11 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .inline-link{color:var(--accent);font-weight:700}
 @media (max-width:420px){.tab{font-size:10.5px}.ti{width:44px}}
 
+.step-h{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-sm);background:var(--accent-soft);margin-bottom:-6px}
+.step-h span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:800;flex:none}
+.step-h b{display:block;font-family:var(--f-display);font-weight:400;font-size:22px;line-height:1.1}
+.step-h small{color:var(--muted);font-size:13px}
+.resp b{color:var(--ink);font-weight:600}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -540,7 +545,8 @@ function logCard(l, showDay){
     <blockquote class="quote">“${esc(l.text)}”</blockquote>
     ${feels?`<div class="chips-sm" aria-label="Hissettirdikleri">${feels}</div>`:''}
     ${intents?`<div class="chips-sm" aria-label="Asıl amaç">${intents}</div>`:''}
-    ${l.response?`<p class="resp">${esc(l.response)}</p>`:''}
+    ${l.meant?`<p class="resp"><b>Ne demek istemiş olabilir:</b> ${esc(l.meant)}</p>`:''}
+    ${l.response?`<p class="resp"><b>Karşılığım:</b> ${esc(l.response)}</p>`:''}
   </article>`;
 }
 function emptyLogs(day){
@@ -838,24 +844,29 @@ function openLogForm(id, day){
   const custom = fsel.filter(f=>feelLevel(f)===null).join(', ');
   openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${dd} · ${DAYS[dd-1].t}</p><h2>${no}. An</h2></div>${closeBtn()}</div>
   <form class="form" id="logForm" data-id="${l?l.id:''}" data-day="${dd}" novalidate>
-    <fieldset class="fset"><legend>Nerede?</legend>${chipGroup('env', ENVS.map(x=>[x.id,x.l]), [l?l.env:'ev'], false)}</fieldset>
-    <div class="fset"><label for="f-person">Kiminle?</label><input type="text" id="f-person" list="plist" value="${esc(l?l.person:'')}" placeholder="Örn. Annem, yöneticim, Deniz" autocomplete="off">
+    <div class="step-h"><span>1</span><div><b>Fark Et</b><small>Yargılamadan ne olduğunu gözlemle.</small></div></div>
+    <fieldset class="fset"><legend>1. Nerede?</legend>${chipGroup('env', ENVS.map(x=>[x.id,x.l]), [l?l.env:'ev'], false)}</fieldset>
+    <div class="fset"><label for="f-person">2. Kiminle?</label><input type="text" id="f-person" list="plist" value="${esc(l?l.person:'')}" placeholder="Örn. Annem, yöneticim, Deniz" autocomplete="off">
       <datalist id="plist">${persons.map(p=>`<option value="${esc(p)}">`).join('')}</datalist></div>
-    <div class="fset"><label for="f-text">Ne oldu, ne söyledi?</label><p class="hint">Olanı kısaca anlat; söylenen cümleyi olabildiğince duyduğun gibi yaz.</p>
+    <div class="fset"><label for="f-text">3. Ne oldu, ne söyledi?</label><p class="hint">Yorum katmadan, yargılamadan, olduğu gibi yaz.</p>
       <textarea id="f-text" rows="3" placeholder="Örn. Akşam yemeğinde annem “Hâlâ o işte mi çalışıyorsun?” dedi." ${l?'':'autofocus'}>${esc(l?l.text:'')}</textarea></div>
-    <fieldset class="fset"><legend>Bu söz ne türdeydi?</legend><p class="hint">Emin değil misin? <a href="#rehber" class="inline-link" data-act="close-sheet-guide">Rehbere bak</a></p>
+    <fieldset class="fset"><legend>4. Bana ne hissettirdi?</legend><p class="hint">Bu söz sende nasıl bir yankı bıraktı?</p>
+      <div class="escale" data-group="energy">${[-2,-1,0,1,2].map(v=>`<button type="button" class="eb" data-e="${v}" aria-pressed="${e===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}"><span>${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
+      <div id="feelBox" class="feel-box">${feelChips(e, fsel)}</div>
+      <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka his kelimeleri">
+    </fieldset>
+    <div class="step-h"><span>2</span><div><b>Anla</b><small>Sözün arkasına bak.</small></div></div>
+    <fieldset class="fset"><legend>5. Bu söz ne türdeydi?</legend><p class="hint">Emin değil misin? <a href="#rehber" class="inline-link" data-act="close-sheet-guide">Rehbere bak</a></p>
       <div class="type-grid">
         <div><p class="type-g">Eleştiri</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Eleştiri').map(t=>[t[0],t[1].replace(' eleştiri','')]), [l?l.type:''], false)}</div>
         <div><p class="type-g">Destek</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Destek'), [l?l.type:''], false)}</div>
         <div><p class="type-g">Diğer</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Nötr'), [l?l.type:''], false)}</div>
       </div></fieldset>
-    <fieldset class="fset"><legend>Bana ne hissettirdi?</legend>
-      <div class="escale" data-group="energy">${[-2,-1,0,1,2].map(v=>`<button type="button" class="eb" data-e="${v}" aria-pressed="${e===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}"><span>${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
-      <div id="feelBox" class="feel-box">${feelChips(e, fsel)}</div>
-      <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka his kelimeleri">
-    </fieldset>
-    <fieldset class="fset"><legend>Sence asıl amacı neydi? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></legend><p class="hint">Söylenenin yüzeyinin altına bak.</p>${chipGroup('intent', INTENTS, l?l.intent||[]:[], true)}</fieldset>
-    <div class="fset"><label for="f-resp">Nasıl karşılık verdin ya da vermek isterdin? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></label>
+    <fieldset class="fset"><legend>6. Sence asıl amacı neydi? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></legend><p class="hint">Söylenenin yüzeyinin altına bak.</p>${chipGroup('intent', INTENTS, l?l.intent||[]:[], true)}</fieldset>
+    <div class="fset"><label for="f-meant">7. Karşımdaki insan ne demek istemiş olabilir?</label><p class="hint">Kendini bir an onun yerine koy. Bu sözün arkasında hangi duygu ya da ihtiyaç olabilir?</p>
+      <textarea id="f-meant" rows="2" placeholder="Örn. Belki de benim için endişelendiğini söylemek istedi.">${esc(l?l.meant||'':'')}</textarea></div>
+    <div class="step-h"><span>3</span><div><b>Dönüştür</b><small>Bu farkındalıkla ne yapmak istersin?</small></div></div>
+    <div class="fset"><label for="f-resp">8. Nasıl karşılık verdim ya da vermek isterdim? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></label>
       <textarea id="f-resp" rows="2" placeholder="Örn. Sustum. Aslında “Evet, ve mutluyum” demek isterdim.">${esc(l?l.response:'')}</textarea></div>
     <p class="err" id="f-err" role="alert"></p>
     <div class="form-actions">
@@ -873,7 +884,7 @@ function submitLog(form){
   const pick = g => [...form.querySelectorAll(`[data-group="${g}"] [aria-pressed="true"]`)].map(b=>b.dataset.chip);
   const extra = form.querySelector('#f-feel').value.split(',').map(x=>x.trim()).filter(Boolean);
   const id = form.dataset.id;
-  const rec = { type: pick('type')[0]||'', env: pick('env')[0]||'diger', person: form.querySelector('#f-person').value.trim(), text, intent: pick('intent'), energy: Number(eb.dataset.e), feel: [...new Set([...pick('feel'), ...extra])], response: form.querySelector('#f-resp').value.trim() };
+  const rec = { type: pick('type')[0]||'', env: pick('env')[0]||'diger', person: form.querySelector('#f-person').value.trim(), text, intent: pick('intent'), energy: Number(eb.dataset.e), feel: [...new Set([...pick('feel'), ...extra])], response: form.querySelector('#f-resp').value.trim(), meant: form.querySelector('#f-meant').value.trim() };
   if(id){ Object.assign(S.logs.find(x=>x.id===id), rec); }
   else S.logs.push({id:uid(), day:Number(form.dataset.day), date:today(), ts:Date.now(), ...rec});
   save(); closeSheet(); render(false); toast(id?'An güncellendi':'An kaydedildi');
@@ -962,8 +973,14 @@ function showOnboarding(){
       <p class="eyebrow">Başlamadan önce oku</p>
       <h2>Uygulama hakkında</h2>
       ${acc(1,'Yankı 21 nedir?',`<p>Sana söylenen her söz içinde bir yankı bırakır. Yankı 21, evde, iş yerinde ve arkadaş ortamında duyduğun sözleri fark etmen için hazırlanmış 21 günlük bir farkındalık programıdır.</p><p>Amaç, sözün asıl amacını görmek ve sende olumlu mu olumsuz mu bir etki bıraktığını fark etmektir.</p>`, true)}
-      ${acc(2,'21 gün nasıl ilerler?',`<ol><li><b>1. Hafta · Fark Et:</b> Sözleri yargılamadan duy.</li><li><b>2. Hafta · Anla:</b> Sözün altındaki niyeti gör.</li><li><b>3. Hafta · Dönüştür:</b> Enerjini ve sınırlarını koru.</li></ol><p>Her gün bir konu, bir görev ve akşam cevaplayacağın bir ayna sorusu açılır.</p>`)}
-      ${acc(3,'Bir “An” nasıl yazılır?',`<p>Gün içinde seni etkileyen her söz bir andır: 1. An, 2. An, 3. An…</p><ol><li><b>Nerede?</b> Ev & Aile, Arkadaşlar, İş Yeri, Diğerleri</li><li><b>Kiminle?</b></li><li><b>Ne oldu, ne söyledi?</b></li><li><b>Bu söz ne türdeydi?</b></li><li><b>Bana ne hissettirdi?</b> −2 ile +2 arası ve his kelimeleri</li><li><b>Nasıl karşılık verdim?</b> (isteğe bağlı)</li></ol>`)}
+      ${acc(2,'21 gün nasıl ilerler?',`<p>Her gün, gün içinde yaşadığın anları yazarsın. Her an, bir sözün sende bıraktığı <b>yankıyı</b> fark etmek için bir fırsattır.</p>
+        <p>Her gün ve her anda şu üç adım sırayla tekrar eder:</p>
+        <ol><li><b>Fark Et:</b> Yargılamadan ne olduğunu gözlemle. Ne söylendi, sende nasıl bir yankı bıraktı?</li><li><b>Anla:</b> Sözün arkasına bak. Karşındaki ne demek istemiş olabilir?</li><li><b>Dönüştür:</b> Bu farkındalıkla nasıl karşılık vermek istediğini seç.</li></ol>
+        <p>Haftalar bu adımları derinleştirir: 1. hafta daha çok fark etmeye, 2. hafta anlamaya, 3. hafta dönüştürmeye odaklanır. Her gün ayrıca bir konu, bir görev ve akşam cevaplayacağın bir ayna sorusu açılır.</p>`)}
+      ${acc(3,'Bir “An” nasıl yazılır?',`<p>Gün içinde seni etkileyen her söz bir andır: 1. An, 2. An, 3. An… Her an üç adımda yazılır:</p>
+        <p class="g-sub" style="margin-top:4px">Fark Et</p><ol><li>Nerede? <span class="muted">Ev & Aile, Arkadaşlar, İş Yeri, Diğerleri</span></li><li>Kiminle?</li><li>Ne oldu, ne söyledi? <span class="muted">Yargılamadan, olduğu gibi</span></li><li>Bana ne hissettirdi? <span class="muted">−2 ile +2 arası ve his kelimeleri</span></li></ol>
+        <p class="g-sub">Anla</p><ol start="5"><li>Bu söz ne türdeydi?</li><li>Sence asıl amacı neydi?</li><li>Karşımdaki insan ne demek istemiş olabilir?</li></ol>
+        <p class="g-sub">Dönüştür</p><ol start="8"><li>Nasıl karşılık verdim ya da vermek isterdim?</li></ol>`)}
       ${acc(4,'Sözleri nasıl değerlendiririm?',`<div class="mini-t">
           <b>Saygılı eleştiri</b><span class="q">“Raporda iki rakam hatalı, birlikte bakalım mı?”</span>
           <b>Kırıcı eleştiri</b><span class="q">“Sen zaten hiçbir işi doğru yapamazsın.”</span>
