@@ -455,6 +455,20 @@ textarea.lined:focus{border-color:var(--good)!important;box-shadow:0 0 0 3px col
 .mw-custom{font-size:14px!important;padding:10px 12px!important;border-radius:12px!important}
 .why{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .why span{font-weight:700;font-size:14.5px}
+.mw-det{border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+.mw-det > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:11px 14px;font-weight:700;font-size:14px}
+.mw-det > summary::-webkit-details-marker{display:none}
+.mw-det > summary .mw-count{margin-left:auto;font-weight:600;font-size:12.5px;color:var(--good-ink);background:var(--good-soft);padding:2px 9px;border-radius:99px}
+.mw-det > summary .pl{width:18px;height:18px;flex:none;position:relative}
+.mw-det > summary .pl::before,.mw-det > summary .pl::after{content:"";position:absolute;left:3px;right:3px;top:8px;height:2px;border-radius:2px;background:var(--muted);transition:transform .2s}
+.mw-det > summary .pl::after{transform:rotate(90deg)}
+.mw-det[open] > summary .pl::after{transform:rotate(0)}
+.mw-det .mw-side{padding:0 12px 12px}
+.mw-det .mw-box{border:0;padding:0;background:transparent;min-height:0}
+.journal .j-qp{font-family:var(--f-body)!important;font-weight:700;font-size:14.5px!important}
+.onb-brand{font-family:var(--f-body)!important;font-weight:800!important;font-size:clamp(52px,13vw,92px)!important;letter-spacing:-.035em!important;line-height:1!important}
+.onb-brand i{font-style:normal}
+.onb-words{font-family:var(--f-body)!important;font-weight:600;font-size:clamp(19px,4.6vw,26px)!important;line-height:1.4!important;letter-spacing:-.01em}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -776,6 +790,7 @@ const IC = {
   chat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>',
   heart:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
   moon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>'};
+function mwCount(d){ const r = S.refl[d] || {}; const n = (r.moodWords||[]).length + String(r.moodCustom||'').split(',').map(x=>x.trim()).filter(Boolean).length; return n ? n+' seçili' : 'Seç'; }
 function mwBox(d){
   const r = S.refl[d] || {}, L = SCALE.find(x=>x.v===r.mood), sel = r.moodWords || [];
   if(!L) return `<p class="mw-hint">Bir değer seç; o hisse uygun kelimeler burada çıkar.</p>`;
@@ -799,12 +814,18 @@ function dayBody(d, logs, full){
       <h2 class="j-h">${IC.heart}Bugün kendimi… hissettim</h2>
       <div class="feel-grid">
         <div class="moods">${[2,1,0,-1,-2].map(v=>`<button type="button" class="mood dm" data-dm="${v}" data-day="${d}" aria-pressed="${r.mood===v}" aria-label="${sgn(v)} ${ELBL[v]}"><span class="dot" style="${eBtnStyle(v)}">${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
-        <div class="mw-side"><div class="mw-box">${mwBox(d)}</div>
-          <input type="text" class="mw-custom" data-dk="moodCustom" data-day="${d}" value="${esc(r.moodCustom||'')}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" aria-label="Başka his kelimeleri" autocomplete="off"></div>
+        <details class="mw-det"><summary><span>His kelimeleri</span><span class="mw-count">${mwCount(d)}</span><span class="pl" aria-hidden="true"></span></summary>
+          <div class="mw-side"><div class="mw-box">${mwBox(d)}</div>
+          <input type="text" class="mw-custom" data-dk="moodCustom" data-day="${d}" value="${esc(r.moodCustom||'')}" placeholder="Başka bir kelime eklemek istersen yaz (virgülle ayır)" aria-label="Başka his kelimeleri" autocomplete="off"></div></details>
       </div>
       <label class="why"><span>Neden böyle hissettim?</span>
         <textarea class="lined" data-dk="why" data-day="${d}" rows="2" placeholder="Bugün beni en çok ne etkiledi? Kısaca yaz.">${esc(r.why||'')}</textarea></label>
       ${logs.length?`<p class="j-note">Bugünkü anlarının ortalaması ${sgnF(avg(logs.map(l=>l.energy)))}</p>`:''}
+    </section>
+
+    <section class="j-sec">
+      <h2 class="j-h">${IC.moon}Günün sonunda</h2>
+      <div class="j-qs">${[['fark','Bugün ne fark ettim?'],['sukur','Ne için minnettarım?'],['ogren','Bugün ne öğrendim?']].map(([k,l])=>`<label class="j-q"><span class="j-qp">${l}</span><textarea class="lined" data-dk="${k}" data-day="${d}" rows="2" placeholder="Kısaca yaz…">${esc((r.q||{})[k]||(k==='fark'&&r.text)||'')}</textarea></label>`).join('')}</div>
     </section>
 
     ${d===21 && hasIntent() ? intentCard(true) : ''}
@@ -1233,11 +1254,11 @@ document.addEventListener('click', e=>{
     r.mood = r.mood===v ? null : v; save();
     if(r.moodWords){ const L = SCALE.find(x=>x.v===r.mood); r.moodWords = L ? r.moodWords.filter(w=>L.w.includes(w)) : []; save(); }
     dm.parentElement.querySelectorAll('.dm').forEach(b=>b.setAttribute('aria-pressed', String(Number(b.dataset.dm)===r.mood)));
-    const box = dm.closest('.j-feel')?.querySelector('.mw-box'); if(box) box.innerHTML = mwBox(n); return; }
+    const box = dm.closest('.j-feel')?.querySelector('.mw-box'); if(box) box.innerHTML = mwBox(n); const c = dm.closest('.j-feel')?.querySelector('.mw-count'); if(c) c.textContent = mwCount(n); return; }
   const mw = e.target.closest('[data-mw]');
   if(mw){ const n = Number(mw.dataset.day), w = mw.dataset.mw, r = S.refl[n] = S.refl[n] || {}; r.moodWords = r.moodWords || [];
     r.moodWords = r.moodWords.includes(w) ? r.moodWords.filter(x=>x!==w) : [...r.moodWords, w]; save();
-    mw.setAttribute('aria-pressed', String(r.moodWords.includes(w))); return; }
+    mw.setAttribute('aria-pressed', String(r.moodWords.includes(w))); const c = mw.closest('.mw-det')?.querySelector('.mw-count'); if(c) c.textContent = mwCount(n); return; }
   const eb = e.target.closest('.eb:not(.mb):not(.dm)');
   if(eb){ eb.parentElement.querySelectorAll('.eb').forEach(b=>b.setAttribute('aria-pressed','false')); eb.setAttribute('aria-pressed','true');
     const box = document.getElementById('feelBox'); const keep = [...box.querySelectorAll('[aria-pressed="true"]')].map(b=>b.dataset.chip);
