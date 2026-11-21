@@ -1201,7 +1201,7 @@ function openLogForm(id, day){
       <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir duygu eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka duygular">
     </fieldset>
     <div class="step-h"><span>2</span><div><b>Anla</b><small>Sözün arkasına bak.</small></div></div>
-    <fieldset class="fset"><legend>5. Bu söz ne türdeydi?</legend><p class="hint">Emin değil misin? <a href="#rehber" class="inline-link" data-act="close-sheet-guide">Rehbere bak</a></p>
+    <fieldset class="fset"><legend>5. Bu söz ne türdeydi?</legend>
       <div class="type-grid">
         <div><p class="type-g">Eleştiri</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Eleştiri').map(t=>[t[0],t[1].replace(' eleştiri','')]), [l?l.type:''], false)}</div>
         <div><p class="type-g">Destek</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Destek'), [l?l.type:''], false)}</div>

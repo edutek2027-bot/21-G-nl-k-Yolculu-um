@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611190809">
+<meta name="build" content="202611211124">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -1215,7 +1215,7 @@ function openLogForm(id, day){
       <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir duygu eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka duygular">
     </fieldset>
     <div class="step-h"><span>2</span><div><b>Anla</b><small>Sözün arkasına bak.</small></div></div>
-    <fieldset class="fset"><legend>5. Bu söz ne türdeydi?</legend><p class="hint">Emin değil misin? <a href="#rehber" class="inline-link" data-act="close-sheet-guide">Rehbere bak</a></p>
+    <fieldset class="fset"><legend>5. Bu söz ne türdeydi?</legend>
       <div class="type-grid">
         <div><p class="type-g">Eleştiri</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Eleştiri').map(t=>[t[0],t[1].replace(' eleştiri','')]), [l?l.type:''], false)}</div>
         <div><p class="type-g">Destek</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Destek'), [l?l.type:''], false)}</div>
@@ -1467,6 +1467,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611190809";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611211124";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
