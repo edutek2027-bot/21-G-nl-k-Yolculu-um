@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611211124">
+<meta name="build" content="202611221245">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -62,7 +62,7 @@ button{cursor:pointer}
 
 /* ---------- shell ---------- */
 .app{min-height:100%}
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(6,1fr);
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);
   background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
@@ -478,6 +478,35 @@ textarea.lined:focus{border-color:var(--good)!important;box-shadow:0 0 0 3px col
 .nudge b{color:var(--good-ink)}
 .nudge svg{width:18px;height:18px;stroke:var(--good-ink);stroke-width:2;fill:none;flex:none}
 @media (prefers-reduced-motion:reduce){.intro-bless,.intro-motto{opacity:1!important}}
+.more,.j-close{border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.more > summary,.j-close > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;font-weight:700;font-size:14.5px}
+.more > summary::-webkit-details-marker,.j-close > summary::-webkit-details-marker{display:none}
+.more > summary small{font-weight:500;color:var(--muted)}
+.more .pl,.j-close .pl{width:18px;height:18px;flex:none;position:relative}
+.more .pl::before,.more .pl::after,.j-close .pl::before,.j-close .pl::after{content:"";position:absolute;left:3px;right:3px;top:8px;height:2px;border-radius:2px;background:var(--muted);transition:transform .2s}
+.more .pl::after,.j-close .pl::after{transform:rotate(90deg)}
+.more[open] > summary .pl::after,.j-close[open] > summary .pl::after{transform:rotate(0)}
+.more-b{padding:4px 14px 16px;display:flex;flex-direction:column;gap:18px}
+.f-det{margin-top:4px}
+.journal > .j-close{margin:18px 20px 20px!important;background:var(--bg)}
+.j-close > summary > span{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.j-close > summary svg{width:20px;height:20px;stroke:var(--good);stroke-width:1.8;fill:none}
+.j-close > summary b{font-size:16px}
+.j-close > summary em{font-style:normal;font-weight:500;font-size:12.5px;color:var(--muted)}
+.j-close > summary em.j-done{color:var(--good-ink);font-weight:700}
+.j-close > .j-sec{padding:14px 14px;border-top:1px solid var(--line)}
+.j-close > .j-foot-in{margin:0!important;border-top:1px solid var(--line)}
+.journal > .j-sec:has(+ .j-close){border-bottom:0}
+.back{display:inline-block;color:var(--muted);text-decoration:none;font-weight:600;font-size:13.5px;margin-bottom:6px}
+.more-list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.more-it{display:flex;align-items:center;gap:14px;padding:16px;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line)}
+.more-it:last-child{border-bottom:0}
+.more-it:hover{background:var(--bg)}
+.more-it b{display:block;font-size:15.5px}
+.more-it small{display:block;color:var(--muted);font-size:13px}
+.mi-ic{flex:none;width:40px;height:40px;border-radius:12px;background:var(--good-soft);display:grid;place-items:center}
+.mi-ic svg{width:20px;height:20px;stroke:var(--good-ink);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.more-it .chev{margin-left:auto;width:18px;height:18px;stroke:var(--muted);stroke-width:2;fill:none;flex:none}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -630,11 +659,9 @@ code.backup{display:block;max-height:90px;overflow:auto;word-break:break-all;fon
   <nav class="tabs" aria-label="Ana menü">
     <div class="brand"><div class="mark">Yankı <i>21</i></div><small>21 günlük farkındalık</small></div>
     <a class="tab" href="#bugun" data-tab="bugun"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg></span>Bugün</a>
-    <a class="tab" href="#yolculuk" data-tab="yolculuk"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h6.5a3.5 3.5 0 0 0 0-7h-3a3.5 3.5 0 0 1 0-7H17"/></svg></span>Yolculuk</a>
-    <a class="tab" href="#analiz" data-tab="analiz"><span class="ti"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16V10M12 16V5M17 16v-4"/></svg></span>Analiz</a>
-    <a class="tab" href="#baslangic" data-tab="baslangic"><span class="ti"><svg viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></span>Başlangıç</a>
-    <a class="tab" href="#hakkinda" data-tab="hakkinda"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span>Hakkında</a>
-    <a class="tab" href="#ayarlar" data-tab="ayarlar"><span class="ti"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></span>Ayarlar</a>
+    <a class="tab" href="#yolculuk" data-tab="yolculuk"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h6.5a3.5 3.5 0 0 0 0-7h-3a3.5 3.5 0 0 1 0-7H17"/></svg></span>Günlerim</a>
+    <a class="tab" href="#analiz" data-tab="analiz"><span class="ti"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16V10M12 16V5M17 16v-4"/></svg></span>Rapor</a>
+    <a class="tab" href="#diger" data-tab="diger"><span class="ti"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>Diğer</a>
   </nav>
   <main id="main" tabindex="-1"></main>
 </div>
@@ -731,12 +758,13 @@ const isDone = n => !!(S.refl[n] && S.refl[n].done);
 
 /* ================= Router ================= */
 const main = document.getElementById('main');
-const VIEWS = {bugun:renderToday, baslangic:renderStart, hakkinda:renderAbout, yolculuk:renderJourney, analiz:renderInsights, rehber:renderAbout, ayarlar:renderSettings};
+const VIEWS = {bugun:renderToday, diger:renderMore, baslangic:renderStart, hakkinda:renderAbout, yolculuk:renderJourney, analiz:renderInsights, rehber:renderAbout, ayarlar:renderSettings};
 let view = 'bugun';
 function route(){
   let v = location.hash.slice(1); if(v==='rehber') v='hakkinda'; if(!VIEWS[v]) v='bugun';
   const changed = v !== view; view = v;
-  document.querySelectorAll('.tab').forEach(t => { if(t.dataset.tab===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+  const tv = ['baslangic','hakkinda','ayarlar'].includes(v) ? 'diger' : v;
+  document.querySelectorAll('.tab').forEach(t => { if(t.dataset.tab===tv) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
   render(changed);
 }
 function render(anim){
@@ -821,6 +849,7 @@ function dayBody(d, logs, full){
       ${logs.length ? `<div class="logs j-logs">${logs.map(l=>logCard(l)).join('')}</div>` : ''}
     </section>
 
+    <details class="j-close"${r.mood!==undefined&&r.mood!==null&&!r.done?' open':''}><summary><span>${IC.moon}<b>Günü kapat</b>${r.done?'<em class="j-done">✓ Tamamlandı</em>':'<em>His, fark ettiklerin, minnettarlığın</em>'}</span><span class="pl" aria-hidden="true"></span></summary>
     <section class="j-sec j-feel">
       <h2 class="j-h">${IC.heart}Bugün kendimi… hissettim</h2>
       <div class="feel-grid">
@@ -835,12 +864,13 @@ function dayBody(d, logs, full){
     </section>
 
     <section class="j-sec">
-      <h2 class="j-h">${IC.moon}Günün sonunda</h2>
+      <h2 class="j-h">${IC.pen}Günün sonunda</h2>
       <div class="j-qs">${[['fark','Bugün ne fark ettim?'],['sukur','Ne için minnettarım?'],['ogren','Bugün ne öğrendim?']].map(([k,l])=>`<label class="j-q"><span class="j-qp">${l}</span><textarea class="lined" data-dk="${k}" data-day="${d}" rows="2" placeholder="Kısaca yaz…">${esc((r.q||{})[k]||(k==='fark'&&r.text)||'')}</textarea></label>`).join('')}</div>
     </section>
 
     ${d===21 && hasIntent() ? intentCard(true) : ''}
-    <footer class="j-foot">${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Bu gün tamamlandı</span>`:`<span class="j-note">Seçimlerin kendiliğinden kaydedilir.</span><button class="btn primary" data-act="complete-day" data-day="${d}">Günü tamamla</button>`}</footer>
+    <footer class="j-foot j-foot-in">${r.done?`<span class="done-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg>Bu gün tamamlandı</span>`:`<span class="j-note">Seçimlerin kendiliğinden kaydedilir.</span><button class="btn primary" data-act="complete-day" data-day="${d}">Günü tamamla</button>`}</footer>
+    </details>
   </article>`;
 }
 
@@ -848,7 +878,7 @@ function dayBody(d, logs, full){
 function renderJourney(){
   const d = curDay();
   const doneN = Object.values(S.refl).filter(r=>r.done).length;
-  let html = `${demoBanner()}<header><p class="eyebrow">${doneN} / 21 gün tamamlandı</p><h1 class="page-title">Yolculuk</h1>
+  let html = `${demoBanner()}<header><p class="eyebrow">${doneN} / 21 gün tamamlandı</p><h1 class="page-title">Günlerim</h1>
     <p class="page-intro">Üç hafta, üç adım: önce sözleri duy, sonra niyetlerini anla, en sonunda enerjini koru. Bir güne dokunarak içeriğini ve kayıtlarını aç.</p></header>`;
   WEEKS.forEach((W,wi)=>{
     const days = DAYS.map((D,i)=>({...D,n:i+1})).filter(D=>D.w===wi+1);
@@ -875,7 +905,7 @@ function openDay(n){
 /* ================= Analiz ================= */
 function renderInsights(){
   const L = S.logs;
-  const head = `${demoBanner()}<header><p class="eyebrow">Anların ve hislerin</p><h1 class="page-title">Analiz</h1>
+  const head = `${demoBanner()}<header><p class="eyebrow">Anların ve hislerin</p><h1 class="page-title">Rapor</h1>
     <p class="page-intro">Yazdığın anlar hangi ortamdan geliyor, sana ne hissettiriyor ve altında hangi niyet yatıyor?</p></header>`;
   if(!L.length) return head + `<div class="empty"><p class="display">Haritan ilk anla başlar.</p><p>Birkaç an yazdıktan sonra ortamlara, kişilere ve hislere göre dengen burada görünecek.</p><button class="btn primary" data-act="add">An ekle</button></div>`;
   const all = avg(L.map(l=>l.energy));
@@ -1129,7 +1159,7 @@ function renderGuide(inSheet){
 /* ================= Ayarlar ================= */
 let resetAsk = false;
 function renderSettings(){
-  return `${demoBanner()}<header><h1 class="page-title">Ayarlar</h1><p class="page-intro">Yolculuğunu kişiselleştir, uygulamayı telefonuna ekle ve kayıtlarını yedekle.</p></header>
+  return `${demoBanner()}<header><a class="back" href="#diger">‹ Diğer</a><h1 class="page-title">Ayarlar</h1><p class="page-intro">Yolculuğunu kişiselleştir, uygulamayı telefonuna ekle ve kayıtlarını yedekle.</p></header>
   <section class="block"><h3 class="display" style="font-size:24px">Profil</h3>
     <div class="set-list">
       <div class="field"><label for="set-name">Adın</label><input type="text" id="set-name" value="${esc(S.name)}" placeholder="Sana nasıl seslenelim?" autocomplete="given-name"></div>
@@ -1201,32 +1231,32 @@ function openLogForm(id, day){
   const custom = fsel.filter(f=>feelLevel(f)===null).join(', ');
   openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${dd} · ${DAYS[dd-1].t}</p><h2>${no}. An</h2></div>${closeBtn()}</div>
   <form class="form" id="logForm" data-id="${l?l.id:''}" data-day="${dd}" novalidate>
-    <div class="step-h"><span>1</span><div><b>Fark Et</b><small>Yargılamadan ne olduğunu gözlemle.</small></div></div>
-    <div class="fset"><label for="f-person">1. Kim söyledi?</label><p class="hint">İsim ya da takma isim yaz. 21 günün sonunda kişi kişi raporun çıkar.</p>
+    <div class="fset"><label for="f-person">Kim söyledi?</label><p class="hint">İsim ya da takma isim.</p>
       <input type="text" id="f-person" list="plist" value="${esc(l?l.person:'')}" placeholder="Örn. Annem, Müdür, A." autocomplete="off">
       <datalist id="plist">${persons.map(p=>`<option value="${esc(p)}">`).join('')}</datalist>
       ${persons.length?`<div class="chips pick-row">${persons.slice(-8).reverse().map(p=>`<button type="button" class="chip small-chip" data-pick-person="${esc(p)}">${esc(p)}</button>`).join('')}</div>`:''}</div>
-    <fieldset class="fset"><legend>2. Nerede?</legend>${chipGroup('env', ENVS.map(x=>[x.id,x.l]), [l?l.env:'ev'], false)}</fieldset>
-    <div class="fset"><label for="f-text">3. Ne oldu, ne söyledi?</label><p class="hint">Yorum katmadan, yargılamadan, olduğu gibi yaz.</p>
+    <div class="fset"><label for="f-text">Ne söyledi?</label>
       <textarea id="f-text" rows="3" placeholder="Örn. Akşam yemeğinde annem “Hâlâ o işte mi çalışıyorsun?” dedi." ${l?'':'autofocus'}>${esc(l?l.text:'')}</textarea></div>
-    <fieldset class="fset"><legend>4. Bana ne hissettirdi?</legend><p class="hint">Bu söz sende nasıl bir yankı bıraktı?</p>
+    <fieldset class="fset"><legend>Bana ne hissettirdi?</legend>
       <div class="escale" data-group="energy">${[-2,-1,0,1,2].map(v=>`<button type="button" class="eb" data-e="${v}" aria-pressed="${e===v}" aria-label="${sgn(v)} ${ELBL[v]}" style="${eBtnStyle(v)}"><span>${sgn(v)}</span><small>${ELBL[v]}</small></button>`).join('')}</div>
+      <details class="mw-det f-det"${fsel.length?' open':''}><summary><span>Duygular</span><span class="pl" aria-hidden="true"></span></summary><div class="mw-side">
       <div id="feelBox" class="feel-box">${feelChips(e, fsel)}</div>
-      <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir duygu eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka duygular">
+      <input type="text" id="f-feel" value="${esc(custom)}" placeholder="Başka bir duygu eklemek istersen yaz (virgülle ayır)" autocomplete="off" aria-label="Başka duygular"></div></details>
     </fieldset>
-    <div class="step-h"><span>2</span><div><b>Anla</b><small>Sözün arkasına bak.</small></div></div>
-    <fieldset class="fset"><legend>5. Bu söz ne türdeydi?</legend>
+    <fieldset class="fset"><legend>Sözün türü</legend>
       <div class="type-grid">
         <div><p class="type-g">Eleştiri</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Eleştiri').map(t=>[t[0],t[1].replace(' eleştiri','')]), [l?l.type:''], false)}</div>
         <div><p class="type-g">Destek</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Destek'), [l?l.type:''], false)}</div>
         <div><p class="type-g">Diğer</p>${chipGroup('type', TYPES.filter(t=>t[2]==='Nötr'), [l?l.type:''], false)}</div>
       </div></fieldset>
-    <fieldset class="fset"><legend>6. Sence asıl amacı neydi? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></legend><p class="hint">Söylenenin yüzeyinin altına bak.</p>${chipGroup('intent', INTENTS, l?l.intent||[]:[], true)}</fieldset>
-    <div class="fset"><label for="f-meant">7. Karşımdaki insan ne demek istemiş olabilir?</label><p class="hint">Kendini bir an onun yerine koy. Bu sözün arkasında hangi duygu ya da ihtiyaç olabilir?</p>
+    <details class="more"${l&&(l.intent&&l.intent.length||l.meant||l.response)?' open':''}><summary><span>Daha fazla <small>(isteğe bağlı)</small></span><span class="pl" aria-hidden="true"></span></summary><div class="more-b">
+    <fieldset class="fset"><legend>Nerede?</legend>${chipGroup('env', ENVS.map(x=>[x.id,x.l]), [l?l.env:''], false)}</fieldset>
+    <fieldset class="fset"><legend>Sence asıl amacı neydi?</legend>${chipGroup('intent', INTENTS, l?l.intent||[]:[], true)}</fieldset>
+    <div class="fset"><label for="f-meant">Ne demek istemiş olabilir?</label>
       <textarea id="f-meant" rows="2" placeholder="Örn. Belki de benim için endişelendiğini söylemek istedi.">${esc(l?l.meant||'':'')}</textarea></div>
-    <div class="step-h"><span>3</span><div><b>Dönüştür</b><small>Bu farkındalıkla ne yapmak istersin?</small></div></div>
-    <div class="fset"><label for="f-resp">8. Nasıl karşılık verdim ya da vermek isterdim? <span class="muted" style="font-weight:500">(isteğe bağlı)</span></label>
+    <div class="fset"><label for="f-resp">Nasıl karşılık verdim?</label>
       <textarea id="f-resp" rows="2" placeholder="Örn. Sustum. Aslında “Evet, ve mutluyum” demek isterdim.">${esc(l?l.response:'')}</textarea></div>
+    </div></details>
     <p class="err" id="f-err" role="alert"></p>
     <div class="form-actions">
       <div class="row" id="delZone">${l?'<button type="button" class="btn danger" data-act="del-ask">Sil</button>':''}</div>
@@ -1275,7 +1305,7 @@ document.addEventListener('click', e=>{
   const eb = e.target.closest('.eb:not(.mb):not(.dm)');
   if(eb){ eb.parentElement.querySelectorAll('.eb').forEach(b=>b.setAttribute('aria-pressed','false')); eb.setAttribute('aria-pressed','true');
     const box = document.getElementById('feelBox'); const keep = [...box.querySelectorAll('[aria-pressed="true"]')].map(b=>b.dataset.chip);
-    box.innerHTML = feelChips(Number(eb.dataset.e), keep); return; }
+    box.innerHTML = feelChips(Number(eb.dataset.e), keep); const fd = box.closest('details'); if(fd) fd.open = true; return; }
   const t = e.target.closest('[data-act]'); if(!t) return;
   const act = t.dataset.act;
   if(act==='backdrop'){ if(e.target===t) closeSheet(); return; }
@@ -1344,13 +1374,22 @@ function mottoHTML(){
   let i = 0;
   return MOTTO.split(' ').map(w => w==='|' ? '<span class="br"></span>' : `<span class="w" style="animation-delay:${(0.9 + (i++)*0.32).toFixed(2)}s">${w}</span>`).join(' ');
 }
+function renderMore(){
+  const it = (h,t,d,ic) => `<a class="more-it" href="#${h}"><span class="mi-ic">${ic}</span><span><b>${t}</b><small>${d}</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>`;
+  return `${demoBanner()}<header><h1 class="page-title">Diğer</h1></header>
+  <nav class="more-list">
+    ${it('baslangic','Başlangıç niyetim', hasIntent()?'Neden başladığın ve kendine sözün':'Henüz yazılmadı', '<svg viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>')}
+    ${it('hakkinda','Uygulama hakkında','Nasıl çalışır, sözleri nasıl değerlendiririm','<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>')}
+    ${it('ayarlar','Ayarlar ve yedek','Ad, başlangıç tarihi, telefona ekleme, yedek','<svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>')}
+  </nav>`;
+}
 function renderAbout(){
-  return `${demoBanner()}<header><h1 class="page-title">Uygulama hakkında</h1><p class="page-intro">Yankı 21 nasıl çalışır, sözleri nasıl değerlendirirsin?</p></header>
+  return `${demoBanner()}<header><a class="back" href="#diger">‹ Diğer</a><h1 class="page-title">Uygulama hakkında</h1><p class="page-intro">Yankı 21 nasıl çalışır, sözleri nasıl değerlendirirsin?</p></header>
   <div class="about-page">${aboutInner()}</div>`;
 }
 function renderStart(){
   const editing = intentEdit || !hasIntent();
-  return `${demoBanner()}<header><h1 class="page-title">Başlangıç</h1><p class="page-intro">Bu günlüğü neden tuttuğunu ve 21 gün sonra neyi fark etmek istediğini yaz. 21. günde buraya geri döneceksin.</p></header>
+  return `${demoBanner()}<header><a class="back" href="#diger">‹ Diğer</a><h1 class="page-title">Başlangıç</h1><p class="page-intro">Bu günlüğü neden tuttuğunu ve 21 gün sonra neyi fark etmek istediğini yaz. 21. günde buraya geri döneceksin.</p></header>
   ${editing ? intentFormHTML() : intentCard(true, true)+'<div><button class="btn" data-act="edit-intent">Düzenle</button></div>'}`;
 }
 function aboutInner(){
@@ -1467,6 +1506,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611211124";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611221245";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
