@@ -493,6 +493,9 @@ textarea.lined:focus{border-color:var(--good)!important;box-shadow:0 0 0 3px col
 .mi-ic{flex:none;width:40px;height:40px;border-radius:12px;background:var(--good-soft);display:grid;place-items:center}
 .mi-ic svg{width:20px;height:20px;stroke:var(--good-ink);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .more-it .chev{margin-left:auto;width:18px;height:18px;stroke:var(--muted);stroke-width:2;fill:none;flex:none}
+.journal > .j-anlar{margin:18px 20px 0!important;background:var(--bg)}
+.j-anlar-b{padding:12px 14px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.journal > .j-anlar + .j-close{margin-top:12px!important}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -822,6 +825,7 @@ function mwBox(d){
   return `<p class="mw-hint">${sgn(L.v)} · ${L.l}. Hangi duygular seni anlatıyor?</p>
     <div class="chips mw-chips">${L.w.map(w=>`<button type="button" class="chip" data-mw="${esc(w)}" data-day="${d}" aria-pressed="${sel.includes(w)}">${w}</button>`).join('')}</div>`;
 }
+let openAnlar = 0;
 function dayBody(d, logs, full){
   const D = DAYS[d-1], r = S.refl[d] || {};
   return `<article class="journal">
@@ -829,13 +833,14 @@ function dayBody(d, logs, full){
       <div class="j-head-t"><p class="j-date">${fmtDate(new Date(),{day:'numeric',month:'long',weekday:'long'})}</p><h1 class="j-title">${D.t}</h1><p class="j-intent">${D.focus}</p></div></header>`
       :`<p class="j-intent">${D.focus}</p>`}
 
-    <section class="j-sec">
-      <h2 class="j-h">${IC.chat}Bugünün anları</h2>
-      <button class="j-addbig" data-act="add" data-day="${d}"><span class="plus">+</span><span><b>${logs.length+1}. An ekle</b><small>Kim söyledi, ne söyledi, sana ne hissettirdi?</small></span></button>
-      ${logs.length ? `<div class="logs j-logs">${logs.map(l=>logCard(l)).join('')}</div>` : ''}
-    </section>
+    <details class="j-close j-anlar"${openAnlar===d?' open':''}><summary><span>${IC.chat}<b>Bugünün anları</b><em>${logs.length?logs.length+' an yazıldı':'Henüz an yok'}</em></span><span class="pl" aria-hidden="true"></span></summary>
+      <div class="j-anlar-b">
+        <button class="j-addbig" data-act="add" data-day="${d}"><span class="plus">+</span><span><b>${logs.length+1}. An ekle</b><small>Kim söyledi, ne söyledi, sana ne hissettirdi?</small></span></button>
+        ${logs.length ? `<div class="logs j-logs">${logs.map(l=>logCard(l)).join('')}</div>` : ''}
+      </div>
+    </details>
 
-    <details class="j-close"${r.mood!==undefined&&r.mood!==null&&!r.done?' open':''}><summary><span>${IC.moon}<b>Günü kapat</b>${r.done?'<em class="j-done">✓ Tamamlandı</em>':'<em>His, fark ettiklerin, minnettarlığın</em>'}</span><span class="pl" aria-hidden="true"></span></summary>
+    <details class="j-close"${r.mood!==undefined&&r.mood!==null&&!r.done?' open':''}><summary><span>${IC.moon}<b>Bugün nasıldı?</b>${r.done?'<em class="j-done">✓ Tamamlandı</em>':'<em>His, fark ettiklerin, minnettarlığın</em>'}</span><span class="pl" aria-hidden="true"></span></summary>
     <section class="j-sec j-feel">
       <h2 class="j-h">${IC.heart}Bugün kendimi… hissettim</h2>
       <div class="feel-grid">
@@ -864,20 +869,14 @@ function dayBody(d, logs, full){
 function renderJourney(){
   const d = curDay();
   const doneN = Object.values(S.refl).filter(r=>r.done).length;
-  let html = `${demoBanner()}<header><p class="eyebrow">${doneN} / 21 gün tamamlandı</p><h1 class="page-title">Günlerim</h1>
-    <p class="page-intro">Üç hafta, üç adım: önce sözleri duy, sonra niyetlerini anla, en sonunda enerjini koru. Bir güne dokunarak içeriğini ve kayıtlarını aç.</p></header>`;
-  WEEKS.forEach((W,wi)=>{
-    const days = DAYS.map((D,i)=>({...D,n:i+1})).filter(D=>D.w===wi+1);
-    const wd = days.filter(D=>isDone(D.n)).length;
-    html += `<section class="week"><div class="week-head"><div><p class="eyebrow">${wi+1}. Hafta · ${W.d}</p><h3>${W.n}</h3></div><span class="wprog">${wd}/7</span></div>
-      <div class="days">${days.map(D=>{
-        const st = isDone(D.n)?'done': D.n===d?'now': D.n>d?'locked':'past';
-        const lbl = {done:'✓ Tamam',now:'Bugün',locked:fmtDate(dayDate(D.n),{day:'numeric',month:'short'}),past:'Açık'}[st];
-        const cnt = S.logs.filter(l=>l.day===D.n).length;
-        return `<button class="day ${st}" data-act="open-day" data-day="${D.n}"><span class="ds">${lbl}</span><span class="dn">${D.n}</span><span class="dt">${D.t}</span>${cnt?`<span class="muted" style="font-size:12px">${cnt} an</span>`:''}</button>`;
-      }).join('')}</div></section>`;
-  });
-  return html;
+  return `${demoBanner()}<header><p class="eyebrow">${doneN} / 21 gün tamamlandı</p><h1 class="page-title">Günlerim</h1>
+    <p class="page-intro">Fark et ve yaz.</p></header>
+    <div class="days">${DAYS.map((D,i)=>{ const n=i+1;
+        const st = isDone(n)?'done': n===d?'now': n>d?'locked':'past';
+        const lbl = {done:'✓ Tamam',now:'Bugün',locked:fmtDate(dayDate(n),{day:'numeric',month:'short'}),past:'Açık'}[st];
+        const cnt = S.logs.filter(l=>l.day===n).length;
+        return `<button class="day ${st}" data-act="open-day" data-day="${n}"><span class="ds">${lbl}</span><span class="dn">${n}</span><span class="dt">${D.t}</span>${cnt?`<span class="muted" style="font-size:12px">${cnt} an</span>`:''}</button>`;
+      }).join('')}</div>`;
 }
 function openDay(n){
   const D = DAYS[n-1], d = curDay(), locked = n>d;
@@ -1263,6 +1262,7 @@ function submitLog(form){
   const rec = { type: pick('type')[0]||'', env: pick('env')[0]||'diger', person: form.querySelector('#f-person').value.trim(), text, intent: pick('intent'), energy: Number(eb.dataset.e), feel: [...new Set([...pick('feel'), ...extra])], response: form.querySelector('#f-resp').value.trim(), meant: form.querySelector('#f-meant').value.trim() };
   if(id){ Object.assign(S.logs.find(x=>x.id===id), rec); }
   else S.logs.push({id:uid(), day:Number(form.dataset.day), date:today(), ts:Date.now(), ...rec});
+  openAnlar = Number(form.dataset.day);
   save(); closeSheet(); render(false); toast(id?'An güncellendi':'An kaydedildi');
 }
 
@@ -1309,7 +1309,7 @@ document.addEventListener('click', e=>{
     'guide-done': ()=>{ if(t.closest('.sheet')) closeSheet(); else location.hash='#bugun'; },
     'del-ask': ()=>{ document.getElementById('delZone').innerHTML = `<span class="err">Silinsin mi?</span><button type="button" class="btn danger small" data-act="del-yes">Evet</button><button type="button" class="btn ghost small" data-act="del-no">Hayır</button>`; },
     'del-no': ()=>{ document.getElementById('delZone').innerHTML = '<button type="button" class="btn danger" data-act="del-ask">Sil</button>'; },
-    'del-yes': ()=>{ const id = document.getElementById('logForm').dataset.id; S.logs = S.logs.filter(x=>x.id!==id); save(); closeSheet(); render(false); toast('Kayıt silindi'); },
+    'del-yes': ()=>{ const id = document.getElementById('logForm').dataset.id; const dl = S.logs.find(x=>x.id===id); if(dl) openAnlar = dl.day; S.logs = S.logs.filter(x=>x.id!==id); save(); closeSheet(); render(false); toast('Kayıt silindi'); },
     'complete-day': ()=>{ const n = Number(t.dataset.day), r = S.refl[n] || {};
       const any = r.note || r.why || r.moodCustom || (r.moodWords&&r.moodWords.length) || r.mood!==undefined && r.mood!==null || Object.values(r.q||{}).some(Boolean) || S.logs.some(l=>l.day===n);
       if(!any){ toast('Önce bir şey yaz ya da hissini seç'); return; }
