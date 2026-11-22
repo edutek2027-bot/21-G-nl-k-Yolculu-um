@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yankı 21">
-<meta name="build" content="202611221252">
+<meta name="build" content="202611221258">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -510,6 +510,8 @@ textarea.lined:focus{border-color:var(--good)!important;box-shadow:0 0 0 3px col
 .journal > .j-anlar{margin:18px 20px 0!important;background:var(--bg)}
 .j-anlar-b{padding:12px 14px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
 .journal > .j-anlar + .j-close{margin-top:12px!important}
+.j-title small{font-size:.5em;opacity:.65;font-weight:400}
+.day{min-height:84px}
 /* ---------- settings ---------- */
 .set-list{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -843,9 +845,7 @@ let openAnlar = 0;
 function dayBody(d, logs, full){
   const D = DAYS[d-1], r = S.refl[d] || {};
   return `<article class="journal">
-    ${full?`<header class="j-head"><div class="j-badge"><b>${d}</b><small>/ 21</small></div>
-      <div class="j-head-t"><p class="j-date">${fmtDate(new Date(),{day:'numeric',month:'long',weekday:'long'})}</p><h1 class="j-title">${D.t}</h1><p class="j-intent">${D.focus}</p></div></header>`
-      :`<p class="j-intent">${D.focus}</p>`}
+    ${full?`<header class="j-head"><div class="j-head-t"><p class="j-date">${fmtDate(new Date(),{day:'numeric',month:'long',weekday:'long'})}</p><h1 class="j-title">Gün ${d} <small>/ 21</small></h1></div></header>`:''}
 
     <details class="j-close j-anlar"${openAnlar===d?' open':''}><summary><span>${IC.chat}<b>Bugünün anları</b><em>${logs.length?logs.length+' an yazıldı':'Henüz an yok'}</em></span><span class="pl" aria-hidden="true"></span></summary>
       <div class="j-anlar-b">
@@ -889,13 +889,13 @@ function renderJourney(){
         const st = isDone(n)?'done': n===d?'now': n>d?'locked':'past';
         const lbl = {done:'✓ Tamam',now:'Bugün',locked:fmtDate(dayDate(n),{day:'numeric',month:'short'}),past:'Açık'}[st];
         const cnt = S.logs.filter(l=>l.day===n).length;
-        return `<button class="day ${st}" data-act="open-day" data-day="${n}"><span class="ds">${lbl}</span><span class="dn">${n}</span><span class="dt">${D.t}</span>${cnt?`<span class="muted" style="font-size:12px">${cnt} an</span>`:''}</button>`;
+        return `<button class="day ${st}" data-act="open-day" data-day="${n}"><span class="ds">${lbl}</span><span class="dn">${n}</span>${cnt?`<span class="muted" style="font-size:12px">${cnt} an</span>`:''}</button>`;
       }).join('')}</div>`;
 }
 function openDay(n){
   const D = DAYS[n-1], d = curDay(), locked = n>d;
   const logs = S.logs.filter(l=>l.day===n).sort((a,b)=>a.ts-b.ts);
-  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${n}</p><h2>${D.t}</h2></div>${closeBtn()}</div>
+  openSheet(`<div class="sheet-head"><div><p class="eyebrow">${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})}</p><h2>Gün ${n}</h2></div>${closeBtn()}</div>
     <div class="day-sheet">
     ${locked ? `<p class="locked-note">Bu gün ${fmtDate(dayDate(n),{day:'numeric',month:'long',weekday:'long'})} açılacak.</p>` : `${dayBody(n, logs, false)}`}
     </div>`);
@@ -1228,7 +1228,7 @@ function openLogForm(id, day){
   const e = l ? l.energy : null;
   const fsel = l ? (l.feel||[]) : [];
   const custom = fsel.filter(f=>feelLevel(f)===null).join(', ');
-  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${dd} · ${DAYS[dd-1].t}</p><h2>${no}. An</h2></div>${closeBtn()}</div>
+  openSheet(`<div class="sheet-head"><div><p class="eyebrow">Gün ${dd}</p><h2>${no}. An</h2></div>${closeBtn()}</div>
   <form class="form" id="logForm" data-id="${l?l.id:''}" data-day="${dd}" novalidate>
     <div class="fset"><label for="f-person">Kim söyledi?</label><p class="hint">İsim ya da takma isim.</p>
       <input type="text" id="f-person" list="plist" value="${esc(l?l.person:'')}" placeholder="Örn. Annem, Müdür, A." autocomplete="off">
@@ -1506,6 +1506,6 @@ route(); render(true);
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{});var _r=false;navigator.serviceWorker.addEventListener("controllerchange",function(){if(_r)return;_r=true;location.reload()})}</script>
-<script>(function(){var B="202611221252";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
+<script>(function(){var B="202611221258";try{fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/name="build" content="(\d+)"/);if(m&&m[1]!==B&&location.search.indexOf("v="+m[1])<0){location.replace(location.pathname+"?v="+m[1]+location.hash)}}).catch(function(){})}catch(e){}})()</script>
 </body>
 </html>
